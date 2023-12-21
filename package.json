@@ -11,9 +11,16 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.0.1",
     "antd": "^5.12.4",
+    "axios": "^1.6.2",
+    "firebase": "^10.7.1",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.4",
+    "query-string": "^8.1.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.21.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",

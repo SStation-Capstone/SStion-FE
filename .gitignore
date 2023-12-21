@@ -24,3 +24,4 @@ dist-ssr
 *.sw?
 .eslintcache
 package-lock.json
+yarn.lock
