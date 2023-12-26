@@ -33,7 +33,8 @@ workflows:
             branches:
               only:
                 - master
-                - /.*(ss|SS)-\d+.*/          
+                - /.*(ss|SS)-\d+.*/
+
   build-prod:
     jobs:
       - build:
@@ -42,13 +43,11 @@ workflows:
               only: /^v.*/
             branches:
               ignore: /.*/
-      - deploy: 
-          requires:
-            - build
-          filters:
-            tags:
-              only:  /^v.*/
-            branches:
-              ignore: /.*/
-                 
-                
+      # - deploy: 
+      #     requires:
+      #       - build
+      #     filters:
+      #       tags:
+      #         only: /^v.*/
+      #       branches:
+      #         ignore: /.*/
