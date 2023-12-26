@@ -1,4 +1,5 @@
 # React + TypeScript + Vite
+[![Netlify Status](https://api.netlify.com/api/v1/badges/486428e7-4396-4ccc-ab2c-a656ecce82e5/deploy-status)](https://app.netlify.com/sites/sstation-web/deploys)
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
@@ -29,4 +30,4 @@ export default {
 - Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
 - Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/486428e7-4396-4ccc-ab2c-a656ecce82e5/deploy-status)](https://app.netlify.com/sites/sstation-web/deploys)
+
