@@ -32,8 +32,9 @@ workflows:
           filters:
             branches:
               only:
-                - master
                 - /.*(ss|SS)-\d+.*/
+              ignore: master
+
 
   build-prod:
     jobs:
