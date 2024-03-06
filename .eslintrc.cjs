@@ -42,7 +42,7 @@ module.exports = {
     'prettier',
     'react',
     'react-hooks',
-    // 'jsx-a11y',
+    'jsx-a11y',
     'import',
     'unused-imports',
   ],

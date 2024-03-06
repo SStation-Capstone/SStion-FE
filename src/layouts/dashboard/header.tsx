@@ -5,6 +5,7 @@ import { CSSProperties, useState } from 'react';
 import { IconButton, Iconify, SvgIcon } from '@/components/icon';
 // import LocalePicker from '@/components/locale-picker';
 // import { useSettings } from '@/store/settingStore';
+import { useSettings } from '@/store/settingStore';
 import { useResponsive, useThemeToken } from '@/theme/hooks';
 
 import AccountDropdown from '../_common/account-dropdown';
@@ -16,13 +17,16 @@ import SearchBar from '../_common/search-bar';
 import { HEADER_HEIGHT, NAV_COLLAPSED_WIDTH, NAV_WIDTH, OFFSET_HEADER_HEIGHT } from './config';
 import Nav from './nav';
 
+import { ThemeLayout } from '#/enum';
+
 type Props = {
   className?: string;
   offsetTop?: boolean;
 };
 export default function Header({ className = '', offsetTop = false }: Props) {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  // const { themeLayout, breadCrumb } = useSettings();
+  const { themeLayout } = useSettings();
+  console.log('theme layout', themeLayout);
   const { colorBgElevated, colorBorder } = useThemeToken();
   const { screenMap } = useResponsive();
 
@@ -35,7 +39,9 @@ export default function Header({ className = '', offsetTop = false }: Props) {
   if (screenMap.md) {
     headerStyle.right = '0px';
     headerStyle.left = 'auto';
-    headerStyle.width = `calc(100% - ${drawerOpen ? NAV_WIDTH : NAV_COLLAPSED_WIDTH}px)`;
+    headerStyle.width = `calc(100% - ${
+      themeLayout === ThemeLayout.Vertical ? NAV_WIDTH : NAV_COLLAPSED_WIDTH
+    }px)`;
   } else {
     headerStyle.width = '100vw';
   }

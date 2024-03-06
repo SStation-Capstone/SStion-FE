@@ -5,14 +5,16 @@ import Color from 'color';
 import { CSSProperties, useEffect, useState } from 'react';
 import { useLocation, useMatches, useNavigate } from 'react-router-dom';
 
-import Logo from '@/components/logo';
+import LogoImg from '@/assets/images/logo/logo-no-background.png';
 import Scrollbar from '@/components/scrollbar';
 import { useRouteToMenuFn, usePermissionRoutes } from '@/router/hooks';
 import { menuFilter } from '@/router/utils';
-// import { useSettingActions, useSettings } from '@/store/settingStore';
+import { useSettingActions, useSettings } from '@/store/settingStore';
 import { useThemeToken } from '@/theme/hooks';
 
 import { NAV_COLLAPSED_WIDTH, NAV_WIDTH } from './config';
+
+import { ThemeLayout } from '#/enum';
 
 // import { ThemeLayout } from '#/enum';
 
@@ -26,9 +28,9 @@ export default function Nav(props: Props) {
 
   const { colorTextBase, colorBgElevated, colorBorder } = useThemeToken();
 
-  // const settings = useSettings();
-  // const { themeLayout } = settings;
-  // const { setSettings } = useSettingActions();
+  const settings = useSettings();
+  const { themeLayout } = settings;
+  const { setSettings } = useSettingActions();
 
   const menuStyle: CSSProperties = {
     background: colorBgElevated,
@@ -62,9 +64,15 @@ export default function Nav(props: Props) {
   }, [permissionRoutes, routeToMenuFn]);
 
   useEffect(() => {
-    setCollapsed(false);
-    setMenuMode('inline');
-  }, []);
+    if (themeLayout === ThemeLayout.Vertical) {
+      setCollapsed(false);
+      setMenuMode('inline');
+    }
+    if (themeLayout === ThemeLayout.Mini) {
+      setCollapsed(true);
+      setMenuMode('inline');
+    }
+  }, [themeLayout]);
 
   /**
    * events
@@ -82,19 +90,19 @@ export default function Nav(props: Props) {
     props?.closeSideBarDrawer?.();
   };
 
-  // const setThemeLayout = (themeLayout: ThemeLayout) => {
-  //   setSettings({
-  //     ...settings,
-  //     themeLayout
-  //   });
-  // };
+  const setThemeLayout = (themeLayout: ThemeLayout) => {
+    setSettings({
+      ...settings,
+      themeLayout,
+    });
+  };
 
   const toggleCollapsed = () => {
-    // if (!collapsed) {
-    //   setThemeLayout(ThemeLayout.Mini);
-    // } else {
-    //   setThemeLayout(ThemeLayout.Vertical);
-    // }
+    if (!collapsed) {
+      setThemeLayout(ThemeLayout.Mini);
+    } else {
+      setThemeLayout(ThemeLayout.Vertical);
+    }
     setCollapsed(!collapsed);
   };
 
@@ -107,7 +115,11 @@ export default function Nav(props: Props) {
       }}
     >
       <div className="relative flex h-20 items-center justify-center py-4">
-        {collapsed ? <Logo className="text-lg" /> : <Logo className="text-4xl" />}
+        {collapsed ? (
+          <img src={LogoImg} alt="" className="p-4" />
+        ) : (
+          <img src={LogoImg} alt="" className="p-4" />
+        )}
         <button
           onClick={toggleCollapsed}
           className="absolute right-0 top-7 z-50 hidden h-6 w-6 translate-x-1/2 cursor-pointer select-none rounded-full text-center !text-gray md:block"

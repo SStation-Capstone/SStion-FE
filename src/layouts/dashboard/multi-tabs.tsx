@@ -9,12 +9,18 @@ import styled from 'styled-components';
 import { Iconify } from '@/components/icon';
 import useKeepAlive, { KeepAliveTab } from '@/hooks/web/use-keepalive';
 import { useRouter } from '@/router/hooks';
-// import { useSettings } from '@/store/settingStore';
+import { useSettings } from '@/store/settingStore';
 import { useResponsive, useThemeToken } from '@/theme/hooks';
 
-import { NAV_WIDTH, HEADER_HEIGHT, OFFSET_HEADER_HEIGHT, MULTI_TABS_HEIGHT } from './config';
+import {
+  NAV_WIDTH,
+  HEADER_HEIGHT,
+  OFFSET_HEADER_HEIGHT,
+  MULTI_TABS_HEIGHT,
+  NAV_COLLAPSED_WIDTH,
+} from './config';
 
-import { MultiTabOperation } from '#/enum';
+import { MultiTabOperation, ThemeLayout } from '#/enum';
 
 type Props = {
   offsetTop?: boolean;
@@ -258,7 +264,7 @@ export default function MultiTabs({ offsetTop = false }: Props) {
   /**
    * 渲染 tabbar
    */
-  // const { themeLayout } = useSettings();
+  const { themeLayout } = useSettings();
   const { colorBorder, colorBgElevated } = useThemeToken();
   const { screenMap } = useResponsive();
 
@@ -275,7 +281,9 @@ export default function MultiTabs({ offsetTop = false }: Props) {
   if (screenMap.md) {
     multiTabsStyle.right = '0px';
     multiTabsStyle.left = 'auto';
-    multiTabsStyle.width = `calc(100% - ${NAV_WIDTH}px`;
+    multiTabsStyle.width = `calc(100% - ${
+      themeLayout === ThemeLayout.Vertical ? NAV_WIDTH : NAV_COLLAPSED_WIDTH
+    }px`;
   } else {
     multiTabsStyle.width = '100vw';
   }
