@@ -1,13 +1,13 @@
-import { useQuery } from '@tanstack/react-query';
-import { Button, Card, Popconfirm } from 'antd';
+import { Button, Card, Col, Form, Input, Pagination, Popconfirm, Row } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
 
-import stationService from '@/api/services/stationService';
+import { useListStation } from '@/api/services/stationService';
 import { IconButton, Iconify } from '@/components/icon';
 
-import { ManageStationEdit, RoleModalProps } from './station.edit';
+import { ManageStationEdit } from './station.edit';
 
+import { InputType } from '#/api';
 import { Station } from '#/entity';
 
 const DEFAULE_ROLE_VALUE: Station = {
@@ -21,17 +21,37 @@ const DEFAULE_ROLE_VALUE: Station = {
   stationImages: [],
 };
 export default function ManageStationManagerList() {
-  const [roleModalPros, setRoleModalProps] = useState<RoleModalProps>({
-    formValue: { ...DEFAULE_ROLE_VALUE },
-    title: 'New',
-    show: false,
-    onOk: () => {
-      setRoleModalProps((prev) => ({ ...prev, show: false }));
-    },
-    onCancel: () => {
-      setRoleModalProps((prev) => ({ ...prev, show: false }));
-    },
-  });
+  const [form] = Form.useForm();
+
+  // const [roleModalPros, setRoleModalProps] = useState<RoleModalProps>({
+  //   formValue: { ...DEFAULE_ROLE_VALUE },
+  //   title: 'New',
+  //   show: false,
+  //   // onOk: () => {
+  //   //   setRoleModalProps((prev) => ({ ...prev, show: false }));
+  //   // },
+  //   // onCancel: () => {
+  //   //   setRoleModalProps((prev) => ({ ...prev, show: false }));
+  //   // },
+  // });
+
+  const [listRelateParams, setListRelateParams] = useState<InputType>();
+  const [clickOne, setClickOne] = useState<Station>();
+  const [showInfo, setShowInfo] = useState(false);
+
+  const onOpenFormHandler = (record?: Station) => {
+    if (record) {
+      setClickOne(record);
+    } else {
+      setClickOne(undefined);
+    }
+    setShowInfo(true);
+  };
+
+  const closeAndRefetchHandler = async () => {
+    setShowInfo(false);
+  };
+  const { data } = useListStation(listRelateParams);
   const columns: ColumnsType<Station> = [
     {
       title: 'Id',
@@ -65,7 +85,7 @@ export default function ManageStationManagerList() {
       width: 100,
       render: (_, record) => (
         <div className="flex w-full justify-center text-gray">
-          <IconButton onClick={() => onEdit(record)}>
+          <IconButton onClick={() => onOpenFormHandler(record)}>
             <Iconify icon="solar:pen-bold-duotone" size={18} />
           </IconButton>
           <Popconfirm title="Delete the Role" okText="Yes" cancelText="No" placement="left">
@@ -78,41 +98,71 @@ export default function ManageStationManagerList() {
     },
   ];
 
-  const onCreate = () => {
-    setRoleModalProps((prev) => ({
-      ...prev,
-      show: true,
-      title: 'Create New',
-      formValue: {
-        ...prev.formValue,
-        ...DEFAULE_ROLE_VALUE,
-      },
-    }));
+  // const onCreate = () => {
+  //   setRoleModalProps((prev) => ({
+  //     ...prev,
+  //     show: true,
+  //     title: 'Create New',
+  //     formValue: {
+  //       ...prev.formValue,
+  //       ...DEFAULE_ROLE_VALUE,
+  //     },
+  //   }));
+  // };
+
+  // const onEdit = (formValue: Station) => {
+  //   setRoleModalProps((prev) => ({
+  //     ...prev,
+  //     show: true,
+  //     title: 'Edit',
+  //     formValue,
+  //   }));
+  // };
+
+  const resetHandler = () => {
+    form.resetFields();
+    // 清空时间组件，无参请求API
   };
 
-  const onEdit = (formValue: Station) => {
-    setRoleModalProps((prev) => ({
-      ...prev,
-      show: true,
-      title: 'Edit',
-      formValue,
-    }));
+  const onPageChange = (page: number, pageSize: number) => {
+    const values: InputType = { PageIndex: page, PageSize: pageSize };
+    setListRelateParams(values);
   };
 
-  const { data } = useQuery({
-    queryKey: ['station'],
-    queryFn: stationService.getStation,
-  });
-  console.log('data', data);
   return (
     <Card
       title="Station List"
       extra={
-        <Button type="primary" onClick={onCreate}>
+        <Button type="primary" onClick={() => onOpenFormHandler()}>
           New
         </Button>
       }
     >
+      <Form form={form} onFinish={() => {}}>
+        <Row gutter={24} justify="space-between">
+          <Col span={8}>
+            <Form.Item name="name">
+              <Input placeholder="Search by name" allowClear />
+            </Form.Item>
+          </Col>
+          <Col span={4}>
+            <Row>
+              <Col span={12}>
+                <Form.Item name="search">
+                  <Button type="primary" htmlType="submit">
+                    Search
+                  </Button>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Button type="primary" onClick={resetHandler}>
+                  Reset
+                </Button>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      </Form>
       <Table
         rowKey="id"
         size="small"
@@ -121,8 +171,16 @@ export default function ManageStationManagerList() {
         columns={columns}
         dataSource={data?.contends}
       />
-
-      <ManageStationEdit {...roleModalPros} />
+      <Pagination
+        showSizeChanger
+        onChange={onPageChange}
+        total={data?.totalPages}
+        // showTotal={(total) => `共 ${total} 条`}
+        current={data?.page}
+        style={{ marginTop: '1rem' }}
+      />
+      {/* <ManageStationEdit {...roleModalPros} /> */}
+      {showInfo && <ManageStationEdit clickOne={clickOne} onClose={closeAndRefetchHandler} />}
     </Card>
   );
 }
