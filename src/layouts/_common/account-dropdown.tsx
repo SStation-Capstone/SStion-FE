@@ -77,7 +77,11 @@ export default function AccountDropdown() {
   return (
     <Dropdown menu={{ items }} trigger={['click']} dropdownRender={dropdownRender}>
       <IconButton className="h-10 w-10 transform-none px-0 hover:scale-105">
-        <img className="h-8 w-8 rounded-full" src={avatar} alt="" />
+        <img
+          className="h-8 w-8 rounded-full"
+          src="https://api.dicebear.com/7.x/miniavs/svg?seed=1"
+          alt=""
+        />
       </IconButton>
     </Dropdown>
   );

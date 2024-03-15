@@ -1,4 +1,4 @@
-import { Alert, Button, Checkbox, Col, Form, Input, Row } from 'antd';
+import { Button, Checkbox, Col, Form, Input, Row } from 'antd';
 import { useState } from 'react';
 // import { useTranslation } from 'react-i18next';
 // import { AiFillGithub, AiFillGoogleCircle, AiFillWechat } from 'react-icons/ai';
@@ -6,7 +6,6 @@ import { useState } from 'react';
 // import { DEFAULT_USER, TEST_USER } from '@/_mock/assets';
 import { SignInReq } from '@/api/services/userService';
 import { useSignIn } from '@/store/userStore';
-import ProTag from '@/theme/antd/components/tag';
 import { useThemeToken } from '@/theme/hooks';
 
 import { LoginStateEnum, useLoginStateContext } from './providers/LoginStateProvider';
@@ -47,7 +46,7 @@ function LoginForm() {
         onFinish={handleFinish}
       >
         <div className="mb-4 flex flex-col">
-          <Alert
+          {/* <Alert
             type="info"
             description={
               <div className="flex flex-col">
@@ -74,7 +73,7 @@ function LoginForm() {
               </div>
             }
             showIcon
-          />
+          /> */}
         </div>
 
         <Form.Item name="username" rules={[{ required: true, message: 'Please input username' }]}>
