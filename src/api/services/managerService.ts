@@ -1,9 +1,12 @@
 import apiClient from '../apiClient';
 
+import { PaginationRes } from '#/api';
+
 export interface MangerPayload {
+  id: number;
   userName: string;
-  password: string;
-  fullName: string;
+  email: string;
+  phoneNumber: string;
 }
 
 export interface MangerCreateResponse {
@@ -11,13 +14,16 @@ export interface MangerCreateResponse {
 }
 // & { user: UserInfo };
 
+type StationGetRes = PaginationRes & { contends: MangerPayload[] };
 export enum ManagerApi {
-  CreateManager = '/managers',
+  GetManager = '/managers',
 }
 
-const createManager = (data: MangerPayload) =>
-  apiClient.post<MangerCreateResponse>({ url: ManagerApi.CreateManager, data });
+// const createManager = (data: MangerPayload) =>
+//   apiClient.post<MangerCreateResponse>({ url: ManagerApi.GetManager, data });
+
+const GetManager = () => apiClient.get<StationGetRes>({ url: ManagerApi.GetManager });
 
 export default {
-  createManager,
+  GetManager,
 };

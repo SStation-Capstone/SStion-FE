@@ -73,3 +73,10 @@ export interface Station {
   longitude?: string;
   stationImages?: ImageUrl[];
 }
+
+export interface Manager {
+  id: number;
+  userName: string;
+  email: string;
+  phoneNumber: string;
+}
