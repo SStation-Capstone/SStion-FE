@@ -3,18 +3,18 @@ import { useEffect } from 'react';
 
 // import { PERMISSION_LIST } from '@/_mock/assets';
 
-import { Role } from '#/entity';
+import { Role, Station } from '#/entity';
 import { BasicStatus } from '#/enum';
 
 export type RoleModalProps = {
-  formValue: Role;
+  formValue: Station;
   title: string;
   show: boolean;
   onOk: VoidFunction;
   onCancel: VoidFunction;
 };
 // const PERMISSIONS: Permission[] = PERMISSION_LIST;
-export function ManagerStationEdit({ title, show, formValue, onOk, onCancel }: RoleModalProps) {
+export function ManageStationEdit({ title, show, formValue, onOk, onCancel }: RoleModalProps) {
   const [form] = Form.useForm();
 
   // const flattenedPermissions = flattenTrees(formValue.permission);

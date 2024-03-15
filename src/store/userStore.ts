@@ -62,7 +62,6 @@ export const useSignIn = () => {
   const signIn = async (data: SignInReq) => {
     try {
       const res = await signInMutation.mutateAsync(data);
-      console.log('res', res);
       const { accessToken, refreshToken } = res;
       setUserToken({ accessToken, refreshToken });
       const decodetoken = jwtDecode<JwtDecode>(accessToken as string);
@@ -80,7 +79,7 @@ export const useSignIn = () => {
       ) {
         user.permissions = ADMIN_PERMISSION;
       }
-      console.log('decode', decodetoken);
+
       setUserInfo(user);
       navigatge(HOMEPAGE, { replace: true });
 

@@ -4,7 +4,11 @@ import { isEmpty } from 'ramda';
 
 // import { t } from '@/locales/i18n';
 
+import { getItem } from '@/utils/storage';
+
 import { Result } from '#/api';
+import { UserToken } from '#/entity';
+import { StorageEnum } from '#/enum';
 
 // 创建 axios 实例
 const axiosInstance = axios.create({
@@ -17,7 +21,10 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (config) => {
     // 在请求被发送之前做些什么
-    config.headers.Authorization = 'Bearer Token';
+    const { accessToken } = getItem(StorageEnum.Token) as UserToken;
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
     return config;
   },
   (error) => {
@@ -29,14 +36,12 @@ axiosInstance.interceptors.request.use(
 // 响应拦截
 axiosInstance.interceptors.response.use(
   (res: AxiosResponse<any>) => {
-    console.log('res in axios', res);
     if (!res.data) throw new Error('The interface request failed, please try again later!');
 
     const { data, message } = res.data;
     // 业务请求成功
     const hasSuccess = res.data && Reflect.has(res, 'status');
-    console.log('hasSuc', hasSuccess);
-    console.log('Ref', Reflect.has(res, 'status'));
+
     if (hasSuccess) {
       return res.data;
     }

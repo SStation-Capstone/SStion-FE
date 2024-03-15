@@ -98,7 +98,6 @@ function transformPermissionToMenuRoutes(
         });
       }
     } else if (type === PermissionType.MENU) {
-      console.log('resolve', resolveComponent(component!));
       const Element = lazy(resolveComponent(component!) as any);
       if (frameSrc) {
         appRoute.element = <Element src={frameSrc} />;

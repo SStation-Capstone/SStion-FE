@@ -1,21 +1,24 @@
+import { useQuery } from '@tanstack/react-query';
 import { Button, Card, Popconfirm } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
 
+import stationService from '@/api/services/stationService';
 import { IconButton, Iconify } from '@/components/icon';
-import ProTag from '@/theme/antd/components/tag';
 
-import { ManagerStationEdit, RoleModalProps } from './manger.edit';
+import { ManageStationEdit, RoleModalProps } from './station.edit';
 
-import { Role } from '#/entity';
-import { BasicStatus } from '#/enum';
+import { Station } from '#/entity';
 
-const DEFAULE_ROLE_VALUE: Role = {
-  id: '',
+const DEFAULE_ROLE_VALUE: Station = {
+  id: -1,
   name: '',
-  label: '',
-  status: BasicStatus.ENABLE,
-  permission: [],
+  description: '',
+  contactPhone: '',
+  address: '',
+  latitude: '',
+  longitude: '',
+  stationImages: [],
 };
 export default function ManageStationManagerList() {
   const [roleModalPros, setRoleModalProps] = useState<RoleModalProps>({
@@ -29,29 +32,32 @@ export default function ManageStationManagerList() {
       setRoleModalProps((prev) => ({ ...prev, show: false }));
     },
   });
-  const columns: ColumnsType<Role> = [
+  const columns: ColumnsType<Station> = [
+    {
+      title: 'Id',
+      dataIndex: 'id',
+    },
     {
       title: 'Name',
       dataIndex: 'name',
-      width: 300,
     },
     {
-      title: 'Label',
-      dataIndex: 'label',
+      title: 'Description',
+      dataIndex: 'description',
     },
-    { title: 'Order', dataIndex: 'order', width: 60 },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      align: 'center',
-      width: 120,
-      render: (status) => (
-        <ProTag color={status === BasicStatus.DISABLE ? 'error' : 'success'}>
-          {status === BasicStatus.DISABLE ? 'Disable' : 'Enable'}
-        </ProTag>
-      ),
-    },
-    { title: 'Desc', dataIndex: 'desc' },
+    { title: 'ContactPhone', dataIndex: 'contactPhone' },
+    // {
+    //   title: 'Status',
+    //   dataIndex: 'status',
+    //   align: 'center',
+    //   width: 120,
+    //   render: (status) => (
+    //     <ProTag color={status === BasicStatus.DISABLE ? 'error' : 'success'}>
+    //       {status === BasicStatus.DISABLE ? 'Disable' : 'Enable'}
+    //     </ProTag>
+    //   ),
+    // },
+    { title: 'Address', dataIndex: 'address' },
     {
       title: 'Action',
       key: 'operation',
@@ -84,7 +90,7 @@ export default function ManageStationManagerList() {
     }));
   };
 
-  const onEdit = (formValue: Role) => {
+  const onEdit = (formValue: Station) => {
     setRoleModalProps((prev) => ({
       ...prev,
       show: true,
@@ -93,9 +99,14 @@ export default function ManageStationManagerList() {
     }));
   };
 
+  const { data } = useQuery({
+    queryKey: ['station'],
+    queryFn: stationService.getStation,
+  });
+  console.log('data', data);
   return (
     <Card
-      title="Role List"
+      title="Station List"
       extra={
         <Button type="primary" onClick={onCreate}>
           New
@@ -108,10 +119,10 @@ export default function ManageStationManagerList() {
         scroll={{ x: 'max-content' }}
         pagination={false}
         columns={columns}
-        dataSource={ROLES}
+        dataSource={data?.contends}
       />
 
-      <ManagerStationEdit {...roleModalPros} />
+      <ManageStationEdit {...roleModalPros} />
     </Card>
   );
 }

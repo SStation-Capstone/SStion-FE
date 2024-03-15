@@ -53,9 +53,23 @@ export interface Role {
 }
 
 export interface JwtDecode {
-  "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": string,
-  id : string,
-  user_name : string,
-  avartar_url : string,
-  email: string,
+  'http://schemas.microsoft.com/ws/2008/06/identity/claims/role': string;
+  id: string;
+  user_name: string;
+  avartar_url: string;
+  email: string;
+}
+
+export interface ImageUrl {
+  imageUrl: string;
+}
+export interface Station {
+  id: number;
+  name: string;
+  address: string;
+  description: string;
+  contactPhone: string;
+  latitude?: string;
+  longitude?: string;
+  stationImages?: ImageUrl[];
 }

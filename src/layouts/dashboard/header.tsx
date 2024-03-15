@@ -26,7 +26,6 @@ type Props = {
 export default function Header({ className = '', offsetTop = false }: Props) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { themeLayout } = useSettings();
-  console.log('theme layout', themeLayout);
   const { colorBgElevated, colorBorder } = useThemeToken();
   const { screenMap } = useResponsive();
 

@@ -8,6 +8,7 @@ import { getMenuModules } from '../utils';
 import { AppRouteObject } from '#/router';
 
 const menuModuleRoutes = getMenuModules();
+console.log('menuModuleRoutes', menuModuleRoutes);
 
 const { VITE_APP_HOMEPAGE: HOMEPAGE } = import.meta.env;
 
