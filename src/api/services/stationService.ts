@@ -1,6 +1,10 @@
+import { useMutation, useQuery } from '@tanstack/react-query';
+
+import { queryClient } from '@/http/tanstack/react-query';
+
 import apiClient from '../apiClient';
 
-import { PaginationRes } from '#/api';
+import { InputType, PaginationRes } from '#/api';
 import { ImageUrl } from '#/entity';
 
 export interface StationPayload {
@@ -29,7 +33,48 @@ const createStation = (data: StationPayload) =>
 
 const getStation = () => apiClient.get<StationGetRes>({ url: StationApi.GetStation });
 
-export default {
-  createStation,
-  getStation,
+export const useListStation = (values?: InputType) => {
+  return useQuery(['listStation', values], () =>
+    apiClient.get<StationGetRes>({ url: StationApi.GetStation, params: values }),
+  );
 };
+
+export const useUpdateStation = () => {
+  return useMutation(
+    async (payload: StationPayload) =>
+      apiClient.put<StationCreateResponse>({
+        url: `${StationApi.CreateStation}/${payload.id}`,
+        data: payload,
+      }),
+    {
+      onSuccess: () => {
+        // globalSuccess();
+        queryClient.invalidateQueries(['listStation']);
+      },
+    },
+  );
+};
+
+/**
+ * 新建
+ */
+export const useCreateStation = () => {
+  return useMutation(
+    async (payload: StationPayload) =>
+      apiClient.post<StationCreateResponse>({
+        url: StationApi.CreateStation,
+        data: payload,
+      }),
+    {
+      onSuccess: () => {
+        // globalSuccess();
+        queryClient.invalidateQueries(['listStation']);
+      },
+    },
+  );
+};
+// export default {
+//   createStation,
+//   getStation,
+//   useListStation,
+// };

@@ -11,3 +11,9 @@ export interface PaginationRes {
   hasPreviousPage: boolean;
   hasNextPage: boolean;
 }
+
+export interface InputType {
+  Search?: string;
+  PageIndex?: number;
+  PageSize?: number;
+}
