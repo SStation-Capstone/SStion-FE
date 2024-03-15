@@ -1,21 +1,20 @@
+import { useQuery } from '@tanstack/react-query';
 import { Button, Card, Popconfirm } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
 
+import managerService from '@/api/services/managerService';
 import { IconButton, Iconify } from '@/components/icon';
-import ProTag from '@/theme/antd/components/tag';
 
 import { ManagerStationEdit, RoleModalProps } from './manger.edit';
 
-import { Role } from '#/entity';
-import { BasicStatus } from '#/enum';
+import { Manager } from '#/entity';
 
-const DEFAULE_ROLE_VALUE: Role = {
-  id: '',
-  name: '',
-  label: '',
-  status: BasicStatus.ENABLE,
-  permission: [],
+const DEFAULE_ROLE_VALUE: Manager = {
+  id: -1,
+  userName: '',
+  email: '',
+  phoneNumber: '',
 };
 export default function ManageStationManagerList() {
   const [roleModalPros, setRoleModalProps] = useState<RoleModalProps>({
@@ -29,29 +28,32 @@ export default function ManageStationManagerList() {
       setRoleModalProps((prev) => ({ ...prev, show: false }));
     },
   });
-  const columns: ColumnsType<Role> = [
+  const columns: ColumnsType<Manager> = [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      width: 300,
+      title: 'Id',
+      dataIndex: 'id',
     },
     {
-      title: 'Label',
-      dataIndex: 'label',
+      title: 'UserName',
+      dataIndex: 'userName',
     },
-    { title: 'Order', dataIndex: 'order', width: 60 },
     {
-      title: 'Status',
-      dataIndex: 'status',
-      align: 'center',
-      width: 120,
-      render: (status) => (
-        <ProTag color={status === BasicStatus.DISABLE ? 'error' : 'success'}>
-          {status === BasicStatus.DISABLE ? 'Disable' : 'Enable'}
-        </ProTag>
-      ),
+      title: 'Email',
+      dataIndex: 'email',
     },
-    { title: 'Desc', dataIndex: 'desc' },
+    { title: 'PhoneNumber', dataIndex: 'phoneNumber' },
+    // {
+    //   title: 'Status',
+    //   dataIndex: 'status',
+    //   align: 'center',
+    //   width: 120,
+    //   render: (status) => (
+    //     <ProTag color={status === BasicStatus.DISABLE ? 'error' : 'success'}>
+    //       {status === BasicStatus.DISABLE ? 'Disable' : 'Enable'}
+    //     </ProTag>
+    //   ),
+    // },
+    // { title: 'Desc', dataIndex: 'desc' },
     {
       title: 'Action',
       key: 'operation',
@@ -84,7 +86,7 @@ export default function ManageStationManagerList() {
     }));
   };
 
-  const onEdit = (formValue: Role) => {
+  const onEdit = (formValue: Manager) => {
     setRoleModalProps((prev) => ({
       ...prev,
       show: true,
@@ -92,10 +94,15 @@ export default function ManageStationManagerList() {
       formValue,
     }));
   };
+  const { data } = useQuery({
+    queryKey: ['manager'],
+    queryFn: managerService.GetManager,
+  });
+  console.log('data', data);
 
   return (
     <Card
-      title="Role List"
+      title="Manager List"
       extra={
         <Button type="primary" onClick={onCreate}>
           New
@@ -108,7 +115,7 @@ export default function ManageStationManagerList() {
         scroll={{ x: 'max-content' }}
         pagination={false}
         columns={columns}
-        dataSource={ROLES}
+        dataSource={data?.contends}
       />
 
       <ManagerStationEdit {...roleModalPros} />

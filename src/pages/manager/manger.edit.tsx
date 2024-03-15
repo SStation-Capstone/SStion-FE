@@ -3,11 +3,11 @@ import { useEffect } from 'react';
 
 // import { PERMISSION_LIST } from '@/_mock/assets';
 
-import { Role } from '#/entity';
+import { Manager, Role } from '#/entity';
 import { BasicStatus } from '#/enum';
 
 export type RoleModalProps = {
-  formValue: Role;
+  formValue: Manager;
   title: string;
   show: boolean;
   onOk: VoidFunction;

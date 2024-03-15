@@ -21,9 +21,9 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (config) => {
     // 在请求被发送之前做些什么
-    const { accessToken } = getItem(StorageEnum.Token) as UserToken;
+    const accessToken = getItem(StorageEnum.Token) as unknown as UserToken;
     if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
+      config.headers.Authorization = `Bearer ${accessToken.accessToken}`;
     }
     return config;
   },
