@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 import { useListStation } from '@/api/services/stationService';
 import { IconButton, Iconify } from '@/components/icon';
+import { CircleLoading } from '@/components/loading';
 
 import { ManageStationEdit } from './station.edit';
 
@@ -23,21 +24,11 @@ const DEFAULE_ROLE_VALUE: Station = {
 export default function ManageStationManagerList() {
   const [form] = Form.useForm();
 
-  // const [roleModalPros, setRoleModalProps] = useState<RoleModalProps>({
-  //   formValue: { ...DEFAULE_ROLE_VALUE },
-  //   title: 'New',
-  //   show: false,
-  //   // onOk: () => {
-  //   //   setRoleModalProps((prev) => ({ ...prev, show: false }));
-  //   // },
-  //   // onCancel: () => {
-  //   //   setRoleModalProps((prev) => ({ ...prev, show: false }));
-  //   // },
-  // });
-
   const [listRelateParams, setListRelateParams] = useState<InputType>();
   const [clickOne, setClickOne] = useState<Station>();
   const [showInfo, setShowInfo] = useState(false);
+  const { data, isLoading } = useListStation(listRelateParams);
+  if (isLoading) return <CircleLoading />;
 
   const onOpenFormHandler = (record?: Station) => {
     if (record) {
@@ -51,7 +42,6 @@ export default function ManageStationManagerList() {
   const closeAndRefetchHandler = async () => {
     setShowInfo(false);
   };
-  const { data } = useListStation(listRelateParams);
   const columns: ColumnsType<Station> = [
     {
       title: 'Id',
@@ -98,27 +88,6 @@ export default function ManageStationManagerList() {
     },
   ];
 
-  // const onCreate = () => {
-  //   setRoleModalProps((prev) => ({
-  //     ...prev,
-  //     show: true,
-  //     title: 'Create New',
-  //     formValue: {
-  //       ...prev.formValue,
-  //       ...DEFAULE_ROLE_VALUE,
-  //     },
-  //   }));
-  // };
-
-  // const onEdit = (formValue: Station) => {
-  //   setRoleModalProps((prev) => ({
-  //     ...prev,
-  //     show: true,
-  //     title: 'Edit',
-  //     formValue,
-  //   }));
-  // };
-
   const resetHandler = () => {
     form.resetFields();
     // 清空时间组件，无参请求API
@@ -129,6 +98,10 @@ export default function ManageStationManagerList() {
     setListRelateParams(values);
   };
 
+  const onFinishHandler = (values: InputType) => {
+    setListRelateParams(values);
+  };
+  console.log('isload', isLoading);
   return (
     <Card
       title="Station List"
@@ -138,10 +111,10 @@ export default function ManageStationManagerList() {
         </Button>
       }
     >
-      <Form form={form} onFinish={() => {}}>
+      <Form form={form} onFinish={onFinishHandler}>
         <Row gutter={24} justify="space-between">
           <Col span={8}>
-            <Form.Item name="name">
+            <Form.Item name="Search">
               <Input placeholder="Search by name" allowClear />
             </Form.Item>
           </Col>
@@ -170,6 +143,7 @@ export default function ManageStationManagerList() {
         pagination={false}
         columns={columns}
         dataSource={data?.contends}
+        loading={isLoading}
       />
       <Pagination
         showSizeChanger
