@@ -1,46 +1,69 @@
-import { Form, Modal, Input, InputNumber, Radio } from 'antd';
-import { useEffect } from 'react';
+import { Form, Modal, Input } from 'antd';
 
 // import { PERMISSION_LIST } from '@/_mock/assets';
 
-import { Manager, Role } from '#/entity';
-import { BasicStatus } from '#/enum';
+import { useCreateSManager } from '@/api/services/managerService';
 
-export type RoleModalProps = {
-  formValue: Manager;
-  title: string;
-  show: boolean;
-  onOk: VoidFunction;
-  onCancel: VoidFunction;
+import { Manager } from '#/entity';
+
+export type ManagerEditFormProps = {
+  clickOne?: Manager;
+  onClose: () => void;
+  // onOk: VoidFunction;
+  // onCancel: VoidFunction;
 };
 // const PERMISSIONS: Permission[] = PERMISSION_LIST;
-export function ManagerStationEdit({ title, show, formValue, onOk, onCancel }: RoleModalProps) {
+export function ManagerEdit({ clickOne, onClose }: ManagerEditFormProps) {
   const [form] = Form.useForm();
+
+  const { mutateAsync: createMutate } = useCreateSManager();
+
+  const submitHandle = async () => {
+    const values = await form.validateFields();
+    console.log(values);
+    createMutate(values);
+    onClose();
+  };
 
   // const flattenedPermissions = flattenTrees(formValue.permission);
   // const checkedKeys = flattenedPermissions.map((item) => item.id);
-  useEffect(() => {
-    form.setFieldsValue({ ...formValue });
-  }, [formValue, form]);
+  // useEffect(() => {
+  //   form.setFieldsValue({ ...formValue });
+  // }, [formValue, form]);
 
   return (
-    <Modal title={title} open={show} onOk={onOk} onCancel={onCancel}>
+    <Modal
+      title={clickOne ? 'Edit Manager' : 'Create Manager'}
+      open
+      onOk={submitHandle}
+      onCancel={() => onClose()}
+    >
       <Form
-        initialValues={formValue}
+        initialValues={clickOne}
         form={form}
-        labelCol={{ span: 4 }}
+        // labelCol={{ span: 4 }}
         wrapperCol={{ span: 18 }}
-        layout="horizontal"
+        layout="vertical"
       >
-        <Form.Item<Role> label="Name" name="name" required>
+        <Form.Item
+          label="User Name"
+          name="User Name"
+          required
+          rules={[{ required: true, message: 'Please input User Name' }]}
+        >
           <Input />
         </Form.Item>
 
-        <Form.Item<Role> label="Label" name="label" required>
+        <Form.Item
+          label="Full Name"
+          name="Full Name"
+          required
+          rules={[{ required: true, message: 'Please input Full Name' }]}
+        >
           <Input />
         </Form.Item>
 
-        <Form.Item<Role> label="Order" name="order">
+        {/* <Form.Item<Role> label="Order" name="order">
           <InputNumber style={{ width: '100%' }} />
         </Form.Item>
 
@@ -53,7 +76,7 @@ export function ManagerStationEdit({ title, show, formValue, onOk, onCancel }: R
 
         <Form.Item<Role> label="Desc" name="desc">
           <Input.TextArea />
-        </Form.Item>
+        </Form.Item> */}
       </Form>
     </Modal>
   );
