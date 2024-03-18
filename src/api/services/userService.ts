@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-cycle
 import apiClient from '../apiClient';
 
 import { UserInfo, UserToken } from '#/entity';

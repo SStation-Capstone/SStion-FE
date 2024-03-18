@@ -6,6 +6,7 @@ import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { create } from 'zustand';
 
+// eslint-disable-next-line import/no-cycle
 import userService, { SignInReq } from '@/api/services/userService';
 import { ADMIN_PERMISSION } from '@/router/constant';
 import { getItem, removeItem, setItem } from '@/utils/storage';
@@ -26,7 +27,7 @@ type UserStore = {
   };
 };
 
-const useUserStore = create<UserStore>((set) => ({
+export const useUserStore = create<UserStore>((set) => ({
   userInfo: getItem<UserInfo>(StorageEnum.User) || {},
   userToken: getItem<UserToken>(StorageEnum.Token) || {},
   actions: {

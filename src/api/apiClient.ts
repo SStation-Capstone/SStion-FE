@@ -1,9 +1,9 @@
 import { message as Message } from 'antd';
-import axios, { AxiosRequestConfig, AxiosError, AxiosResponse } from 'axios';
-import { isEmpty } from 'ramda';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
+// eslint-disable-next-line import/no-cycle
+import { useUserStore } from '@/store/userStore';
 // import { t } from '@/locales/i18n';
-
 import { getItem } from '@/utils/storage';
 
 import { Result } from '#/api';
@@ -49,25 +49,41 @@ axiosInstance.interceptors.response.use(
     // 业务请求错误
     throw new Error(message || 'The interface request failed, please try again later!');
   },
-  (error: AxiosError<Result>) => {
-    const { response, message } = error || {};
-    let errMsg = '';
-    try {
-      errMsg = response?.data?.message || message;
-    } catch (error) {
-      throw new Error(error as unknown as string);
+  async (error: AxiosError<Result>) => {
+    const originalRequest = error.config;
+    if (error.response?.status === 401 && !originalRequest.retry) {
+      originalRequest.retry = true;
+      const res = await refreshTokenApi();
+      if (res?.status === 200) {
+        return axios(error.response.config);
+      }
+      Message.error('Token Expire');
+      return Promise.reject(res.data);
     }
-    // 对响应错误做点什么
-    if (isEmpty(errMsg)) {
-      // checkStatus
-      // errMsg = checkStatus(response.data.status);
-      errMsg = 'The operation failed, the system is abnormal!';
-    }
-    Message.error(errMsg);
     return Promise.reject(error);
   },
 );
 
+const refreshTokenApi = async () => {
+  // 获取 refreshToken
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const { refreshToken: token } = useUserStore.getState().userToken;
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  // 调用 API
+  const apiClient = new APIClient();
+  const res = await apiClient.post<UserToken>({
+    url: 'auth/refresh',
+    data: { refreshToken: token },
+  });
+  if (res) {
+    // 更新 token 信息
+    useUserStore.getState().actions.setUserToken({
+      accessToken: res.accessToken,
+      refreshToken: res.refreshToken,
+    });
+  }
+  return res;
+};
 class APIClient {
   get<T = any>(config: AxiosRequestConfig): Promise<T> {
     return this.request({ ...config, method: 'GET' });
