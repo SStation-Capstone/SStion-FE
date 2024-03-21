@@ -2,29 +2,36 @@ import { Button, Card, Col, Form, Input, Pagination, Popconfirm, Row } from 'ant
 import Table, { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
 
-import { useListManager } from '@/api/services/managerService';
+import { useDeleteManager, useListManager } from '@/api/services/managerService';
 import { IconButton, Iconify } from '@/components/icon';
 import { CircleLoading } from '@/components/loading';
 
+import { ManagerListStation } from './manager-list.station';
 import { ManagerEdit } from './manger.edit';
 
 import { InputType } from '#/api';
-import { Manager } from '#/entity';
+import { Manager, Station } from '#/entity';
 
 const DEFAULE_ROLE_VALUE: Manager = {
-  id: -1,
+  id: '-1',
   userName: '',
   email: '',
   phoneNumber: '',
   fullName: '',
+  avatarUrl: '',
+  password: '',
 };
+
 export default function ManageStationManagerList() {
   const [form] = Form.useForm();
 
   const [listRelateParams, setListRelateParams] = useState<InputType>();
   const [clickOne, setClickOne] = useState<Manager>();
+  const [clickOneStation, setClickOneStation] = useState<Station>();
   const [showInfo, setShowInfo] = useState(false);
+  const [showAddToStation, setShowAddToStation] = useState(false);
   const { data, isLoading } = useListManager(listRelateParams);
+  const { mutateAsync: deleteMutate } = useDeleteManager();
   if (isLoading) return <CircleLoading />;
 
   const onOpenFormHandler = (record?: Manager) => {
@@ -35,9 +42,23 @@ export default function ManageStationManagerList() {
     }
     setShowInfo(true);
   };
+  const submitHandle = (record?: Manager) => {
+    if (record?.id) {
+      deleteMutate(record);
+    }
+    // onclose();
+  };
+  const onOpenFormHandlerStation = (records?: Station) => {
+    setClickOneStation(records);
+
+    setShowAddToStation(true);
+  };
 
   const closeAndRefetchHandler = async () => {
     setShowInfo(false);
+  };
+  const closeAndRefetchHandlerStation = async () => {
+    setShowAddToStation(false);
   };
   const columns: ColumnsType<Manager> = [
     {
@@ -53,6 +74,8 @@ export default function ManageStationManagerList() {
       dataIndex: 'email',
     },
     { title: 'PhoneNumber', dataIndex: 'phoneNumber' },
+    { title: 'fullName', dataIndex: 'fullName' },
+    { title: 'avatarUrl', dataIndex: 'avatarUrl' },
     // {
     //   title: 'Status',
     //   dataIndex: 'status',
@@ -70,13 +93,16 @@ export default function ManageStationManagerList() {
       key: 'operation',
       align: 'center',
       width: 100,
-      render: (_, record) => (
+      render: (_, record, records) => (
         <div className="flex w-full justify-center text-gray">
+          <IconButton onClick={() => onOpenFormHandlerStation(records)}>
+            <Iconify icon="solar:add-circle-line-duotone" size={18} />
+          </IconButton>
           <IconButton onClick={() => onOpenFormHandler(record)}>
             <Iconify icon="solar:pen-bold-duotone" size={18} />
           </IconButton>
           <Popconfirm title="Delete the Role" okText="Yes" cancelText="No" placement="left">
-            <IconButton>
+            <IconButton onClick={() => submitHandle(record)}>
               <Iconify icon="mingcute:delete-2-fill" size={18} className="text-error" />
             </IconButton>
           </Popconfirm>
@@ -176,6 +202,9 @@ export default function ManageStationManagerList() {
 
       {/* <ManagerEdit {...roleModalPros} /> */}
       {showInfo && <ManagerEdit clickOne={clickOne} onClose={closeAndRefetchHandler} />}
+      {showAddToStation && (
+        <ManagerListStation clickOne={clickOneStation} onClose={closeAndRefetchHandlerStation} />
+      )}
     </Card>
   );
 }
