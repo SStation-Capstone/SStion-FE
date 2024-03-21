@@ -49,7 +49,7 @@ export const useUpdateStation = () => {
       }),
     {
       onSuccess: () => {
-        // globalSuccess();
+        message.success('Update station sucessfully');
         queryClient.invalidateQueries(['listStation']);
       },
     },

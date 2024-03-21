@@ -110,7 +110,7 @@ export default function ManageStationManagerList() {
   const onFinishHandler = (values: InputType) => {
     setListRelateParams(values);
   };
-  console.log('isload', isLoading);
+
   return (
     <Card
       title="Station List"

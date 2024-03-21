@@ -1,4 +1,4 @@
-import { message as Message, Upload } from 'antd';
+import { message as Message, Upload, message } from 'antd';
 import { RcFile } from 'antd/es/upload';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 
@@ -62,7 +62,9 @@ export const uploadFileToFirebase = async (file: UploadFile) => {
   uploadTask.on(
     'state_changed',
     (snapshot) => {},
-    (error) => {},
+    (error) => {
+      message.error(error.message);
+    },
     // () => {
     //   getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {});
     // },
