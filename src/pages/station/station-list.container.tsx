@@ -2,7 +2,7 @@ import { Button, Card, Col, Form, Input, Pagination, Popconfirm, Row } from 'ant
 import Table, { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
 
-import { useListStation } from '@/api/services/stationService';
+import { useDeleteStation, useListStation } from '@/api/services/stationService';
 import { IconButton, Iconify } from '@/components/icon';
 import { CircleLoading } from '@/components/loading';
 
@@ -28,6 +28,7 @@ export default function ManageStationManagerList() {
   const [clickOne, setClickOne] = useState<Station>();
   const [showInfo, setShowInfo] = useState(false);
   const { data, isLoading } = useListStation(listRelateParams);
+  const { mutateAsync: deleteMutate } = useDeleteStation();
   if (isLoading) return <CircleLoading />;
 
   const onOpenFormHandler = (record?: Station) => {
@@ -78,7 +79,15 @@ export default function ManageStationManagerList() {
           <IconButton onClick={() => onOpenFormHandler(record)}>
             <Iconify icon="solar:pen-bold-duotone" size={18} />
           </IconButton>
-          <Popconfirm title="Delete the Role" okText="Yes" cancelText="No" placement="left">
+          <Popconfirm
+            title="Delete the station"
+            okText="Yes"
+            cancelText="No"
+            placement="left"
+            onConfirm={() => {
+              deleteMutate(record.id.toString());
+            }}
+          >
             <IconButton>
               <Iconify icon="mingcute:delete-2-fill" size={18} className="text-error" />
             </IconButton>

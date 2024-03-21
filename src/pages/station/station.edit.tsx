@@ -1,10 +1,10 @@
-import { Form, Input, Modal, Select, Upload } from 'antd';
-import { useState } from 'react';
-
+import { Button, Form, Input, Modal, Select, Upload, UploadFile, UploadProps } from 'antd';
+import { useEffect, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 // import { PERMISSION_LIST } from '@/_mock/assets';
 
-import { useCreateStation, useUpdateStation } from '@/api/services/stationService';
-import UploadButton from '@/components/upload-button';
+import { useCreateStation, useUpdateStation, StationPayload } from '@/api/services/stationService';
+import { beforeUpload, fakeUpload, normFile, uploadFileToFirebase } from '@/utils/file';
 
 import vietnamLocations from '../../api/data/data.json';
 
@@ -21,7 +21,6 @@ export type StationEditFormProps = {
 // const PERMISSIONS: Permission[] = PERMISSION_LIST;
 export function ManageStationEdit({ clickOne, onClose }: StationEditFormProps) {
   const [form] = Form.useForm();
-
   // const flattenedPermissions = flattenTrees(formValue.permission);
   // const checkedKeys = flattenedPermissions.map((item) => item.id);
   // useEffect(() => {
@@ -34,14 +33,69 @@ export function ManageStationEdit({ clickOne, onClose }: StationEditFormProps) {
   const [selectedCity, setSelectedCity] = useState<Location | null>(null);
   const [selectedDistrict, setSelectedDistrict] = useState<District | null>(null);
   const [selectedWard, setSelectedWard] = useState<Ward | null>(null);
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (clickOne?.stationImages)
+      setFileList([
+        {
+          uid: uuidv4(),
+          name: 'image',
+          url: clickOne?.stationImages[0]?.imageUrl,
+        },
+      ]);
+    if (clickOne?.address) {
+      form.setFieldValue(['address', 'city'], clickOne.address.split(',')[3].trim());
+      const tempSelelectCity = vietnamLocations.find(
+        (city: Location) => city.Name === clickOne.address.split(',')[3].trim(),
+      );
+      setSelectedCity(
+        vietnamLocations.find(
+          (city: Location) => city.Name === clickOne.address.split(',')[3].trim(),
+        ),
+      );
+      form.setFieldValue(['address', 'district'], clickOne.address.split(',')[2].trim());
+      setSelectedDistrict(
+        tempSelelectCity?.Districts.find(
+          (district: District) => district.Name === clickOne.address.split(',')[2].trim(),
+        ),
+      );
+      const tempSelectDistrict = tempSelelectCity?.Districts.find(
+        (district: District) => district.Name === clickOne.address.split(',')[2].trim(),
+      );
+      form.setFieldValue(['address', 'ward'], clickOne.address.split(',')[1].trim());
+      setSelectedWard(
+        tempSelectDistrict?.Wards.find(
+          (ward: District) => ward.Name === clickOne.address.split(',')[1].trim(),
+        ),
+      );
+
+      form.setFieldValue(['address', 'detail'], clickOne.address.split(',')[0].trim());
+    }
+    return () => {
+      setFileList([]);
+    };
+  }, [clickOne, form]);
+  console.log('SelectedCity', selectedCity);
   // const [vietnamLocations, setVietnamLocations] = useState(locations);
   const submitHandle = async () => {
+    setLoading(true);
     const values = await form.validateFields();
+    const imageUrl = await uploadFileToFirebase(values?.stationImages?.imageUrl[0]);
+    console.log('image', imageUrl);
     console.log(values);
     if (clickOne) {
       updateMutate({ ...values, id: clickOne.id });
+      setLoading(false);
     } else {
-      createMutate(values);
+      const createData: StationPayload = {
+        ...values,
+        stationImages: [{ imageUrl }],
+        address: `${values?.address.detail}, ${values?.address.ward}, ${values?.address.district}, ${values.address.city}`,
+      };
+      createMutate(createData);
+      setLoading(false);
     }
     onClose();
   };
@@ -61,14 +115,25 @@ export function ManageStationEdit({ clickOne, onClose }: StationEditFormProps) {
   const handleWardChange = (value: string) => {
     setSelectedWard(selectedDistrict?.Wards?.find((ward) => ward.Name === value) || null);
   };
-  console.log('selectedDistrict', selectedDistrict?.Name);
+
+  const onImageChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
+    setFileList(newFileList);
+  };
 
   return (
     <Modal
-      title={clickOne?.id ? 'Create Station' : 'Edit station'}
+      title={clickOne?.id ? 'Edit Station' : 'Create station'}
       open
       onOk={submitHandle}
       onCancel={() => onClose()}
+      footer={[
+        <Button key="back" onClick={onClose}>
+          Return
+        </Button>,
+        <Button key="submit" type="primary" loading={loading} onClick={submitHandle}>
+          Submit
+        </Button>,
+      ]}
     >
       <Form
         initialValues={clickOne}
@@ -76,6 +141,11 @@ export function ManageStationEdit({ clickOne, onClose }: StationEditFormProps) {
         // labelCol={{ span: 4 }}
         // wrapperCol={{ span: 18 }}
         layout="vertical"
+        onValuesChange={(changedValues, allValues) => {
+          console.log('changeValues', changedValues);
+          const formFieldName = Object.keys(changedValues)[0];
+          console.log('form', formFieldName);
+        }}
       >
         <Form.Item
           label="Name"
@@ -124,32 +194,27 @@ export function ManageStationEdit({ clickOne, onClose }: StationEditFormProps) {
         <Form.Item
           label="Station Image"
           name={['stationImages', 'imageUrl']}
-          // getValueFromEvent={normFile}
-          style={{ width: '100%' }}
+          getValueFromEvent={normFile}
+          // style={{ width: '100%' }}
         >
           <Upload
-            accept="image/*"
-            maxCount={1}
-            className="UploadImage"
+            name="image"
             listType="picture-card"
-            // onChange={handleChange}
-            // defaultFileList={defaultFileList}
-            // beforeUpload={(file) => {
-            //   beforeUpload(file);
-            // }}
-            // showUploadList={true}
-            // customRequest={fakeUpload}
-            // onRemove={onRemove}
-            // fileList={fileList}
+            className="image-uploader"
+            fileList={fileList} // Hide default upload list
+            beforeUpload={beforeUpload}
+            customRequest={fakeUpload}
+            onChange={onImageChange}
           >
-            <UploadButton />
+            {fileList.length < 1 && '+ Upload'}
           </Upload>
         </Form.Item>
         <Form.Item
           label="City"
           required
-          name={['adress', 'city']}
+          name={['address', 'city']}
           rules={[{ required: true, message: 'Please input station address' }]}
+          initialValue={selectedCity ?? null}
         >
           <Select
             showSearch
@@ -180,7 +245,7 @@ export function ManageStationEdit({ clickOne, onClose }: StationEditFormProps) {
           />
         </Form.Item>
         {selectedCity && ( // Render district select only if city is selected
-          <Form.Item label="District" name={['adress', 'district']}>
+          <Form.Item label="District" name={['address', 'district']}>
             <Select
               allowClear
               placeholder="Select district"
@@ -189,8 +254,8 @@ export function ManageStationEdit({ clickOne, onClose }: StationEditFormProps) {
               disabled={!selectedCity} // Disable district select if no city is chosen
               onClear={() => {
                 setSelectedWard(null);
-                form.setFieldValue(['adress', 'ward'], undefined);
-                form.setFieldValue(['adress', 'detail'], undefined);
+                form.setFieldValue(['address', 'ward'], undefined);
+                form.setFieldValue(['address', 'detail'], undefined);
               }}
             >
               {selectedCity.Districts?.map((district: District) => (
@@ -203,7 +268,7 @@ export function ManageStationEdit({ clickOne, onClose }: StationEditFormProps) {
         )}
 
         {selectedDistrict && ( // Render ward select only if district is selected
-          <Form.Item label="Ward" name={['adress', 'ward']}>
+          <Form.Item label="Ward" name={['address', 'ward']}>
             <Select
               optionFilterProp="name"
               allowClear
@@ -213,8 +278,8 @@ export function ManageStationEdit({ clickOne, onClose }: StationEditFormProps) {
               disabled={!selectedDistrict} // Disable ward select if no district is chosen
               onClear={() => {
                 setSelectedWard(null);
-                form.setFieldValue(['adress', 'ward'], undefined);
-                form.setFieldValue(['adress', 'detail'], undefined);
+                form.setFieldValue(['address', 'ward'], undefined);
+                form.setFieldValue(['address', 'detail'], undefined);
               }}
             >
               {selectedDistrict.Wards?.map((ward: Ward) => (
@@ -230,12 +295,12 @@ export function ManageStationEdit({ clickOne, onClose }: StationEditFormProps) {
           selectedWard && ( // Render ward select only if district is selected
             <Form.Item
               label="Detail"
-              name={['adress', 'detail']}
+              name={['address', 'detail']}
               required
               rules={[
                 {
                   required: true,
-                  message: 'Please input detail adress (Street name, Building, House no)',
+                  message: 'Please input detail address (Street name, Building, House no)',
                 },
               ]}
             >
