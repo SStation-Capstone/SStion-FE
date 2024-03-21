@@ -33,6 +33,7 @@ export enum ManagerApi {
   EditManager = '/managers',
   DeleteManager = '/managers',
   AddManagerStations = '/admin/stations/managers',
+  CreateStation = '/managers',
 }
 
 // const createManager = (data: MangerPayload) =>
