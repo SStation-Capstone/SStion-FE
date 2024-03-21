@@ -1,9 +1,9 @@
-import { Button, Form, Input, Modal, Select, Upload, UploadFile, UploadProps } from 'antd';
+import { Button, Form, Input, Modal, Select, Upload, UploadFile, UploadProps, message } from 'antd';
 import { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 // import { PERMISSION_LIST } from '@/_mock/assets';
 
-import { useCreateStation, useUpdateStation, StationPayload } from '@/api/services/stationService';
+import { StationPayload, useCreateStation, useUpdateStation } from '@/api/services/stationService';
 import { beforeUpload, fakeUpload, normFile, uploadFileToFirebase } from '@/utils/file';
 
 import vietnamLocations from '../../api/data/data.json';
@@ -77,27 +77,45 @@ export function ManageStationEdit({ clickOne, onClose }: StationEditFormProps) {
       setFileList([]);
     };
   }, [clickOne, form]);
-  console.log('SelectedCity', selectedCity);
+
   // const [vietnamLocations, setVietnamLocations] = useState(locations);
   const submitHandle = async () => {
     setLoading(true);
     const values = await form.validateFields();
-    const imageUrl = await uploadFileToFirebase(values?.stationImages?.imageUrl[0]);
-    console.log('image', imageUrl);
-    console.log(values);
-    if (clickOne) {
-      updateMutate({ ...values, id: clickOne.id });
-      setLoading(false);
-    } else {
-      const createData: StationPayload = {
-        ...values,
-        stationImages: [{ imageUrl }],
-        address: `${values?.address.detail}, ${values?.address.ward}, ${values?.address.district}, ${values.address.city}`,
-      };
-      createMutate(createData);
+    try {
+      if (clickOne) {
+        const updateData: StationPayload = {
+          ...clickOne,
+          id: clickOne.id,
+          address: `${values?.address.detail}, ${values?.address.ward}, ${values?.address.district}, ${values.address.city}`,
+        };
+        if (values.stationImages.imageUrl) {
+          const updateImageUrl: string = await uploadFileToFirebase(
+            values?.stationImages?.imageUrl[0],
+          );
+          updateData.stationImages = [{ imageUrl: updateImageUrl }];
+        }
+        updateData.name = values.name;
+        updateData.description = values.description;
+        updateData.contactPhone = values.contactPhone;
+        updateMutate(updateData);
+        setLoading(false);
+      } else {
+        const imageUrl: string = await uploadFileToFirebase(values?.stationImages?.imageUrl[0]);
+        const createData: StationPayload = {
+          ...values,
+          stationImages: [{ imageUrl }],
+          address: `${values?.address.detail}, ${values?.address.ward}, ${values?.address.district}, ${values.address.city}`,
+        };
+        createMutate(createData);
+        setLoading(false);
+      }
+      onClose();
+    } catch (error) {
+      message.error(error.message || error);
+      console.log(error);
       setLoading(false);
     }
-    onClose();
   };
   const handleCityChange = (value: string) => {
     setSelectedCity(vietnamLocations.find((city: Location) => city.Name === value) || null);
@@ -128,7 +146,7 @@ export function ManageStationEdit({ clickOne, onClose }: StationEditFormProps) {
       onCancel={() => onClose()}
       footer={[
         <Button key="back" onClick={onClose}>
-          Return
+          Cancel
         </Button>,
         <Button key="submit" type="primary" loading={loading} onClick={submitHandle}>
           Submit
@@ -141,11 +159,6 @@ export function ManageStationEdit({ clickOne, onClose }: StationEditFormProps) {
         // labelCol={{ span: 4 }}
         // wrapperCol={{ span: 18 }}
         layout="vertical"
-        onValuesChange={(changedValues, allValues) => {
-          console.log('changeValues', changedValues);
-          const formFieldName = Object.keys(changedValues)[0];
-          console.log('form', formFieldName);
-        }}
       >
         <Form.Item
           label="Name"
