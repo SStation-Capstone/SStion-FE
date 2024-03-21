@@ -51,6 +51,8 @@ axiosInstance.interceptors.response.use(
   },
   async (error: AxiosError<Result>) => {
     const originalRequest = error.config;
+    let errMsg = '';
+    const { response, message } = error || {};
     if (error.response?.status === 401 && !originalRequest.retry) {
       originalRequest.retry = true;
       const res = await refreshTokenApi();
@@ -60,6 +62,12 @@ axiosInstance.interceptors.response.use(
       Message.error('Token Expire');
       return Promise.reject(res.data);
     }
+    try {
+      errMsg = response?.data?.message || message;
+    } catch (error) {
+      throw new Error(error as unknown as string);
+    }
+    Message.error(errMsg);
     return Promise.reject(error);
   },
 );

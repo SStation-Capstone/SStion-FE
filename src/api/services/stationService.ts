@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { message } from 'antd';
 
 import { queryClient } from '@/http/tanstack/react-query';
 
@@ -68,13 +69,25 @@ export const useCreateStation = () => {
     {
       onSuccess: () => {
         // globalSuccess();
+        message.success('Create station sucessfully');
         queryClient.invalidateQueries(['listStation']);
       },
     },
   );
 };
-// export default {
-//   createStation,
-//   getStation,
-//   useListStation,
-// };
+
+export const useDeleteStation = () => {
+  return useMutation(
+    async (id: string) =>
+      apiClient.delete<StationCreateResponse>({
+        url: `${StationApi.CreateStation}/${id}`,
+      }),
+    {
+      onSuccess: () => {
+        // globalSuccess();
+        message.success('Delete station sucessfully');
+        queryClient.invalidateQueries(['listStation']);
+      },
+    },
+  );
+};
