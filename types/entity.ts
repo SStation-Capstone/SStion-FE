@@ -75,9 +75,11 @@ export interface Station {
 }
 
 export interface Manager {
-  id: number;
+  id: string;
   userName: string;
   email: string;
   phoneNumber: string;
   fullName: string;
+  avatarUrl: string;
+  password: string;
 }

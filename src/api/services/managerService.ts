@@ -4,16 +4,24 @@ import { queryClient } from '@/http/tanstack/react-query';
 
 import apiClient from '../apiClient';
 
+import { StationPayload } from './stationService';
+
 import { InputType, PaginationRes } from '#/api';
 
 export interface MangerPayload {
-  id: number;
+  id: string;
   userName: string;
   email: string;
   phoneNumber: string;
+  fullName: string;
+  avatarUrl: string;
+  password: string;
 }
 
 export interface MangerCreateResponse {
+  message: string;
+}
+export interface MangerUpdateResponse {
   message: string;
 }
 // & { user: UserInfo };
@@ -21,7 +29,10 @@ export interface MangerCreateResponse {
 type ManagerGetRes = PaginationRes & { contends: MangerPayload[] };
 export enum ManagerApi {
   GetManager = '/managers',
-  CreateStation = '/managers',
+  CreateManager = '/managers',
+  EditManager = '/managers',
+  DeleteManager = '/managers',
+  AddManagerStations = '/admin/stations/managers',
 }
 
 // const createManager = (data: MangerPayload) =>
@@ -33,21 +44,47 @@ export const useListManager = (values?: InputType) => {
     apiClient.get<ManagerGetRes>({ url: ManagerApi.GetManager, params: values }),
   );
 };
-// export const useUpdateManager = () => {
-//   return useMutation(
-//     async (payload: MangerPayload) =>
-//       apiClient.put<MangerCreateResponse>({
-//         url: `${ManagerApi.CreateStation}/${payload.id}`,
-//         data: payload,
-//       }),
-//     {
-//       onSuccess: () => {
-//         // globalSuccess();
-//         queryClient.invalidateQueries(['listStation']);
-//       },
-//     },
-//   );
-// };
+// const editManagerUrl = ManagerApi.EditManager.replace('{id}', payload.id?.toString());
+// const url = `${editManagerUrl}/${payload.id}`; // Sử dụng editManagerUrl thay vì ManagerApi.EditManager
+
+// apiClient.put<MangerCreateResponse>({
+//   url,
+//   data: payload,
+// });
+
+export const useUpdateManager = () => {
+  return useMutation(
+    async (payload: MangerPayload) => {
+      return apiClient.put<MangerCreateResponse>({
+        url: `${ManagerApi.EditManager}/${payload.id}`,
+        data: payload,
+      });
+    },
+    {
+      onSuccess: () => {
+        // globalSuccess();
+        queryClient.invalidateQueries(['listManager']);
+      },
+    },
+  );
+};
+
+export const useDeleteManager = () => {
+  return useMutation(
+    async (payload: MangerPayload) => {
+      return apiClient.delete<MangerCreateResponse>({
+        url: `${ManagerApi.DeleteManager}/${payload.id}`,
+        data: payload,
+      });
+    },
+    {
+      onSuccess: () => {
+        // globalSuccess();
+        queryClient.invalidateQueries(['listManager']);
+      },
+    },
+  );
+};
 
 /**
  * 新建
@@ -56,13 +93,29 @@ export const useCreateSManager = () => {
   return useMutation(
     async (payload: MangerPayload) =>
       apiClient.post<MangerCreateResponse>({
-        url: ManagerApi.CreateStation,
+        url: ManagerApi.CreateManager,
         data: payload,
       }),
     {
       onSuccess: () => {
         // globalSuccess();
-        queryClient.invalidateQueries(['listStation']);
+        queryClient.invalidateQueries(['listManager']);
+      },
+    },
+  );
+};
+
+export const useAddStationManager = () => {
+  return useMutation(
+    async (payload: StationPayload) =>
+      apiClient.post<MangerCreateResponse>({
+        url: `${ManagerApi.AddManagerStations}/${payload.id}`,
+        data: payload,
+      }),
+    {
+      onSuccess: () => {
+        // globalSuccess();
+        queryClient.invalidateQueries(['listManager']);
       },
     },
   );
