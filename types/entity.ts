@@ -79,4 +79,5 @@ export interface Manager {
   userName: string;
   email: string;
   phoneNumber: string;
+  fullName: string;
 }
