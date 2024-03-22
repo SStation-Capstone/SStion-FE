@@ -1,10 +1,9 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { message } from 'antd';
 
 import { queryClient } from '@/http/tanstack/react-query';
 
 import apiClient from '../apiClient';
-
-import { StationPayload } from './stationService';
 
 import { InputType, PaginationRes } from '#/api';
 
@@ -18,6 +17,10 @@ export interface MangerPayload {
   password: string;
 }
 
+export interface AddToStationPayload {
+  id: string;
+  station: string;
+}
 export interface MangerCreateResponse {
   message: string;
 }
@@ -32,7 +35,7 @@ export enum ManagerApi {
   CreateManager = '/managers',
   EditManager = '/managers',
   DeleteManager = '/managers',
-  AddManagerStations = '/admin/stations/managers',
+  AddManagerStations = '/admin/stations',
   CreateStation = '/managers',
 }
 
@@ -64,6 +67,7 @@ export const useUpdateManager = () => {
     {
       onSuccess: () => {
         // globalSuccess();
+        message.success('Update manager sucessfully');
         queryClient.invalidateQueries(['listManager']);
       },
     },
@@ -81,6 +85,7 @@ export const useDeleteManager = () => {
     {
       onSuccess: () => {
         // globalSuccess();
+        message.success('Delete manager sucessfully');
         queryClient.invalidateQueries(['listManager']);
       },
     },
@@ -100,6 +105,7 @@ export const useCreateSManager = () => {
     {
       onSuccess: () => {
         // globalSuccess();
+        message.success('Create manager sucessfully');
         queryClient.invalidateQueries(['listManager']);
       },
     },
@@ -108,14 +114,14 @@ export const useCreateSManager = () => {
 
 export const useAddStationManager = () => {
   return useMutation(
-    async (payload: StationPayload) =>
+    async (payload: AddToStationPayload) =>
       apiClient.post<MangerCreateResponse>({
-        url: `${ManagerApi.AddManagerStations}/${payload.id}`,
-        data: payload,
+        url: `${ManagerApi.AddManagerStations}/${payload.id}/managers`,
+        data: { userId: payload.station },
       }),
     {
       onSuccess: () => {
-        // globalSuccess();
+        message.success('Add manager to station sucessfully');
         queryClient.invalidateQueries(['listManager']);
       },
     },
