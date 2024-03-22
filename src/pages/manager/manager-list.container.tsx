@@ -1,4 +1,4 @@
-import { Button, Card, Col, Form, Input, Pagination, Popconfirm, Row } from 'antd';
+import { Button, Card, Col, Form, Image, Input, Pagination, Popconfirm, Row } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
 
@@ -48,8 +48,8 @@ export default function ManageStationManagerList() {
     }
     // onclose();
   };
-  const onOpenFormHandlerStation = (records?: Station) => {
-    setClickOneStation(records);
+  const onOpenFormHandlerStation = (record?: Station) => {
+    setClickOneStation(record);
 
     setShowAddToStation(true);
   };
@@ -74,8 +74,34 @@ export default function ManageStationManagerList() {
       dataIndex: 'email',
     },
     { title: 'PhoneNumber', dataIndex: 'phoneNumber' },
-    { title: 'fullName', dataIndex: 'fullName' },
-    { title: 'avatarUrl', dataIndex: 'avatarUrl' },
+    { title: 'FullName', dataIndex: 'fullName' },
+    {
+      title: 'AvatarUrl',
+      dataIndex: 'avatarUrl',
+      render: (text, avatarUrl) => (
+        <Image
+          style={{ width: 100, height: 'auto' }} // Thay đổi kích thước theo nhu cầu
+          src={text}
+        />
+      ),
+    },
+    // {
+    //   title: 'AvatarUrl',
+    //   dataIndex: 'avatarUrl',
+    //   render: (_, { avatarUrl}) => (
+    //     <>
+    //       {avatarUrl.map((avatarUrl) => {
+    //         let color = tag.length > 5 ? 'geekblue' : 'green';
+    //         if (tag === 'loser') {
+    //           color = 'volcano';
+    //         }
+    //         return (
+    //           <Tag color={color} key={tag}>
+    //             {tag.toUpperCase()}
+    //           </Tag>
+    //         );
+    //       })
+    // },
     // {
     //   title: 'Status',
     //   dataIndex: 'status',
@@ -93,16 +119,22 @@ export default function ManageStationManagerList() {
       key: 'operation',
       align: 'center',
       width: 100,
-      render: (_, record, records) => (
+      render: (_, record) => (
         <div className="flex w-full justify-center text-gray">
-          <IconButton onClick={() => onOpenFormHandlerStation(records)}>
+          <IconButton onClick={() => onOpenFormHandlerStation(record)}>
             <Iconify icon="solar:add-circle-line-duotone" size={18} />
           </IconButton>
           <IconButton onClick={() => onOpenFormHandler(record)}>
             <Iconify icon="solar:pen-bold-duotone" size={18} />
           </IconButton>
-          <Popconfirm title="Delete the Role" okText="Yes" cancelText="No" placement="left">
-            <IconButton onClick={() => submitHandle(record)}>
+          <Popconfirm
+            title="Delete the Role"
+            okText="Yes"
+            cancelText="No"
+            placement="left"
+            onConfirm={() => submitHandle(record)}
+          >
+            <IconButton>
               <Iconify icon="mingcute:delete-2-fill" size={18} className="text-error" />
             </IconButton>
           </Popconfirm>

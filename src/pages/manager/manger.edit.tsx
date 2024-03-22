@@ -1,12 +1,13 @@
-import { Form, Modal, Input, Upload } from 'antd';
+import { Form, Modal, Input, Upload, UploadFile, UploadProps } from 'antd';
 
 // import { PERMISSION_LIST } from '@/_mock/assets';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
-import { useCreateSManager, useUpdateManager } from '@/api/services/managerService';
+import { MangerPayload, useCreateSManager, useUpdateManager } from '@/api/services/managerService';
 import { useListStation } from '@/api/services/stationService';
-import UploadButton from '@/components/upload-button';
+import { beforeUpload, fakeUpload, normFile, uploadFileToFirebase } from '@/utils/file';
 
 import { Manager } from '#/entity';
 
@@ -23,18 +24,67 @@ export function ManagerEdit({ clickOne, onClose }: ManagerEditFormProps) {
   const { mutateAsync: createMutate } = useCreateSManager();
   const { mutateAsync: updateMutate } = useUpdateManager();
   const { data: listStation } = useListStation();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
   // const submitHandle = async () => {
   //   const values = await form.validateFields();
   //   console.log(values);
   //   createMutate(values);
   //   onClose();
   // };
+  // const submitHandle = async () => {
+  //   const values = await form.validateFields();
+  //   if (clickOne?.id) {
+  //     updateMutate(values);
+  //   } else {
+  //     createMutate(values);
+  //   }
+  //   onClose();
+  // };
+  useEffect(() => {
+    if (clickOne?.avatarUrl)
+      setFileList([
+        {
+          uid: uuidv4(),
+          name: 'image',
+          url: clickOne?.avatarUrl,
+        },
+      ]);
+    return () => {
+      setFileList([]);
+    };
+  }, [clickOne, form]);
   const submitHandle = async () => {
+    setLoading(true);
     const values = await form.validateFields();
-    if (clickOne?.id) {
-      updateMutate(values);
+    console.log('vau', values);
+    const imageUrl = await uploadFileToFirebase(values?.avatarUrl[0]);
+    console.log('image', imageUrl);
+    console.log(values);
+    if (clickOne) {
+      const updateData: MangerPayload = {
+        ...clickOne,
+        id: clickOne.id,
+      };
+      if (values.avatarUrl) {
+        const updateImageUrl: string = await uploadFileToFirebase(values?.avatarUrl[0]);
+        const imageUrl = updateImageUrl;
+        updateData.avatarUrl = imageUrl;
+      }
+      updateData.userName = values.userNamec;
+      updateData.email = values.email;
+      updateData.fullName = values.fullName;
+      updateData.password = values.password;
+      updateMutate(updateData);
+      setLoading(false);
     } else {
-      createMutate(values);
+      const imageUrl: string = await uploadFileToFirebase(values?.avatarUrl[0]);
+      const createData: MangerPayload = {
+        ...values,
+        avatarUrl: imageUrl,
+      };
+      createMutate(createData);
+      setLoading(false);
     }
     onClose();
   };
@@ -49,6 +99,9 @@ export function ManagerEdit({ clickOne, onClose }: ManagerEditFormProps) {
     setTreeValue(newValue);
   };
 
+  const onImageChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
+    setFileList(newFileList);
+  };
   return (
     <Modal
       title={clickOne ? 'Edit Manager' : 'Create Manager'}
@@ -83,7 +136,7 @@ export function ManagerEdit({ clickOne, onClose }: ManagerEditFormProps) {
         </Form.Item>
         <Form.Item
           label="Email"
-          name="Email"
+          name="email"
           required
           rules={[{ required: true, message: 'Please input email' }]}
           initialValue={clickOne?.email}
@@ -92,16 +145,25 @@ export function ManagerEdit({ clickOne, onClose }: ManagerEditFormProps) {
         </Form.Item>
         <Form.Item
           label="Phone Number"
-          name="PhoneNumber"
+          name="phoneNumber"
           required
-          rules={[{ required: true, message: 'Please input Phone Number' }]}
+          rules={[
+            {
+              message: 'Phone number must be 10 number to 12 number',
+              pattern: /^\d{10,12}$/,
+            },
+            {
+              required: true,
+              message: 'Please input phone number',
+            },
+          ]}
           initialValue={clickOne?.phoneNumber}
         >
           <Input />
         </Form.Item>
         <Form.Item
           label="Full Name"
-          name="FullName"
+          name="fullName"
           required
           rules={[{ required: true, message: 'Please input Full Name ' }]}
           initialValue={clickOne?.fullName}
@@ -110,41 +172,30 @@ export function ManagerEdit({ clickOne, onClose }: ManagerEditFormProps) {
         </Form.Item>
         <Form.Item
           label="Password"
-          name="Password"
+          name="password"
           required
           rules={[{ required: true, message: 'Please input Password ' }]}
           initialValue={clickOne?.password}
         >
           <Input />
         </Form.Item>
-        <Form.Item
-          label="Station Image"
-          name={['stationImages', 'imageUrl']}
-          // getValueFromEvent={normFile}
-          style={{ width: '100%' }}
-          initialValue={clickOne?.avatarUrl}
-        >
+        <Form.Item label="AvatarUrl" name="avatarUrl" getValueFromEvent={normFile}>
           <Upload
-            accept="image/*"
-            maxCount={1}
+            name="image"
+            // maxCount={1}
             className="UploadImage"
             listType="picture-card"
-            // onChange={handleChange}
-            // defaultFileList={defaultFileList}
-            // beforeUpload={(file) => {
-            //   beforeUpload(file);
-            // }}
-            // showUploadList={true}
-            // customRequest={fakeUpload}
-            // onRemove={onRemove}
-            // fileList={fileList}
+            fileList={fileList} // Hide default upload list
+            beforeUpload={beforeUpload}
+            customRequest={fakeUpload}
+            onChange={onImageChange}
           >
-            <UploadButton />
+            {fileList.length < 1 && '+ Upload'}
           </Upload>
         </Form.Item>
         {/* <Form.Item
-          label="Station"
-          required
+          // label="Station"
+          // required
           name={['Station']}
           rules={[{ required: true, message: 'Please input station' }]}
         >

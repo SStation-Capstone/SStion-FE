@@ -2,7 +2,7 @@ import { Form, Modal, Select } from 'antd';
 
 // import { PERMISSION_LIST } from '@/_mock/assets';
 
-import { useCreateSManager } from '@/api/services/managerService';
+import { AddToStationPayload, useAddStationManager } from '@/api/services/managerService';
 import { useListStation } from '@/api/services/stationService';
 
 import { Station } from '#/entity';
@@ -17,12 +17,16 @@ export type ManagerListStationFormProps = {
 export function ManagerListStation({ clickOne, onClose }: ManagerListStationFormProps) {
   const [form] = Form.useForm();
 
-  const { mutateAsync: createMutate } = useCreateSManager();
+  const { mutateAsync: createMutate } = useAddStationManager();
   const { data: listStation } = useListStation();
   const submitHandle = async () => {
     const values = await form.validateFields();
     console.log(values);
-    createMutate(values);
+    const createData: AddToStationPayload = {
+      id: values.station,
+      station: clickOne.id.toString(),
+    };
+    createMutate(createData);
     onClose();
   };
 
@@ -46,10 +50,19 @@ export function ManagerListStation({ clickOne, onClose }: ManagerListStationForm
         wrapperCol={{ span: 18 }}
         layout="vertical"
       >
+        {/* <Form.Item
+          label="ID"
+          name="Id"
+          required
+          rules={[{ required: true, message: 'Please input Id' }]}
+          initialValue={clickOne?.id}
+        >
+          <Input />
+        </Form.Item> */}
         <Form.Item
           label="Station"
           required
-          name={['Station']}
+          name="station"
           rules={[{ required: true, message: 'Please input station' }]}
         >
           <Select
