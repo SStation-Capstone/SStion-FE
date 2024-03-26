@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+const colors = require('tailwindcss/colors');
 export default {
   // 使用 "class" 模式时，Tailwind 会将 "dark" 类添加到根元素（通常是 <body> 元素）上，以指示页面当前处于深色模式
   darkMode: 'class',
@@ -14,16 +15,27 @@ export default {
       '2xl': '1600px',
     },
     colors: {
-      black: '#000000',
-      green: '#00A76F',
-      blue: '#1fb6ff',
-      purple: '#7e5bef',
-      pink: '#ff49db',
-      orange: '#ff7849',
-      yellow: '#ffc82c',
+      // black: '#000000',
+      // green: '#00A76F',
+      // blue: '#1fb6ff',
+      // purple: '#7e5bef',
+      // pink: '#ff49db',
+      // orange: '#ff7849',
+      // yellow: '#ffc82c',
       gray: '#637381',
       hover: '#63738114',
-
+      transparent: 'transparent',
+      current: 'currentColor',
+      black: colors.black,
+      white: colors.white,
+      gray: colors.trueGray,
+      red: colors.red,
+      yellow: colors.amber,
+      green: colors.green,
+      blue: colors.blue,
+      indigo: colors.indigo,
+      purple: colors.purple,
+      pink: colors.pink,
       success: '#22c55e',
       warning: '#ff7849',
       error: '#ff5630',

@@ -1,6 +1,7 @@
 import { Button, Card, Col, Form, Input, Pagination, Popconfirm, Row } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import { useDeleteStation, useListStation } from '@/api/services/stationService';
 import { IconButton, Iconify } from '@/components/icon';
@@ -75,7 +76,8 @@ export default function ManageStationManagerList() {
       align: 'center',
       width: 100,
       render: (_, record) => (
-        <div className="flex w-full justify-center text-gray">
+        <div className="text-gray flex w-full justify-center">
+          <Link to={`/zone/${record.id}`}>view zone</Link>
           <IconButton onClick={() => onOpenFormHandler(record)}>
             <Iconify icon="solar:pen-bold-duotone" size={18} />
           </IconButton>
@@ -113,7 +115,7 @@ export default function ManageStationManagerList() {
 
   return (
     <Card
-      title="Station List"
+      title="List station"
       extra={
         <Button type="primary" onClick={() => onOpenFormHandler()}>
           New
