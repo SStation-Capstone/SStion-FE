@@ -1,16 +1,19 @@
+import { createBrowserHistory } from '@remix-run/router';
 import { message as Message } from 'antd';
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 // eslint-disable-next-line import/no-cycle
 import { useUserStore } from '@/store/userStore';
 // import { t } from '@/locales/i18n';
-import { getItem } from '@/utils/storage';
+import { getItem, removeItem } from '@/utils/storage';
 
 import { Result } from '#/api';
 import { UserToken } from '#/entity';
 import { StorageEnum } from '#/enum';
 
 // 创建 axios 实例
+const history = createBrowserHistory();
+
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_API as string,
   timeout: 50000,
@@ -50,24 +53,24 @@ axiosInstance.interceptors.response.use(
     throw new Error(message || 'The interface request failed, please try again later!');
   },
   async (error: AxiosError<Result>) => {
-    const originalRequest = error.config;
     let errMsg = '';
     const { response, message } = error || {};
-    if (error.response?.status === 401 && !originalRequest.retry) {
-      originalRequest.retry = true;
-      const res = await refreshTokenApi();
-      if (res?.status === 200) {
-        return axios(error.response.config);
-      }
-      Message.error('Token Expire');
-      return Promise.reject(res.data);
+    if (error.response?.status === 401) {
+      Message.error('Token Expire! Redirect to Login Page');
+      setTimeout(() => {
+        removeItem(StorageEnum.Token);
+        console.log(window.location.hash);
+        window.location.hash = '#/login';
+        window.location.reload();
+      }, 1000);
+      return Promise.reject(error);
     }
     try {
       errMsg = response?.data?.message || message;
+      Message.error(errMsg);
     } catch (error) {
       throw new Error(error as unknown as string);
     }
-    Message.error(errMsg);
     return Promise.reject(error);
   },
 );

@@ -8,7 +8,11 @@ import { create } from 'zustand';
 
 // eslint-disable-next-line import/no-cycle
 import userService, { SignInReq } from '@/api/services/userService';
-import { ADMIN_PERMISSION } from '@/router/constant';
+import {
+  ADMIN_PERMISSION,
+  STAFF_LIST_PERRMISSION,
+  STATION_MANAGER_LIST_PERMISSION,
+} from '@/router/constant';
 import { getItem, removeItem, setItem } from '@/utils/storage';
 
 import { JwtDecode, UserInfo, UserToken } from '#/entity';
@@ -79,8 +83,15 @@ export const useSignIn = () => {
         ].toLowerCase() === 'admin'
       ) {
         user.permissions = ADMIN_PERMISSION;
+      } else if (
+        decodetoken[
+          'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
+        ].toLowerCase() === 'stationmanager'
+      ) {
+        user.permissions = STATION_MANAGER_LIST_PERMISSION;
+      } else {
+        user.permissions = STAFF_LIST_PERRMISSION;
       }
-
       setUserInfo(user);
       navigatge(HOMEPAGE, { replace: true });
 
