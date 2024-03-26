@@ -19,6 +19,23 @@ export interface StationPayload {
   stationImages?: ImageUrl[];
 }
 
+export interface ZonePayload {
+  id: number;
+  name: string;
+  description: string;
+}
+export interface ShelfPayload {
+  name: string;
+  description: string;
+  index: number;
+  width: number;
+  height: number;
+  length: number;
+  zoneId: number;
+  numberOfRacks: number;
+  numberOfSlotsPerRack: number;
+  slot: object;
+}
 export interface StationCreateResponse {
   message: string;
 }
@@ -26,7 +43,9 @@ export interface StationCreateResponse {
 type StationGetRes = PaginationRes & { contends: StationPayload[] };
 export enum StationApi {
   CreateStation = '/admin/stations',
-  GetStation = '/admin/stations',
+  // GetStation = '/admin/stations',
+  GetStation = '/stations',
+  GetShelfs = '/shelfs',
 }
 
 const createStation = (data: StationPayload) =>
@@ -37,6 +56,106 @@ const getStation = () => apiClient.get<StationGetRes>({ url: StationApi.GetStati
 export const useListStation = (values?: InputType) => {
   return useQuery(['listStation', values], () =>
     apiClient.get<StationGetRes>({ url: StationApi.GetStation, params: values }),
+  );
+};
+export const useListZone = (values?: InputType) => {
+  return useQuery(['listZone', values], () =>
+    apiClient.get<StationGetRes>({
+      url: `${StationApi.GetStation}/1/zones`,
+      params: values,
+    }),
+  );
+};
+export const useListShelf = (values: String) => {
+  return useQuery(['listShelf', values], () =>
+    apiClient.get<StationGetRes>({
+      url: StationApi.GetShelfs,
+      params: { zoneId: values },
+    }),
+  );
+};
+
+export const useCreateZone = () => {
+  return useMutation(
+    async (payload: ZonePayload) =>
+      apiClient.post<StationCreateResponse>({
+        url: `${StationApi.GetStation}/1/zones`,
+        data: payload,
+      }),
+    {
+      onSuccess: () => {
+        // globalSuccess();
+        message.success('Create zone sucessfully');
+        queryClient.invalidateQueries(['listZone']);
+      },
+    },
+  );
+};
+export const useUpdateZone = () => {
+  return useMutation(
+    async (payload: ZonePayload) =>
+      apiClient.put<StationCreateResponse>({
+        url: `${StationApi.GetStation}/1/zones/${payload.id}`,
+        data: {
+          name: payload.name,
+          description: payload.description,
+        },
+      }),
+    {
+      onSuccess: () => {
+        // globalSuccess();
+        message.success('Create zone sucessfully');
+        queryClient.invalidateQueries(['listZone']);
+      },
+    },
+  );
+};
+export const useDeleteZone = () => {
+  return useMutation(
+    async (id: string) =>
+      apiClient.delete<StationCreateResponse>({
+        url: `${StationApi.GetStation}/1/zones/${id}`,
+      }),
+    {
+      onSuccess: () => {
+        // globalSuccess();
+        message.success('Delete zone sucessfully');
+        queryClient.invalidateQueries(['listZone']);
+      },
+    },
+  );
+};
+
+export const useCreateShelf = () => {
+  return useMutation(
+    async (payload: ShelfPayload) =>
+      apiClient.post<StationCreateResponse>({
+        url: StationApi.GetShelfs,
+        data: payload,
+      }),
+    {
+      onSuccess: () => {
+        // globalSuccess();
+        message.success('Create shelf sucessfully');
+        queryClient.invalidateQueries(['listShelf']);
+      },
+    },
+  );
+};
+
+export const useDeleteShelf = () => {
+  return useMutation(
+    async (id: string) =>
+      apiClient.delete<StationCreateResponse>({
+        url: `${StationApi.GetShelfs}/${id}`,
+      }),
+    {
+      onSuccess: () => {
+        // globalSuccess();
+        message.success('Delete Shelf sucessfully');
+        queryClient.invalidateQueries(['listShelf']);
+      },
+    },
   );
 };
 

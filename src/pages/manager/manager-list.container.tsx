@@ -120,7 +120,7 @@ export default function ManageStationManagerList() {
       align: 'center',
       width: 100,
       render: (_, record) => (
-        <div className="flex w-full justify-center text-gray">
+        <div className="text-gray flex w-full justify-center">
           <IconButton onClick={() => onOpenFormHandlerStation(record)}>
             <Iconify icon="solar:add-circle-line-duotone" size={18} />
           </IconButton>

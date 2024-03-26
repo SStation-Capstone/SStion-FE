@@ -74,6 +74,23 @@ export interface Station {
   stationImages?: ImageUrl[];
 }
 
+export interface Zone {
+  id: number;
+  name: string;
+  description: string;
+}
+export interface Shelf {
+  id: number;
+  name: string;
+  index: number;
+  width: number;
+  height: number;
+  length: number;
+  zoneId: number;
+  numberOfRacks: number;
+  numberOfSlotsPerRack: number;
+  slot: object;
+}
 export interface Manager {
   id: string;
   userName: string;
