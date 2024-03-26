@@ -77,7 +77,7 @@ export default function ManageStationManagerList() {
       width: 100,
       render: (_, record) => (
         <div className="text-gray flex w-full justify-center">
-          <Link to={`/zone/${record.id}`}>view zone</Link>
+          <Link to={`/zone/${record.id}`}>zone</Link>
           <IconButton onClick={() => onOpenFormHandler(record)}>
             <Iconify icon="solar:pen-bold-duotone" size={18} />
           </IconButton>
