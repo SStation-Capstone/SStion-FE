@@ -5,6 +5,7 @@ import { useDeleteZone, useListZone } from '@/api/services/stationService';
 import { IconButton, Iconify } from '@/components/icon';
 import { CircleLoading } from '@/components/loading';
 
+import { ManageCheckInCreate } from './checkin.create';
 import ManageShelfManagerList from './shelf-list.container';
 import { ManageZoneCreate } from './zone.create';
 
@@ -17,6 +18,7 @@ export default function ManageZoneManagerList() {
   const [listRelateParams, setListRelateParams] = useState<InputType>();
   const [clickOne, setClickOne] = useState<Station>();
   const [showInfo, setShowInfo] = useState(false);
+  const [showFormCheckIn, setShowFormCheckIn] = useState(false);
   const { data, isLoading } = useListZone();
   const { mutateAsync: deleteMutate } = useDeleteZone();
   if (isLoading) return <CircleLoading />;
@@ -34,6 +36,9 @@ export default function ManageZoneManagerList() {
     setShowInfo(false);
   };
 
+  const closeFormCheckIn = async () => {
+    setShowFormCheckIn(false);
+  };
   const resetHandler = () => {
     form.resetFields();
     // 清空时间组件，无参请求API
@@ -52,9 +57,14 @@ export default function ManageZoneManagerList() {
     <Card
       title="Package Management"
       extra={
-        <Button type="primary" onClick={() => onOpenFormHandler()}>
-          New
-        </Button>
+        <>
+          <Button type="primary" onClick={() => onOpenFormHandler()}>
+            New
+          </Button>
+          <Button className="ml-2" type="primary" onClick={() => setShowFormCheckIn(true)}>
+            Check in
+          </Button>
+        </>
       }
     >
       <Form form={form} onFinish={onFinishHandler}>
@@ -82,7 +92,6 @@ export default function ManageZoneManagerList() {
           </Col>
         </Row>
       </Form>
-      {showInfo && <ManageZoneCreate clickOne={clickOne} onClose={closeAndRefetchHandler} />}
       {data && (
         <Row gutter={[24, 0]}>
           {data.contends.map((item, index) => (
@@ -118,6 +127,8 @@ export default function ManageZoneManagerList() {
           ))}
         </Row>
       )}
+      {showInfo && <ManageZoneCreate clickOne={clickOne} onClose={closeAndRefetchHandler} />}
+      {showFormCheckIn && <ManageCheckInCreate onClose={closeFormCheckIn} />}
     </Card>
   );
 }

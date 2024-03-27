@@ -24,6 +24,11 @@ export interface ZonePayload {
   name: string;
   description: string;
 }
+export interface StaffPayload {
+  fullName: string;
+  phoneNumber: string;
+  avatarUrl: string;
+}
 export interface ShelfPayload {
   name: string;
   description: string;
@@ -36,6 +41,20 @@ export interface ShelfPayload {
   numberOfSlotsPerRack: number;
   slot: object;
 }
+export interface CheckInPayload {
+  name: string;
+  description: string;
+  priceCod: number;
+  isCod: boolean;
+  weight: number;
+  height: number;
+  width: number;
+  length: number;
+  stationId: number;
+  senderId: string;
+  receiverId: string;
+  packageImages: any[];
+}
 export interface StationCreateResponse {
   message: string;
 }
@@ -46,6 +65,8 @@ export enum StationApi {
   // GetStation = '/admin/stations',
   GetStation = '/stations',
   GetShelfs = '/shelfs',
+  Packages = '/packages',
+  Staffs = '/staffs',
 }
 
 const createStation = (data: StationPayload) =>
@@ -206,6 +227,64 @@ export const useDeleteStation = () => {
         // globalSuccess();
         message.success('Delete station sucessfully');
         queryClient.invalidateQueries(['listStation']);
+      },
+    },
+  );
+};
+
+export const useCreateCheckIn = () => {
+  return useMutation(
+    async (payload: CheckInPayload) =>
+      apiClient.post<StationCreateResponse>({
+        url: StationApi.Packages,
+        data: payload,
+      }),
+    {
+      onSuccess: () => {
+        // globalSuccess();
+        message.success('Create check in sucessfully');
+        queryClient.invalidateQueries(['listCheckIn']);
+      },
+    },
+  );
+};
+export const useListStaff = (values?: InputType) => {
+  return useQuery(['listStaff', values], () =>
+    apiClient.get<StationGetRes>({
+      url: `${StationApi.Staffs}/users`,
+      params: values,
+    }),
+  );
+};
+
+export const useCreateStaff = () => {
+  return useMutation(
+    async (payload: StaffPayload) =>
+      apiClient.post<StationCreateResponse>({
+        url: `${StationApi.Staffs}/users`,
+        data: payload,
+      }),
+    {
+      onSuccess: () => {
+        // globalSuccess();
+        message.success('Create staff sucessfully');
+        queryClient.invalidateQueries(['listStaff']);
+      },
+    },
+  );
+};
+export const useUpdateStaff = () => {
+  return useMutation(
+    async (payload: any) =>
+      apiClient.put<StationCreateResponse>({
+        url: `${StationApi.Staffs}/1/zones/${payload.id}`,
+        data: payload.data,
+      }),
+    {
+      onSuccess: () => {
+        // globalSuccess();
+        message.success('update staff sucessfully');
+        queryClient.invalidateQueries(['listStaff']);
       },
     },
   );
