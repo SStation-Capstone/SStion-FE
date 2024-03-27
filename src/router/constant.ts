@@ -157,7 +157,7 @@ const STATION_MANAGER_STAFF_MANAGE_PERMISSION: Permission = {
   name: 'staff',
   icon: 'ic-user',
   type: PermissionType.MENU,
-  route: 'manager',
+  route: 'staff',
   order: 3,
   component: '/staff/staff-list.user.tsx',
   // children: [
