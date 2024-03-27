@@ -74,6 +74,12 @@ export interface Station {
   stationImages?: ImageUrl[];
 }
 
+export interface Staff {
+  id: number;
+  fullName: string;
+  phoneNumber: string;
+  avatarUrl: string;
+}
 export interface Zone {
   id: number;
   name: string;

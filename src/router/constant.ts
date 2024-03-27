@@ -159,7 +159,7 @@ const STATION_MANAGER_STAFF_MANAGE_PERMISSION: Permission = {
   type: PermissionType.MENU,
   route: 'manager',
   order: 3,
-  component: '/manager/manager-list.container.tsx',
+  component: '/staff/staff-list.user.tsx',
   // children: [
   //   {
   //     id: '8426999229400979',
@@ -187,4 +187,5 @@ export const STATION_MANAGER_LIST_PERMISSION = [
 export const STAFF_LIST_PERRMISSION = [
   STATION_MANAGER_PACKAGEMANAGEMENT_PERMISSION,
   DASHBOARD_PERMISSION,
+  STATION_MANAGER_STAFF_MANAGE_PERMISSION,
 ];
