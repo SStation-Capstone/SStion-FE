@@ -2,14 +2,14 @@ import { Button, Card, Col, Form, Input, Pagination, Typography, Popconfirm, Row
 import Table, { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
 
-import { useDeleteStaff, useListStaff } from '@/api/services/stationService';
+import { useDeletePricing, useListPricing } from '@/api/services/stationService';
 import { IconButton, Iconify } from '@/components/icon';
 import { CircleLoading } from '@/components/loading';
 
-import { StaffCreate } from './staff.create';
+import { PricingCreate } from './pricing.create';
 
 import { InputType } from '#/api';
-import { Staff } from '#/entity';
+import { Pricing } from '#/entity';
 
 const { Title } = Typography;
 
@@ -17,13 +17,13 @@ export default function StaffManagerList() {
   const [form] = Form.useForm();
 
   const [listRelateParams, setListRelateParams] = useState<InputType>();
-  const [clickOne, setClickOne] = useState<Staff>();
+  const [clickOne, setClickOne] = useState<Pricing>();
   const [showInfo, setShowInfo] = useState(false);
-  const { data, isLoading } = useListStaff(listRelateParams);
-  const { mutateAsync: deleteMutate } = useDeleteStaff();
+  const { data, isLoading } = useListPricing(listRelateParams);
+  const { mutateAsync: deleteMutate } = useDeletePricing();
   if (isLoading) return <CircleLoading />;
 
-  const onOpenFormHandler = (record?: Staff) => {
+  const onOpenFormHandler = (record?: Pricing) => {
     if (record) {
       setClickOne(record);
     } else {
@@ -43,18 +43,17 @@ export default function StaffManagerList() {
       render: (_text, _data, index) => <Title level={5}>{++index}</Title>,
       width: '5%',
     },
-    // {
-    //   title: 'AvatarUrl',
-    //   dataIndex: 'avatarUrl',
-    //   render: (text) => <Image style={{ width: 100, height: 'auto' }} src={text} />,
-    // },
     {
-      title: 'fullName',
-      dataIndex: 'fullName',
+      title: 'fromDate',
+      dataIndex: 'fromDate',
     },
     {
-      title: 'userName',
-      dataIndex: 'userName',
+      title: 'toDate',
+      dataIndex: 'toDate',
+    },
+    {
+      title: 'formatPrice',
+      dataIndex: 'formatPrice',
     },
     {
       title: 'Action',
@@ -67,7 +66,7 @@ export default function StaffManagerList() {
             <Iconify icon="solar:pen-bold-duotone" size={18} />
           </IconButton>
           <Popconfirm
-            title="Delete the staff"
+            title="Delete the pricing"
             okText="Yes"
             cancelText="No"
             placement="left"
@@ -99,7 +98,7 @@ export default function StaffManagerList() {
 
   return (
     <Card
-      title="List Staff"
+      title="List Pricing"
       extra={
         <Button type="primary" onClick={() => onOpenFormHandler()}>
           New
@@ -137,7 +136,7 @@ export default function StaffManagerList() {
         scroll={{ x: 'max-content' }}
         pagination={false}
         columns={columns}
-        dataSource={data?.contends}
+        dataSource={data}
         loading={isLoading}
       />
       <Pagination
@@ -148,8 +147,7 @@ export default function StaffManagerList() {
         current={data?.page}
         style={{ marginTop: '1rem' }}
       />
-      {/* <ManageStationEdit {...roleModalPros} /> */}
-      {showInfo && <StaffCreate clickOne={clickOne} onClose={closeAndRefetchHandler} />}
+      {showInfo && <PricingCreate clickOne={clickOne} onClose={closeAndRefetchHandler} />}
     </Card>
   );
 }

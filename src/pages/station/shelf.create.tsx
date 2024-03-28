@@ -3,14 +3,13 @@ import { useState } from 'react';
 
 import { ShelfPayload, useCreateShelf } from '@/api/services/stationService';
 
-import { Shelf } from '#/entity';
+import { Zone } from '#/entity';
 
 export type ZoneCreateFormProps = {
-  id: String;
-  clickOne?: Shelf;
+  clickOne?: Zone;
   onClose: () => void;
 };
-export function ManageShelfCreate({ id, clickOne, onClose }: ZoneCreateFormProps) {
+export function ManageShelfCreate({ clickOne, onClose }: ZoneCreateFormProps) {
   const [form] = Form.useForm();
   const { mutateAsync: createMutate } = useCreateShelf();
   const [loading, setLoading] = useState<boolean>(false);
@@ -26,11 +25,12 @@ export function ManageShelfCreate({ id, clickOne, onClose }: ZoneCreateFormProps
         width: values.width,
         height: values.height,
         length: values.length,
-        zoneId: parseInt(id.toString(), 10),
+        zoneId: clickOne?.id,
         numberOfRacks: values.numberOfRacks,
         numberOfSlotsPerRack: values.numberOfSlotsPerRack,
         slot: { width: values.widthSlot, height: values.heightSlot, length: values.lengthSlot },
       };
+      // createData.zoneId = clickOne.id;
       createMutate(createData);
       setLoading(false);
       onClose();

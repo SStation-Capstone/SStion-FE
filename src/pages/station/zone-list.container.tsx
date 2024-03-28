@@ -7,6 +7,7 @@ import { CircleLoading } from '@/components/loading';
 
 import { ManageCheckInCreate } from './checkin.create';
 import ManageShelfManagerList from './shelf-list.container';
+import { ManageShelfCreate } from './shelf.create';
 import { ManageZoneCreate } from './zone.create';
 
 import { InputType } from '#/api';
@@ -15,9 +16,11 @@ import { Station } from '#/entity';
 export default function ManageZoneManagerList() {
   const [form] = Form.useForm();
 
-  const [listRelateParams, setListRelateParams] = useState<InputType>();
+  const [, setListRelateParams] = useState<InputType>();
   const [clickOne, setClickOne] = useState<Station>();
+  const [clickTwo, setClickTwo] = useState<Station>();
   const [showInfo, setShowInfo] = useState(false);
+  const [showInfoShelf, setShowInfoShelf] = useState(false);
   const [showFormCheckIn, setShowFormCheckIn] = useState(false);
   const { data, isLoading } = useListZone();
   const { mutateAsync: deleteMutate } = useDeleteZone();
@@ -31,11 +34,20 @@ export default function ManageZoneManagerList() {
     }
     setShowInfo(true);
   };
-
+  const onOpenFormShelf = (record?: Station) => {
+    if (record) {
+      setClickTwo(record);
+    } else {
+      setClickTwo(undefined);
+    }
+    setShowInfoShelf(true);
+  };
   const closeAndRefetchHandler = async () => {
     setShowInfo(false);
   };
-
+  const closeAndRefetchShelf = async () => {
+    setShowInfoShelf(false);
+  };
   const closeFormCheckIn = async () => {
     setShowFormCheckIn(false);
   };
@@ -44,10 +56,10 @@ export default function ManageZoneManagerList() {
     // 清空时间组件，无参请求API
   };
 
-  const onPageChange = (page: number, pageSize: number) => {
-    const values: InputType = { PageIndex: page, PageSize: pageSize };
-    setListRelateParams(values);
-  };
+  // const onPageChange = (page: number, pageSize: number) => {
+  //   const values: InputType = { PageIndex: page, PageSize: pageSize };
+  //   setListRelateParams(values);
+  // };
 
   const onFinishHandler = (values: InputType) => {
     setListRelateParams(values);
@@ -95,13 +107,23 @@ export default function ManageZoneManagerList() {
       {data && (
         <Row gutter={[24, 0]}>
           {data.contends.map((item, index) => (
-            <Col span={24} md={8} className="mb-24 " key={index}>
+            <Col className="mb-5 h-fit w-min" key={index}>
               <Card
                 bordered={false}
                 className="header-solid h-full"
                 title={<h6 className="m-0 font-semibold">Zone {index + 1}</h6>}
                 extra={
                   <div className="text-gray flex w-full justify-center">
+                    <div
+                      className="relative mr-2 flex flex-col rounded-xl bg-gray-300 bg-clip-border text-gray-700 shadow-md"
+                      onClick={() => onOpenFormShelf(item)}
+                    >
+                      <div className="flex cursor-pointer flex-wrap justify-center gap-2 p-2">
+                        <h5 className="text-blue-gray-900 block font-sans text-base font-semibold leading-snug tracking-normal antialiased">
+                          + shelf
+                        </h5>
+                      </div>
+                    </div>
                     <IconButton onClick={() => onOpenFormHandler(item)}>
                       <Iconify icon="solar:pen-bold-duotone" size={18} />
                     </IconButton>
@@ -129,6 +151,7 @@ export default function ManageZoneManagerList() {
       )}
       {showInfo && <ManageZoneCreate clickOne={clickOne} onClose={closeAndRefetchHandler} />}
       {showFormCheckIn && <ManageCheckInCreate onClose={closeFormCheckIn} />}
+      {showInfoShelf && <ManageShelfCreate clickOne={clickTwo} onClose={closeAndRefetchShelf} />}
     </Card>
   );
 }

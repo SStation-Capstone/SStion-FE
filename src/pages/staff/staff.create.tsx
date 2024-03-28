@@ -1,7 +1,12 @@
 import { Button, Form, Input, Modal, Upload, UploadFile, UploadProps, message } from 'antd';
 import { useState } from 'react';
 
-import { StaffPayload, useCreateStaff } from '@/api/services/stationService';
+import {
+  PostStaffPayload,
+  PutStaffPayload,
+  useCreateStaff,
+  useUpdateStaff,
+} from '@/api/services/stationService';
 import { beforeUpload, fakeUpload, normFile, uploadFileToFirebase } from '@/utils/file';
 
 import { Staff } from '#/entity';
@@ -13,7 +18,7 @@ export type StaffCreateFormProps = {
 export function StaffCreate({ clickOne, onClose }: StaffCreateFormProps) {
   const [form] = Form.useForm();
   const { mutateAsync: createMutate } = useCreateStaff();
-  // const { mutateAsync: updateMutate } = useUpdateStaff();
+  const { mutateAsync: updateMutate } = useUpdateStaff();
   const [loading, setLoading] = useState<boolean>(false);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
@@ -22,20 +27,26 @@ export function StaffCreate({ clickOne, onClose }: StaffCreateFormProps) {
     const values = await form.validateFields();
     try {
       if (clickOne) {
-        const updateData: StaffPayload = {
-          ...clickOne,
+        const updateData: PutStaffPayload = {
+          id: clickOne.id.toString(),
+          email: values.email,
+          fullName: values.fullName,
+          avatarUrl: clickOne.avatarUrl,
         };
         if (values.avatarUrl) {
           const updateImageUrl: string = await uploadFileToFirebase(values?.avatarUrl[0]);
           updateData.avatarUrl = updateImageUrl;
         }
         updateData.fullName = values.fullName;
-        updateData.phoneNumber = values.phoneNumber;
-        // updateMutate(updateData);
+        updateData.email = values.email;
+        updateMutate(updateData);
         setLoading(false);
       } else {
-        const imageUrl: string = await uploadFileToFirebase(values?.avatarUrl[0]);
-        const createData: StaffPayload = { ...values, avatarUrl: imageUrl };
+        const createData: PostStaffPayload = {
+          userName: values.userName,
+          password: values.password,
+          fullName: values.fullName,
+        };
         createMutate(createData);
         setLoading(false);
       }
@@ -46,17 +57,10 @@ export function StaffCreate({ clickOne, onClose }: StaffCreateFormProps) {
       setLoading(false);
     }
   };
-  const validateNumber = (_: any, value: any, callback: (error?: Error) => void) => {
-    // eslint-disable-next-line no-restricted-globals
-    if (isNaN(value)) {
-      callback(new Error('Please input a number'));
-    } else {
-      callback();
-    }
-  };
   const onImageChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
     setFileList(newFileList);
   };
+
   return (
     <Modal
       title={clickOne?.id ? 'Edit Staff' : 'Create Staff'}
@@ -79,6 +83,25 @@ export function StaffCreate({ clickOne, onClose }: StaffCreateFormProps) {
         // wrapperCol={{ span: 18 }}
         layout="vertical"
       >
+        {clickOne?.id ? (
+          <Form.Item
+            label="Email"
+            name="email"
+            required
+            rules={[{ required: true, message: 'Please input email' }]}
+          >
+            <Input />
+          </Form.Item>
+        ) : (
+          <Form.Item
+            label="UserName"
+            name="userName"
+            required
+            rules={[{ required: true, message: 'Please input userName' }]}
+          >
+            <Input />
+          </Form.Item>
+        )}
         <Form.Item
           label="Full Name"
           name="fullName"
@@ -87,31 +110,31 @@ export function StaffCreate({ clickOne, onClose }: StaffCreateFormProps) {
         >
           <Input />
         </Form.Item>
-        <Form.Item
-          label="Phone Number"
-          name="phoneNumber"
-          required
-          rules={[
-            { required: true, message: 'Please input phoneNumber' },
-            { validator: validateNumber as any },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item label="package Images" name="avatarUrl" getValueFromEvent={normFile}>
-          <Upload
-            name="image"
-            maxCount={1}
-            className="UploadImage"
-            listType="picture-card"
-            fileList={fileList}
-            beforeUpload={beforeUpload}
-            customRequest={fakeUpload}
-            onChange={onImageChange}
+        {clickOne?.id ? (
+          <Form.Item label="package Images" name="avatarUrl" getValueFromEvent={normFile}>
+            <Upload
+              name="image"
+              maxCount={1}
+              className="UploadImage"
+              listType="picture-card"
+              fileList={fileList}
+              beforeUpload={beforeUpload}
+              customRequest={fakeUpload}
+              onChange={onImageChange}
+            >
+              {fileList.length < 1 && '+ Upload'}
+            </Upload>
+          </Form.Item>
+        ) : (
+          <Form.Item
+            label="Password"
+            name="password"
+            required
+            rules={[{ required: true, message: 'Please input password' }]}
           >
-            {fileList.length < 1 && '+ Upload'}
-          </Upload>
-        </Form.Item>
+            <Input.Password />
+          </Form.Item>
+        )}
       </Form>
     </Modal>
   );
