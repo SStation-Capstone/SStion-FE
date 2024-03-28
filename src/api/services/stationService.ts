@@ -24,9 +24,21 @@ export interface ZonePayload {
   name: string;
   description: string;
 }
-export interface StaffPayload {
+export interface PostStaffPayload {
+  userName: string;
   fullName: string;
-  phoneNumber: string;
+  password: string;
+}
+export interface PricingPayload {
+  id: number;
+  fromDate: number;
+  toDate: number;
+  price: number;
+}
+export interface PutStaffPayload {
+  id: string;
+  email: string;
+  fullName: string;
   avatarUrl: string;
 }
 export interface ShelfPayload {
@@ -36,7 +48,7 @@ export interface ShelfPayload {
   width: number;
   height: number;
   length: number;
-  zoneId: number;
+  zoneId: any;
   numberOfRacks: number;
   numberOfSlotsPerRack: number;
   slot: object;
@@ -251,7 +263,7 @@ export const useCreateCheckIn = () => {
 export const useListStaff = (values?: InputType) => {
   return useQuery(['listStaff', values], () =>
     apiClient.get<StationGetRes>({
-      url: `${StationApi.Staffs}/users`,
+      url: `${StationApi.GetStation}/1/staffs`,
       params: values,
     }),
   );
@@ -259,9 +271,9 @@ export const useListStaff = (values?: InputType) => {
 
 export const useCreateStaff = () => {
   return useMutation(
-    async (payload: StaffPayload) =>
+    async (payload: PostStaffPayload) =>
       apiClient.post<StationCreateResponse>({
-        url: `${StationApi.Staffs}/users`,
+        url: `${StationApi.GetStation}/1/staffs`,
         data: payload,
       }),
     {
@@ -275,16 +287,98 @@ export const useCreateStaff = () => {
 };
 export const useUpdateStaff = () => {
   return useMutation(
-    async (payload: any) =>
+    async (payload: PutStaffPayload) =>
       apiClient.put<StationCreateResponse>({
-        url: `${StationApi.Staffs}/1/zones/${payload.id}`,
-        data: payload.data,
+        url: `${StationApi.GetStation}/1/staffs/${payload.id}`,
+        data: {
+          email: payload.email,
+          fullName: payload.fullName,
+          avatarUrl: payload.avatarUrl,
+        },
       }),
     {
       onSuccess: () => {
         // globalSuccess();
         message.success('update staff sucessfully');
         queryClient.invalidateQueries(['listStaff']);
+      },
+    },
+  );
+};
+
+export const useDeleteStaff = () => {
+  return useMutation(
+    async (id: string) =>
+      apiClient.delete<StationCreateResponse>({
+        url: `${StationApi.GetStation}/1/staffs/${id}`,
+      }),
+    {
+      onSuccess: () => {
+        // globalSuccess();
+        message.success('Delete Staff sucessfully');
+        queryClient.invalidateQueries(['listStaff']);
+      },
+    },
+  );
+};
+
+export const useListPricing = (values?: InputType) => {
+  return useQuery(['listPricing', values], () =>
+    apiClient.get<StationGetRes>({
+      url: `${StationApi.GetStation}/1/pricings`,
+      params: values,
+    }),
+  );
+};
+
+export const useCreatePricing = () => {
+  return useMutation(
+    async (payload: PricingPayload) =>
+      apiClient.post<StationCreateResponse>({
+        url: `${StationApi.GetStation}/1/pricings`,
+        data: payload,
+      }),
+    {
+      onSuccess: () => {
+        // globalSuccess();
+        message.success('Create pricing sucessfully');
+        queryClient.invalidateQueries(['listPricing']);
+      },
+    },
+  );
+};
+export const useUpdatePricing = () => {
+  return useMutation(
+    async (payload: PricingPayload) =>
+      apiClient.put<StationCreateResponse>({
+        url: `${StationApi.GetStation}/1/pricings/${payload.id}`,
+        data: {
+          fromDate: payload.fromDate,
+          toDate: payload.toDate,
+          price: payload.price,
+        },
+      }),
+    {
+      onSuccess: () => {
+        // globalSuccess();
+        message.success('update pricing sucessfully');
+        queryClient.invalidateQueries(['listPricing']);
+      },
+    },
+  );
+};
+
+export const useDeletePricing = () => {
+  return useMutation(
+    async (id: string) =>
+      apiClient.delete<StationCreateResponse>({
+        url: `${StationApi.GetStation}/1/pricings/${id}`,
+      }),
+    {
+      onSuccess: () => {
+        // globalSuccess();
+        message.success('Delete pricing sucessfully');
+        queryClient.invalidateQueries(['listPricing']);
       },
     },
   );

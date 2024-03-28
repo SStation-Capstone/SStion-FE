@@ -75,10 +75,17 @@ export interface Station {
 }
 
 export interface Staff {
-  id: number;
-  fullName: string;
-  phoneNumber: string;
   avatarUrl: string;
+  id: number;
+  userName: string;
+  password: string;
+  fullName: string;
+}
+export interface Pricing {
+  id: number;
+  fromDate: number;
+  toDate: number;
+  price: number;
 }
 export interface Zone {
   id: number;

@@ -9,10 +9,14 @@ import {
   Modal,
   message,
 } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { CheckInPayload, useCreateCheckIn } from '@/api/services/stationService';
 import { beforeUpload, fakeUpload, normFile, uploadFileToFirebase } from '@/utils/file';
+import { getItem } from '@/utils/storage';
+
+import { UserToken } from '#/entity';
+import { StorageEnum } from '#/enum';
 
 export type CheckInCreateFormProps = {
   onClose: () => void;
@@ -22,11 +26,47 @@ export function ManageCheckInCreate({ onClose }: CheckInCreateFormProps) {
   const { mutateAsync: createMutate } = useCreateCheckIn();
   const [loading, setLoading] = useState<boolean>(false);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [senderInfo, setSenderInfo] = useState<any>(null);
+  const [receiverInfo, setReceiverInfo] = useState<any>(null);
+  const getUserInfoByPhoneNumber = async (phoneNumber: string, setState: Function) => {
+    try {
+      const accessToken = getItem(StorageEnum.Token) as unknown as UserToken;
+      const response = await fetch(`http://localhost:8080/api/staffs/users/phone/${phoneNumber}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken.accessToken}`,
+        },
+      });
+      const data = await response.json();
+      setState(data);
+    } catch (error) {
+      console.error('Error fetching user info:', error);
+    }
+  };
 
+  useEffect(() => {
+    const phoneSenderValue = form.getFieldValue('senderId');
+    if (phoneSenderValue) {
+      getUserInfoByPhoneNumber(phoneSenderValue, setSenderInfo);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form.getFieldValue('senderId')]);
+
+  useEffect(() => {
+    const phoneReceiverValue = form.getFieldValue('receiverId');
+    if (phoneReceiverValue) {
+      getUserInfoByPhoneNumber(phoneReceiverValue, setReceiverInfo);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form.getFieldValue('receiverId')]);
+
+  // eslint-disable-next-line consistent-return
   const submitHandle = async () => {
     setLoading(true);
     const values = await form.validateFields();
     try {
+      if (!senderInfo.id || !receiverInfo.id) {
+        throw new Error('Sender or receiver information is missing.');
+      }
       const createData: CheckInPayload = {
         name: values.name,
         description: values.description,
@@ -37,21 +77,22 @@ export function ManageCheckInCreate({ onClose }: CheckInCreateFormProps) {
         width: values.width,
         length: values.length,
         stationId: 1,
-        senderId: values.senderId,
-        receiverId: values.receiverId,
+        senderId: senderInfo.id,
+        receiverId: receiverInfo.id,
         packageImages: [],
       };
       if (values.avatarUrl && values.avatarUrl.length > 0) {
-        const imageUrls: string[] = [];
+        const imageUrls: { imageUrl: string }[] = [];
         // eslint-disable-next-line no-plusplus
         for (let i = 0; i < values.avatarUrl.length; i++) {
           // eslint-disable-next-line no-await-in-loop
           const updateImageUrl: string = await uploadFileToFirebase(values.avatarUrl[i]);
-          imageUrls.push(updateImageUrl);
+          imageUrls.push({ imageUrl: updateImageUrl });
         }
         createData.packageImages = imageUrls;
       }
-      // createMutate(createData);
+      console.log('🚀 ~ submitHandle ~ createData:', createData);
+      createMutate(createData);
       setLoading(false);
       onClose();
     } catch (error) {
@@ -86,12 +127,7 @@ export function ManageCheckInCreate({ onClose }: CheckInCreateFormProps) {
         </Button>,
       ]}
     >
-      <Form
-        form={form}
-        // labelCol={{ span: 4 }}
-        // wrapperCol={{ span: 18 }}
-        layout="vertical"
-      >
+      <Form form={form} layout="vertical">
         <Form.Item
           label="Name"
           name="name"
@@ -100,7 +136,6 @@ export function ManageCheckInCreate({ onClose }: CheckInCreateFormProps) {
         >
           <Input />
         </Form.Item>
-
         <Form.Item
           label="Description"
           name="description"
@@ -169,6 +204,30 @@ export function ManageCheckInCreate({ onClose }: CheckInCreateFormProps) {
             ]}
           >
             <Input />
+          </Form.Item>
+        </div>
+        <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
+          <Form.Item
+            label={`Phone Sender (${senderInfo ? senderInfo.fullName : 'not found'})`}
+            name="senderId"
+            required
+            rules={[
+              { required: true, message: 'Please input senderId' },
+              { validator: validateNumber as any },
+            ]}
+          >
+            <Input onChange={(e) => getUserInfoByPhoneNumber(e.target.value, setSenderInfo)} />
+          </Form.Item>
+          <Form.Item
+            label={`Phone Receiver (${receiverInfo ? receiverInfo.fullName : 'not found'})`}
+            name="receiverId"
+            required
+            rules={[
+              { required: true, message: 'Please input receiverId' },
+              { validator: validateNumber as any },
+            ]}
+          >
+            <Input onChange={(e) => getUserInfoByPhoneNumber(e.target.value, setReceiverInfo)} />
           </Form.Item>
         </div>
         <Form.Item label="package Images" name="avatarUrl" getValueFromEvent={normFile}>
