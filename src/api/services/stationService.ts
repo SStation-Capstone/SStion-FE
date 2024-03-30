@@ -383,3 +383,24 @@ export const useDeletePricing = () => {
     },
   );
 };
+export const useGetCheckOut = (id?: string) => {
+  return useQuery(['checkOut'], () =>
+    apiClient.get<StationGetRes>({
+      url: `${StationApi.Packages}/${id}`,
+    }),
+  );
+};
+export const useCreateCheckOut = () => {
+  return useMutation(
+    async (payload: any) =>
+      apiClient.post<StationCreateResponse>({
+        url: `${StationApi.Packages}/${payload.id}/${payload.status}`,
+        data: {},
+      }),
+    {
+      onSuccess: () => {
+        message.success('Create check in sucessfully');
+      },
+    },
+  );
+};
