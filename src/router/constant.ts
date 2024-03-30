@@ -143,7 +143,7 @@ const STATION_MANAGER_PACKAGEMANAGEMENT_PERMISSION: Permission = {
       label: 'Check Out',
       name: 'checkout',
       type: PermissionType.MENU,
-      route: 'workbench',
+      route: 'checkout/:id',
       component: '/station/station-list.container.tsx',
       icon: 'ic-checkout',
     },

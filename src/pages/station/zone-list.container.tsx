@@ -1,11 +1,14 @@
 import { Button, Card, Col, Form, Input, Popconfirm, Row } from 'antd';
 import { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import { useDeleteZone, useListZone } from '@/api/services/stationService';
 import { IconButton, Iconify } from '@/components/icon';
 import { CircleLoading } from '@/components/loading';
 
 import { ManageCheckInCreate } from './checkin.create';
+// eslint-disable-next-line import/named
+import { ManageCheckOutCreate } from './checkout.create';
 import ManageShelfManagerList from './shelf-list.container';
 import { ManageShelfCreate } from './shelf.create';
 import { ManageZoneCreate } from './zone.create';
@@ -15,13 +18,17 @@ import { Station } from '#/entity';
 
 export default function ManageZoneManagerList() {
   const [form] = Form.useForm();
-
+  const navigate = useNavigate();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const packageId = searchParams.get('packageId');
   const [, setListRelateParams] = useState<InputType>();
   const [clickOne, setClickOne] = useState<Station>();
   const [clickTwo, setClickTwo] = useState<Station>();
   const [showInfo, setShowInfo] = useState(false);
   const [showInfoShelf, setShowInfoShelf] = useState(false);
   const [showFormCheckIn, setShowFormCheckIn] = useState(false);
+  const [showFormCheckOut, setShowFormCheckOut] = useState<any>(false);
   const { data, isLoading } = useListZone();
   const { mutateAsync: deleteMutate } = useDeleteZone();
   if (isLoading) return <CircleLoading />;
@@ -51,6 +58,9 @@ export default function ManageZoneManagerList() {
   const closeFormCheckIn = async () => {
     setShowFormCheckIn(false);
   };
+  const closeFormCheckOut = async () => {
+    setShowFormCheckOut(false);
+  };
   const resetHandler = () => {
     form.resetFields();
     // 清空时间组件，无参请求API
@@ -75,6 +85,13 @@ export default function ManageZoneManagerList() {
           </Button>
           <Button className="ml-2" type="primary" onClick={() => setShowFormCheckIn(true)}>
             Check in
+          </Button>
+          <Button
+            className="ml-2"
+            type="primary"
+            onClick={() => navigate('?packageId=08dc508d-bd02-4a14-855c-412fe825675a')}
+          >
+            Check out
           </Button>
         </>
       }
@@ -151,6 +168,7 @@ export default function ManageZoneManagerList() {
       )}
       {showInfo && <ManageZoneCreate clickOne={clickOne} onClose={closeAndRefetchHandler} />}
       {showFormCheckIn && <ManageCheckInCreate onClose={closeFormCheckIn} />}
+      {packageId && <ManageCheckOutCreate packageId={packageId} />}
       {showInfoShelf && <ManageShelfCreate clickOne={clickTwo} onClose={closeAndRefetchShelf} />}
     </Card>
   );
