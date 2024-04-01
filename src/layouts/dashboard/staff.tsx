@@ -5,16 +5,16 @@ import styled from 'styled-components';
 import { CircleLoading } from '@/components/loading';
 import ProgressBar from '@/components/progress-bar';
 // import { useSettings } from '@/store/settingStore';
+import StaffManagerList from '@/pages/staff/staff-list.user';
 import { useThemeToken } from '@/theme/hooks';
 
 import Header from './header';
-import Main from './main';
 import Nav from './nav';
 
 import { ThemeMode } from '#/enum';
 
-function DashboardLayout() {
-  const { colorBgElevated, colorTextBase } = useThemeToken();
+function StaffLayout() {
+  const { colorTextBase } = useThemeToken();
   // const { themeLayout, themeMode } = useSettings();
 
   const mainEl = useRef(null);
@@ -43,7 +43,19 @@ function DashboardLayout() {
       <div className="z-50 hidden h-full flex-shrink-0 md:block">
         <Nav />
       </div>
-      <Main ref={mainEl} offsetTop={offsetTop} />
+      {/* <Main ref={mainEl} offsetTop={offsetTop} /> */}
+      <main
+        className="flex overflow-auto"
+        style={{
+          paddingTop: '112px',
+          transition: 'padding 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+          width: '100vw',
+        }}
+      >
+        <div className="m-auto h-full w-full flex-grow sm:p-2 xl:max-w-screen-xl">
+          <StaffManagerList />
+        </div>
+      </main>
     </>
   );
 
@@ -75,7 +87,7 @@ function DashboardLayout() {
     </StyleWrapper>
   );
 }
-export default DashboardLayout;
+export default StaffLayout;
 
 const StyleWrapper = styled.div<{ $themeMode?: ThemeMode }>`
   /* 设置滚动条的整体样式 */

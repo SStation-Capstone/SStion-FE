@@ -1,5 +1,6 @@
 import { Button, Form, Input, Modal, Upload, UploadFile, UploadProps, message } from 'antd';
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 import {
   PostStaffPayload,
@@ -17,8 +18,9 @@ export type StaffCreateFormProps = {
 };
 export function StaffCreate({ clickOne, onClose }: StaffCreateFormProps) {
   const [form] = Form.useForm();
-  const { mutateAsync: createMutate } = useCreateStaff();
-  const { mutateAsync: updateMutate } = useUpdateStaff();
+  const { id } = useParams();
+  const { mutateAsync: createMutate } = useCreateStaff(id);
+  const { mutateAsync: updateMutate } = useUpdateStaff(id);
   const [loading, setLoading] = useState<boolean>(false);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 

@@ -1,6 +1,7 @@
 import { Button, Card, Col, Form, Input, Pagination, Typography, Popconfirm, Row } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 import { useDeleteStaff, useListStaff } from '@/api/services/stationService';
 import { IconButton, Iconify } from '@/components/icon';
@@ -15,12 +16,12 @@ const { Title } = Typography;
 
 export default function StaffManagerList() {
   const [form] = Form.useForm();
-
+  const { id } = useParams();
   const [listRelateParams, setListRelateParams] = useState<InputType>();
   const [clickOne, setClickOne] = useState<Staff>();
   const [showInfo, setShowInfo] = useState(false);
-  const { data, isLoading } = useListStaff(listRelateParams);
-  const { mutateAsync: deleteMutate } = useDeleteStaff();
+  const { data, isLoading } = useListStaff(id);
+  const { mutateAsync: deleteMutate } = useDeleteStaff(id);
   if (isLoading) return <CircleLoading />;
 
   const onOpenFormHandler = (record?: Staff) => {

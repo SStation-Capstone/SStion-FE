@@ -16,4 +16,5 @@ export interface InputType {
   Search?: string;
   PageIndex?: number;
   PageSize?: number;
+  Statuses?: string;
 }

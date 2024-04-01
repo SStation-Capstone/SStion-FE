@@ -93,26 +93,26 @@ const STATION_MANAGER_CONFIG_PERMISSION: Permission = {
       component: '/station/station-list.container.tsx',
       icon: 'zondicons:station',
     },
-    {
-      id: '8426999229400979',
-      parentId: '9100714781927705',
-      label: 'Price',
-      name: 'price',
-      type: PermissionType.MENU,
-      route: 'price',
-      component: '/station/station-list.container.tsx',
-      icon: 'material-symbols:price-change-rounded',
-    },
-    {
-      id: '8426999229400978',
-      parentId: '9100714781927705',
-      label: 'Zone',
-      name: 'zone/:id',
-      type: PermissionType.MENU,
-      route: 'zone/:id',
-      component: '/station/zone-list.container.tsx',
-      icon: 'ri:time-zone-fill',
-    },
+    // {
+    //   id: '8426999229400979',
+    //   parentId: '9100714781927705',
+    //   label: 'Price',
+    //   name: 'price',
+    //   type: PermissionType.MENU,
+    //   route: 'price',
+    //   component: '/station/station-list.container.tsx',
+    //   icon: 'material-symbols:price-change-rounded',
+    // },
+    // {
+    //   id: '8426999229400978',
+    //   parentId: '9100714781927705',
+    //   label: 'Zone',
+    //   name: 'zone',
+    //   type: PermissionType.MENU,
+    //   route: 'zone/:id',
+    //   component: '/station/zone-list.container.tsx',
+    //   icon: 'ri:time-zone-fill',
+    // },
   ],
 };
 
@@ -203,8 +203,8 @@ export const STATION_MANAGER_LIST_PERMISSION = [
   STATION_MANAGER_CONFIG_PERMISSION,
   DASHBOARD_PERMISSION,
   STATION_MANAGER_PACKAGEMANAGEMENT_PERMISSION,
-  STATION_MANAGER_STAFF_MANAGE_PERMISSION,
-  STATION_MANAGER_PRICING_MANAGE_PERMISSION,
+  // STATION_MANAGER_STAFF_MANAGE_PERMISSION,
+  // STATION_MANAGER_PRICING_MANAGE_PERMISSION,
 ];
 
 export const STAFF_LIST_PERRMISSION = [

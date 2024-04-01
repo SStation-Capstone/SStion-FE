@@ -10,6 +10,7 @@ import {
   message,
 } from 'antd';
 import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 import { CheckInPayload, useCreateCheckIn } from '@/api/services/stationService';
 import { beforeUpload, fakeUpload, normFile, uploadFileToFirebase } from '@/utils/file';
@@ -23,6 +24,7 @@ export type CheckInCreateFormProps = {
 };
 export function ManageCheckInCreate({ onClose }: CheckInCreateFormProps) {
   const [form] = Form.useForm();
+  const { id } = useParams();
   const { mutateAsync: createMutate } = useCreateCheckIn();
   const [loading, setLoading] = useState<boolean>(false);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
@@ -31,11 +33,14 @@ export function ManageCheckInCreate({ onClose }: CheckInCreateFormProps) {
   const getUserInfoByPhoneNumber = async (phoneNumber: string, setState: Function) => {
     try {
       const accessToken = getItem(StorageEnum.Token) as unknown as UserToken;
-      const response = await fetch(`http://localhost:8080/api/staffs/users/phone/${phoneNumber}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken.accessToken}`,
+      const response = await fetch(
+        `${import.meta.env.VITE_APP_BASE_API}/staffs/users/phone/${phoneNumber}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken.accessToken}`,
+          },
         },
-      });
+      );
       const data = await response.json();
       setState(data);
     } catch (error) {
@@ -61,9 +66,9 @@ export function ManageCheckInCreate({ onClose }: CheckInCreateFormProps) {
 
   // eslint-disable-next-line consistent-return
   const submitHandle = async () => {
-    setLoading(true);
     const values = await form.validateFields();
     try {
+      setLoading(true);
       if (!senderInfo.id || !receiverInfo.id) {
         throw new Error('Sender or receiver information is missing.');
       }
@@ -76,7 +81,7 @@ export function ManageCheckInCreate({ onClose }: CheckInCreateFormProps) {
         height: values.height,
         width: values.width,
         length: values.length,
-        stationId: 1,
+        stationId: id as unknown as number,
         senderId: senderInfo.id,
         receiverId: receiverInfo.id,
         packageImages: [],
@@ -91,7 +96,6 @@ export function ManageCheckInCreate({ onClose }: CheckInCreateFormProps) {
         }
         createData.packageImages = imageUrls;
       }
-      console.log('🚀 ~ submitHandle ~ createData:', createData);
       createMutate(createData);
       setLoading(false);
       onClose();
@@ -105,6 +109,18 @@ export function ManageCheckInCreate({ onClose }: CheckInCreateFormProps) {
     // eslint-disable-next-line no-restricted-globals
     if (isNaN(value)) {
       callback(new Error('Please input a number'));
+    } else {
+      callback();
+    }
+  };
+  const validateNumberThan = (_: any, value: any, callback: (error?: Error) => void) => {
+    // eslint-disable-next-line no-restricted-globals
+    if (isNaN(value)) {
+      callback(new Error('Please input a number'));
+    }
+    // eslint-disable-next-line no-restricted-globals
+    if (parseInt(value, 10) < 5) {
+      callback(new Error('Please input a number than 5'));
     } else {
       callback();
     }
@@ -167,7 +183,7 @@ export function ManageCheckInCreate({ onClose }: CheckInCreateFormProps) {
             required
             rules={[
               { required: true, message: 'Please weight width' },
-              { validator: validateNumber as any },
+              { validator: validateNumberThan as any },
             ]}
           >
             <Input />
@@ -178,7 +194,7 @@ export function ManageCheckInCreate({ onClose }: CheckInCreateFormProps) {
             required
             rules={[
               { required: true, message: 'Please input width' },
-              { validator: validateNumber as any },
+              { validator: validateNumberThan as any },
             ]}
           >
             <Input />
@@ -189,7 +205,7 @@ export function ManageCheckInCreate({ onClose }: CheckInCreateFormProps) {
             required
             rules={[
               { required: true, message: 'Please input height' },
-              { validator: validateNumber as any },
+              { validator: validateNumberThan as any },
             ]}
           >
             <Input />
@@ -200,7 +216,7 @@ export function ManageCheckInCreate({ onClose }: CheckInCreateFormProps) {
             required
             rules={[
               { required: true, message: 'Please input length' },
-              { validator: validateNumber as any },
+              { validator: validateNumberThan as any },
             ]}
           >
             <Input />

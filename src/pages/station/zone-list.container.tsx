@@ -1,6 +1,6 @@
 import { Button, Card, Col, Form, Input, Popconfirm, Row } from 'antd';
 import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 
 import { useDeleteZone, useListZone } from '@/api/services/stationService';
 import { IconButton, Iconify } from '@/components/icon';
@@ -19,6 +19,7 @@ import { Station } from '#/entity';
 export default function ManageZoneManagerList() {
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  const { id } = useParams();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const packageId = searchParams.get('packageId');
@@ -29,8 +30,8 @@ export default function ManageZoneManagerList() {
   const [showInfoShelf, setShowInfoShelf] = useState(false);
   const [showFormCheckIn, setShowFormCheckIn] = useState(false);
   const [showFormCheckOut, setShowFormCheckOut] = useState<any>(false);
-  const { data, isLoading } = useListZone();
-  const { mutateAsync: deleteMutate } = useDeleteZone();
+  const { data, isLoading } = useListZone(id);
+  const { mutateAsync: deleteMutate } = useDeleteZone(id);
   if (isLoading) return <CircleLoading />;
 
   const onOpenFormHandler = (record?: Station) => {
@@ -86,13 +87,13 @@ export default function ManageZoneManagerList() {
           <Button className="ml-2" type="primary" onClick={() => setShowFormCheckIn(true)}>
             Check in
           </Button>
-          <Button
+          {/* <Button
             className="ml-2"
             type="primary"
-            onClick={() => navigate('?packageId=08dc508d-bd02-4a14-855c-412fe825675a')}
+            onClick={() => navigate(`?packageId=${packageId}`)}
           >
             Check out
-          </Button>
+          </Button> */}
         </>
       }
     >
