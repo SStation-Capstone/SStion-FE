@@ -38,7 +38,7 @@ export function useMatchRouteMeta() {
         setMatchRouteMeta(currentRouteMeta);
       }
     } else {
-      push(HOMEPAGE);
+      // push(HOMEPAGE);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [matchs]);

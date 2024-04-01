@@ -1,5 +1,6 @@
 import { Button, Form, Input, Modal, message } from 'antd';
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 import { ZonePayload, useCreateZone, useUpdateZone } from '@/api/services/stationService';
 
@@ -10,9 +11,10 @@ export type ZoneCreateFormProps = {
   onClose: () => void;
 };
 export function ManageZoneCreate({ clickOne, onClose }: ZoneCreateFormProps) {
+  const { id } = useParams();
   const [form] = Form.useForm();
-  const { mutateAsync: createMutate } = useCreateZone();
-  const { mutateAsync: updateMutate } = useUpdateZone();
+  const { mutateAsync: createMutate } = useCreateZone(id);
+  const { mutateAsync: updateMutate } = useUpdateZone(id);
   const [loading, setLoading] = useState<boolean>(false);
 
   const submitHandle = async () => {

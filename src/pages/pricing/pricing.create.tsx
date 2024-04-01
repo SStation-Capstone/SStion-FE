@@ -1,5 +1,6 @@
 import { Button, Form, Input, Modal, message } from 'antd';
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 import { PricingPayload, useCreatePricing, useUpdatePricing } from '@/api/services/stationService';
 
@@ -11,8 +12,9 @@ export type StaffCreateFormProps = {
 };
 export function PricingCreate({ clickOne, onClose }: StaffCreateFormProps) {
   const [form] = Form.useForm();
-  const { mutateAsync: createMutate } = useCreatePricing();
-  const { mutateAsync: updateMutate } = useUpdatePricing();
+  const { id } = useParams();
+  const { mutateAsync: createMutate } = useCreatePricing(id);
+  const { mutateAsync: updateMutate } = useUpdatePricing(id);
   const [loading, setLoading] = useState<boolean>(false);
   const submitHandle = async () => {
     setLoading(true);

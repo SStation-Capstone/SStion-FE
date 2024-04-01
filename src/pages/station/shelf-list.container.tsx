@@ -1,4 +1,4 @@
-import { Popconfirm } from 'antd';
+import { Popconfirm, Progress } from 'antd';
 
 import { useDeleteShelf, useListShelf } from '@/api/services/stationService';
 import { IconButton, Iconify } from '@/components/icon';
@@ -43,7 +43,13 @@ export default function ManageShelfManagerList({ id }: StationEditFormProps) {
                   <div className="flex h-full w-full gap-3" key={rack.id}>
                     {rack.slots.length > 0 &&
                       rack.slots.map((slot) => (
-                        <div className="block h-12 w-12 rounded-xl bg-blue-400" key={slot.id} />
+                        // <div className="block h-12 w-12 rounded-xl bg-blue-400" key={slot.id} />
+                        <Progress
+                          className="ant-progress-custom"
+                          percent={100 - slot.capacity}
+                          size="small"
+                          // showInfo={false}
+                        />
                       ))}
                   </div>
                 ))}

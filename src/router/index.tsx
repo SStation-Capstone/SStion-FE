@@ -2,6 +2,9 @@ import { lazy } from 'react';
 import { Navigate, RouteObject, RouterProvider, createHashRouter } from 'react-router-dom';
 
 import DashboardLayout from '@/layouts/dashboard';
+import PricingLayout from '@/layouts/dashboard/pricing';
+import StaffLayout from '@/layouts/dashboard/staff';
+import ZoneLayout from '@/layouts/dashboard/zone';
 import AuthGuard from '@/router/components/auth-guard';
 import { usePermissionRoutes } from '@/router/hooks';
 import { ErrorRoutes } from '@/router/routes/error-routes';
@@ -29,8 +32,39 @@ export default function Router() {
     ),
     children: [{ index: true, element: <Navigate to={HOMEPAGE} replace /> }, ...permissionRoutes],
   };
-
-  const routes = [LoginRoute, asyncRoutes, ErrorRoutes, PAGE_NOT_FOUND_ROUTE];
+  const zoneAsyncRoutes: AppRouteObject = {
+    path: '/zone/:id',
+    element: (
+      <AuthGuard>
+        <ZoneLayout />
+      </AuthGuard>
+    ),
+  };
+  const staffAsyncRoutes: AppRouteObject = {
+    path: '/staff/:id',
+    element: (
+      <AuthGuard>
+        <StaffLayout />
+      </AuthGuard>
+    ),
+  };
+  const pricingAsyncRoutes: AppRouteObject = {
+    path: '/pricing/:id',
+    element: (
+      <AuthGuard>
+        <PricingLayout />
+      </AuthGuard>
+    ),
+  };
+  const routes = [
+    LoginRoute,
+    pricingAsyncRoutes,
+    staffAsyncRoutes,
+    zoneAsyncRoutes,
+    asyncRoutes,
+    ErrorRoutes,
+    PAGE_NOT_FOUND_ROUTE,
+  ];
 
   const router = createHashRouter(routes as unknown as RouteObject[]);
   return <RouterProvider router={router} />;

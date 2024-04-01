@@ -18,6 +18,15 @@ export interface StationPayload {
   longitude?: string;
   stationImages?: ImageUrl[];
 }
+export interface PackagePayload {
+  id: number;
+  name: string;
+  status: string;
+  description: string;
+  formatTotalPrice: string;
+  packageImages: any;
+  priceCod: string;
+}
 
 export interface ZonePayload {
   id: number;
@@ -72,9 +81,10 @@ export interface StationCreateResponse {
 }
 // & { user: UserInfo };
 type StationGetRes = PaginationRes & { contends: StationPayload[] };
+type PackageGetRes = PaginationRes & { contends: PackagePayload[] };
 export enum StationApi {
   CreateStation = '/admin/stations',
-  // GetStation = '/admin/stations',
+  GetListStation = '/managers/stations',
   GetStation = '/stations',
   GetShelfs = '/shelfs',
   Packages = '/packages',
@@ -88,14 +98,14 @@ const getStation = () => apiClient.get<StationGetRes>({ url: StationApi.GetStati
 
 export const useListStation = (values?: InputType) => {
   return useQuery(['listStation', values], () =>
-    apiClient.get<StationGetRes>({ url: StationApi.GetStation, params: values }),
+    apiClient.get<StationGetRes>({ url: StationApi.GetListStation, params: values }),
   );
 };
-export const useListZone = (values?: InputType) => {
+export const useListZone = (values?: any) => {
   return useQuery(['listZone', values], () =>
     apiClient.get<StationGetRes>({
-      url: `${StationApi.GetStation}/1/zones`,
-      params: values,
+      url: `${StationApi.GetStation}/${values}/zones`,
+      // params: values,
     }),
   );
 };
@@ -108,11 +118,11 @@ export const useListShelf = (values: String) => {
   );
 };
 
-export const useCreateZone = () => {
+export const useCreateZone = (values?: any) => {
   return useMutation(
     async (payload: ZonePayload) =>
       apiClient.post<StationCreateResponse>({
-        url: `${StationApi.GetStation}/1/zones`,
+        url: `${StationApi.GetStation}/${values}/zones`,
         data: payload,
       }),
     {
@@ -124,11 +134,11 @@ export const useCreateZone = () => {
     },
   );
 };
-export const useUpdateZone = () => {
+export const useUpdateZone = (values?: any) => {
   return useMutation(
     async (payload: ZonePayload) =>
       apiClient.put<StationCreateResponse>({
-        url: `${StationApi.GetStation}/1/zones/${payload.id}`,
+        url: `${StationApi.GetStation}/${values}/zones/${payload.id}`,
         data: {
           name: payload.name,
           description: payload.description,
@@ -143,11 +153,11 @@ export const useUpdateZone = () => {
     },
   );
 };
-export const useDeleteZone = () => {
+export const useDeleteZone = (values?: any) => {
   return useMutation(
     async (id: string) =>
       apiClient.delete<StationCreateResponse>({
-        url: `${StationApi.GetStation}/1/zones/${id}`,
+        url: `${StationApi.GetStation}/${values}/zones/${id}`,
       }),
     {
       onSuccess: () => {
@@ -260,20 +270,20 @@ export const useCreateCheckIn = () => {
     },
   );
 };
-export const useListStaff = (values?: InputType) => {
+export const useListStaff = (values?: any) => {
   return useQuery(['listStaff', values], () =>
     apiClient.get<StationGetRes>({
-      url: `${StationApi.GetStation}/1/staffs`,
-      params: values,
+      url: `${StationApi.GetStation}/${values}/staffs`,
+      // params: values,
     }),
   );
 };
 
-export const useCreateStaff = () => {
+export const useCreateStaff = (values?: any) => {
   return useMutation(
     async (payload: PostStaffPayload) =>
       apiClient.post<StationCreateResponse>({
-        url: `${StationApi.GetStation}/1/staffs`,
+        url: `${StationApi.GetStation}/${values}/staffs`,
         data: payload,
       }),
     {
@@ -285,11 +295,11 @@ export const useCreateStaff = () => {
     },
   );
 };
-export const useUpdateStaff = () => {
+export const useUpdateStaff = (values?: any) => {
   return useMutation(
     async (payload: PutStaffPayload) =>
       apiClient.put<StationCreateResponse>({
-        url: `${StationApi.GetStation}/1/staffs/${payload.id}`,
+        url: `${StationApi.GetStation}/${values}/staffs/${payload.id}`,
         data: {
           email: payload.email,
           fullName: payload.fullName,
@@ -306,11 +316,11 @@ export const useUpdateStaff = () => {
   );
 };
 
-export const useDeleteStaff = () => {
+export const useDeleteStaff = (values?: any) => {
   return useMutation(
     async (id: string) =>
       apiClient.delete<StationCreateResponse>({
-        url: `${StationApi.GetStation}/1/staffs/${id}`,
+        url: `${StationApi.GetStation}/${values}/staffs/${id}`,
       }),
     {
       onSuccess: () => {
@@ -322,20 +332,20 @@ export const useDeleteStaff = () => {
   );
 };
 
-export const useListPricing = (values?: InputType) => {
+export const useListPricing = (values?: any) => {
   return useQuery(['listPricing', values], () =>
     apiClient.get<StationGetRes>({
-      url: `${StationApi.GetStation}/1/pricings`,
-      params: values,
+      url: `${StationApi.GetStation}/${values}/pricings`,
+      // params: values,
     }),
   );
 };
 
-export const useCreatePricing = () => {
+export const useCreatePricing = (values?: any) => {
   return useMutation(
     async (payload: PricingPayload) =>
       apiClient.post<StationCreateResponse>({
-        url: `${StationApi.GetStation}/1/pricings`,
+        url: `${StationApi.GetStation}/${values}/pricings`,
         data: payload,
       }),
     {
@@ -347,11 +357,11 @@ export const useCreatePricing = () => {
     },
   );
 };
-export const useUpdatePricing = () => {
+export const useUpdatePricing = (values?: any) => {
   return useMutation(
     async (payload: PricingPayload) =>
       apiClient.put<StationCreateResponse>({
-        url: `${StationApi.GetStation}/1/pricings/${payload.id}`,
+        url: `${StationApi.GetStation}/${values}/pricings/${payload.id}`,
         data: {
           fromDate: payload.fromDate,
           toDate: payload.toDate,
@@ -368,11 +378,11 @@ export const useUpdatePricing = () => {
   );
 };
 
-export const useDeletePricing = () => {
+export const useDeletePricing = (values?: any) => {
   return useMutation(
     async (id: string) =>
       apiClient.delete<StationCreateResponse>({
-        url: `${StationApi.GetStation}/1/pricings/${id}`,
+        url: `${StationApi.GetStation}/${values}/pricings/${id}`,
       }),
     {
       onSuccess: () => {
@@ -402,5 +412,16 @@ export const useCreateCheckOut = () => {
         message.success('Create check in sucessfully');
       },
     },
+  );
+};
+export const useListPackages = (values?: string) => {
+  const valueCheckIn = 'Statuses=Initialized&Statuses=Paid';
+  const valueCheckOut = 'Statuses=Returned&Statuses=Completed';
+  return useQuery(['listPackages', values], () =>
+    apiClient.get<PackageGetRes>({
+      url: `${StationApi.Packages}?${
+        values === 'checkIn' ? valueCheckIn : valueCheckOut
+      }&PageSize=8`,
+    }),
   );
 };
