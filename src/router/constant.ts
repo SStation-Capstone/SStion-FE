@@ -35,7 +35,7 @@ const STATION_MANAGER_PERMISSION: Permission = {
   type: PermissionType.MENU,
   route: 'manager',
   order: 3,
-  component: '/manager/manager-list.container.tsx',
+  component: '/admin/manager/manager-list.container.tsx',
   // children: [
   //   {
   //     id: '8426999229400979',
@@ -58,7 +58,7 @@ const STATION_MANAGE_PERMISSION: Permission = {
   type: PermissionType.MENU,
   route: 'station',
   order: 2,
-  component: '/station/station-list.container.tsx',
+  component: '/admin/station/station-list.container.tsx',
   // children: [
   //   {
   //     id: '8426999229400979',

@@ -23,6 +23,7 @@ const PAGE_NOT_FOUND_ROUTE: AppRouteObject = {
 
 export default function Router() {
   const permissionRoutes = usePermissionRoutes();
+  console.log('per', permissionRoutes);
   const asyncRoutes: AppRouteObject = {
     path: '/',
     element: (
