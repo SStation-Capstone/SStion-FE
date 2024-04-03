@@ -15,7 +15,8 @@ import { StorageEnum } from '#/enum';
 const history = createBrowserHistory();
 
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_APP_BASE_API as string,
+  // baseURL: import.meta.env.VITE_APP_BASE_API as string,
+  baseURL: 'https://shipperstation.runasp.net/api',
   timeout: 50000,
   headers: { 'Content-Type': 'application/json;charset=utf-8' },
 });

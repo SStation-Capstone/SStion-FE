@@ -352,6 +352,10 @@ object {
 /*
 Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
 */
+#html5qr-code-full-region__scan_region{
+  display: flex;
+  justify-content: center;
+}
 
 img,
 video {
@@ -362,4 +366,222 @@ video {
 /* Make elements with the HTML hidden attribute stay hidden by default */
 [hidden] {
   display: none;
+}
+
+.bar-chart {
+  background: transparent
+    linear-gradient(62deg, #00369e 0%, #005cfd 53%, #a18dff 100%) 0% 0%
+    no-repeat padding-box;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px #0000001f;
+}
+
+.bar-chart line.apexcharts-xaxis-tick {
+  stroke: transparent;
+}
+
+.chart-vistior {
+  margin-top: 30px;
+}
+
+.chart-vistior h5 {
+  margin: 0;
+  font-weight: 700;
+}
+
+.ant-typography.lastweek {
+  color: #8c8c8c;
+  font-weight: 600;
+}
+
+.chart-visitor-count h4 {
+  margin: 0;
+  font-weight: 700;
+}
+
+.chart-visitor-count span {
+  color: rgb(0 0 0 / 65%);
+  font-weight: 600;
+}
+
+.linechart h5 {
+  margin: 0;
+  font-weight: 700;
+}
+
+.linechart {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bnb2 {
+  color: #52c41a;
+  font-weight: 700;
+}
+
+.sales ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sales ul li:first-child span.anticon {
+  color: #b37feb;
+}
+
+.sales ul li:last-child span.anticon {
+  color: #1890ff;
+}
+
+.sales ul li {
+  margin-bottom: 3px;
+  color: #8c8c8c;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.ant-card.criclebox {
+  border-radius: 12px;
+  box-shadow: 0 20px 27px #0000000d;
+}
+
+.ant-card.criclebox .project-ant {
+  padding-right: 24px;
+  padding-left: 24px;
+}
+
+.ant-card.criclebox table th {
+  padding: 14px 24px;
+}
+
+.cardbody .ant-card-body {
+  padding-right: 0;
+  padding-left: 0;
+}
+
+.project-ant h4 {
+  margin: 0;
+  color: #141414;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+span.blue {
+  margin-left: 5px;
+  color: #1890ff;
+  font-weight: 600;
+}
+
+.project-ant h5 {
+  margin: 0;
+  color: #141414;
+  font-weight: 700;
+}
+
+.project-ant {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.antd-pro-pages-dashboard-analysis-style-salesExtra a {
+  display: inline-block;
+  padding: 7px 10px;
+  color: #595959;
+  text-align: center;
+  border: 1px solid #d9d9d9;
+  border-right: 1px solid transparent;
+}
+
+.antd-pro-pages-dashboard-analysis-style-salesExtra a:last-child {
+  border-right: 1px solid #d9d9d9;
+  border-radius: 0 5px 5px 0;
+}
+
+.antd-pro-pages-dashboard-analysis-style-salesExtra a:first-child {
+  border-radius: 5px 0 0 5px;
+}
+
+.antd-pro-pages-dashboard-analysis-style-salesExtra a:hover {
+  color: #1890ff;
+  border: 1px solid #1890ff;
+}
+
+.antd-pro-pages-dashboard-analysis-style-salesExtra a.active {
+  color: #1890ff;
+  border: 1px solid #1890ff;
+}
+
+.ant-list-box th {
+  padding: 8px 0;
+  color: #8c8c8c;
+  font-weight: 600;
+  font-size: 12px;
+  text-align: left;
+  border-bottom: 1px solid #0000000d;
+}
+
+.ant-list-box td {
+  padding: 16px 25px;
+  font-weight: 600;
+  font-size: 12px;
+  white-space: nowrap;
+  text-align: left;
+  border-bottom: 1px solid #0000000d;
+}
+
+small.redtext {
+  color: red;
+}
+
+.avatar-sm {
+  width: 35px;
+}
+
+.package-avatar-title {
+  display: flex;
+  box-sizing: border-box;
+  margin-top: 0;
+  margin-bottom: .5em;
+  color: rgb(0 0 0 / 85%);
+  font-weight: 500;
+  font-size: 16px;
+} 
+
+.ant-progress-custom{
+  width: 50px!important;
+  height: 50px;
+}
+
+.ant-progress-custom.css-dev-only-do-not-override-1de8xem.ant-progress .ant-progress-inner{
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+}
+
+.ant-progress-custom.css-dev-only-do-not-override-1de8xem.ant-progress .ant-progress-bg{
+  height: 50px!important;
+  border-radius: 10px 5px 5px 10px;
+}
+
+.ant-progress-custom.css-dev-only-do-not-override-1de8xem.ant-progress .ant-progress-text{
+  position: sticky;
+  z-index: 1;
+  margin: 0;
+}
+
+.icon-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin-left: auto;
+  color: #fff;
+  line-height: 55px;
+  text-align: center;
+  background: #1890ff;
+  border-radius: .5rem;
 }

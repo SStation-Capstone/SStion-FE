@@ -116,13 +116,13 @@ export default function Nav(props: Props) {
     >
       <div className="relative flex h-20 items-center justify-center py-4">
         {collapsed ? (
-          <img src={LogoImg} alt="" className="p-4" />
+          <img src={LogoImg} alt="" className="w-56 p-4" />
         ) : (
-          <img src={LogoImg} alt="" className="p-4" />
+          <img src={LogoImg} alt="" className="w-56 p-4" />
         )}
         <button
           onClick={toggleCollapsed}
-          className="absolute right-0 top-7 z-50 hidden h-6 w-6 translate-x-1/2 cursor-pointer select-none rounded-full text-center !text-gray md:block"
+          className="!text-gray absolute right-0 top-7 z-50 hidden h-6 w-6 translate-x-1/2 cursor-pointer select-none rounded-full text-center md:block"
           style={{ color: colorTextBase, borderColor: colorTextBase, fontSize: 16 }}
         >
           {collapsed ? <MenuUnfoldOutlined size={20} /> : <MenuFoldOutlined size={20} />}

@@ -1,9 +1,9 @@
-import { Button, Card, Col, Form, Input, Pagination, Popconfirm, Row } from 'antd';
+import { Button, Card, Col, Form, Input, Pagination, Row } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import { useDeleteStation, useListStation } from '@/api/services/stationService';
-import { IconButton, Iconify } from '@/components/icon';
 import { CircleLoading } from '@/components/loading';
 
 import { ManageStationEdit } from './station.edit';
@@ -75,8 +75,25 @@ export default function ManageStationManagerList() {
       align: 'center',
       width: 100,
       render: (_, record) => (
-        <div className="flex w-full justify-center text-gray">
-          <IconButton onClick={() => onOpenFormHandler(record)}>
+        <div className="text-gray flex w-full items-center justify-center">
+          <div className="flex gap-2">
+            <Link to={`/zone/${record.id}`}>
+              <div className="flex cursor-pointer items-center rounded-md bg-blue-200 fill-blue-400 p-2 duration-100 hover:bg-blue-300 active:border active:border-blue-400">
+                <span className="text-sm font-bold text-blue-500">zone</span>
+              </div>
+            </Link>
+            <Link to={`/staff/${record.id}`}>
+              <div className="flex cursor-pointer items-center rounded-md bg-blue-200 fill-blue-400 p-2 duration-100 hover:bg-blue-300 active:border active:border-blue-400">
+                <span className="text-sm font-bold text-blue-500">staff</span>
+              </div>
+            </Link>
+            <Link to={`/pricing/${record.id}`}>
+              <div className="flex cursor-pointer items-center rounded-md bg-blue-200 fill-blue-400 p-2 duration-100 hover:bg-blue-300 active:border active:border-blue-400">
+                <span className="text-sm font-bold text-blue-500">pricing</span>
+              </div>
+            </Link>
+          </div>
+          {/* <IconButton onClick={() => onOpenFormHandler(record)}>
             <Iconify icon="solar:pen-bold-duotone" size={18} />
           </IconButton>
           <Popconfirm
@@ -91,7 +108,7 @@ export default function ManageStationManagerList() {
             <IconButton>
               <Iconify icon="mingcute:delete-2-fill" size={18} className="text-error" />
             </IconButton>
-          </Popconfirm>
+          </Popconfirm> */}
         </div>
       ),
     },
@@ -113,12 +130,12 @@ export default function ManageStationManagerList() {
 
   return (
     <Card
-      title="Station List"
-      extra={
-        <Button type="primary" onClick={() => onOpenFormHandler()}>
-          New
-        </Button>
-      }
+      title="List station"
+      // extra={
+      //   <Button type="primary" onClick={() => onOpenFormHandler()}>
+      //     New
+      //   </Button>
+      // }
     >
       <Form form={form} onFinish={onFinishHandler}>
         <Row gutter={24} justify="space-between">
