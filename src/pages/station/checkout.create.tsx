@@ -1,24 +1,21 @@
-import { Button, Modal, message, Descriptions, Col, Card, Row, Avatar, List } from 'antd';
+import { Button, message, Descriptions, Col, Card, Row, Avatar, List } from 'antd';
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 import { useGetCheckOut, useCreateCheckOut } from '@/api/services/stationService';
 import { CircleLoading } from '@/components/loading';
 
-export type CheckOutCreateFormProps = {
-  packageId: string;
-};
-export function ManageCheckOutCreate({ packageId }: CheckOutCreateFormProps) {
-  const { data, isLoading } = useGetCheckOut(packageId);
+export function ManageCheckOutCreate() {
+  const { id } = useParams();
+  const { data, isLoading } = useGetCheckOut(id);
   const { mutateAsync: createMutate } = useCreateCheckOut();
   const [loading, setLoading] = useState<boolean>(false);
-  const [showFormCheckOut, setShowFormCheckOut] = useState<boolean>(true);
   if (isLoading) return <CircleLoading />;
   const submitHandle = async (status: string) => {
     setLoading(true);
     try {
-      createMutate({ id: packageId, status });
+      createMutate({ id, status });
       setLoading(false);
-      setShowFormCheckOut(false);
     } catch (error) {
       message.error(error.message || error);
       console.log(error);
@@ -27,32 +24,32 @@ export function ManageCheckOutCreate({ packageId }: CheckOutCreateFormProps) {
   };
 
   return (
-    <Modal
+    <Card
       title="Check Out"
-      open={showFormCheckOut}
-      onCancel={() => setShowFormCheckOut(false)}
-      footer={[
-        <Button key="back" onClick={() => setShowFormCheckOut(false)}>
-          Cancel
-        </Button>,
-        <Button
-          key="submit"
-          type="primary"
-          loading={loading}
-          onClick={() => submitHandle('return')}
-        >
-          Return
-        </Button>,
-        <Button
-          key="submit"
-          type="primary"
-          loading={loading}
-          onClick={() => submitHandle('confirm')}
-        >
-          Confirm
-        </Button>,
-      ]}
-      width={1300}
+      extra={
+        <div className="flex gap-2">
+          {data === 'Canceled' && (
+            <Button
+              key="submit"
+              type="primary"
+              loading={loading}
+              onClick={() => submitHandle('return')}
+            >
+              Return
+            </Button>
+          )}
+          {data === 'Paid' && (
+            <Button
+              key="submit"
+              type="primary"
+              loading={loading}
+              onClick={() => submitHandle('confirm')}
+            >
+              Confirm
+            </Button>
+          )}
+        </div>
+      }
     >
       {data && (
         <>
@@ -143,6 +140,6 @@ export function ManageCheckOutCreate({ packageId }: CheckOutCreateFormProps) {
           </Row>
         </>
       )}
-    </Modal>
+    </Card>
   );
 }

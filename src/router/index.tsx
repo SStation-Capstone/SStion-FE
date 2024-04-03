@@ -2,9 +2,11 @@ import { lazy } from 'react';
 import { Navigate, RouteObject, RouterProvider, createHashRouter } from 'react-router-dom';
 
 import DashboardLayout from '@/layouts/dashboard';
-import PricingLayout from '@/layouts/dashboard/pricing';
-import StaffLayout from '@/layouts/dashboard/staff';
-import ZoneLayout from '@/layouts/dashboard/zone';
+import Layout from '@/layouts/dashboard/layout';
+import PricingManagerList from '@/pages/pricing/pricing-list.container';
+import StaffManagerList from '@/pages/staff/staff-list.user';
+import { ManageCheckOutCreate } from '@/pages/station/checkout.create';
+import ManageZoneManagerList from '@/pages/station/zone-list.container';
 import AuthGuard from '@/router/components/auth-guard';
 import { usePermissionRoutes } from '@/router/hooks';
 import { ErrorRoutes } from '@/router/routes/error-routes';
@@ -16,6 +18,7 @@ const LoginRoute: AppRouteObject = {
   path: '/login',
   Component: lazy(() => import('@/pages/sys/login/Login')),
 };
+
 const PAGE_NOT_FOUND_ROUTE: AppRouteObject = {
   path: '*',
   element: <Navigate to="/404" replace />,
@@ -36,7 +39,7 @@ export default function Router() {
     path: '/zone/:id',
     element: (
       <AuthGuard>
-        <ZoneLayout />
+        <Layout Component={<ManageZoneManagerList />} />
       </AuthGuard>
     ),
   };
@@ -44,7 +47,7 @@ export default function Router() {
     path: '/staff/:id',
     element: (
       <AuthGuard>
-        <StaffLayout />
+        <Layout Component={<StaffManagerList />} />
       </AuthGuard>
     ),
   };
@@ -52,7 +55,15 @@ export default function Router() {
     path: '/pricing/:id',
     element: (
       <AuthGuard>
-        <PricingLayout />
+        <Layout Component={<PricingManagerList />} />
+      </AuthGuard>
+    ),
+  };
+  const checkOutAsyncRoutes: AppRouteObject = {
+    path: '/checkout/:id',
+    element: (
+      <AuthGuard>
+        <Layout Component={<ManageCheckOutCreate />} />
       </AuthGuard>
     ),
   };
@@ -61,6 +72,7 @@ export default function Router() {
     pricingAsyncRoutes,
     staffAsyncRoutes,
     zoneAsyncRoutes,
+    checkOutAsyncRoutes,
     asyncRoutes,
     ErrorRoutes,
     PAGE_NOT_FOUND_ROUTE,

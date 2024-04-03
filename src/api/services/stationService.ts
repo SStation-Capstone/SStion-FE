@@ -395,7 +395,7 @@ export const useDeletePricing = (values?: any) => {
 };
 export const useGetCheckOut = (id?: string) => {
   return useQuery(['checkOut'], () =>
-    apiClient.get<StationGetRes>({
+    apiClient.get({
       url: `${StationApi.Packages}/${id}`,
     }),
   );

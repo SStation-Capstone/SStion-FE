@@ -352,6 +352,10 @@ object {
 /*
 Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
 */
+#html5qr-code-full-region__scan_region{
+  display: flex;
+  justify-content: center;
+}
 
 img,
 video {
@@ -566,4 +570,18 @@ small.redtext {
   position: sticky;
   z-index: 1;
   margin: 0;
+}
+
+.icon-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin-left: auto;
+  color: #fff;
+  line-height: 55px;
+  text-align: center;
+  background: #1890ff;
+  border-radius: .5rem;
 }

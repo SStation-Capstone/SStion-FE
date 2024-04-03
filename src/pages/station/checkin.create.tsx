@@ -1,14 +1,4 @@
-import {
-  Button,
-  Form,
-  Input,
-  Checkbox,
-  Upload,
-  UploadFile,
-  UploadProps,
-  Modal,
-  message,
-} from 'antd';
+import { Button, Form, Input, Upload, UploadFile, UploadProps, Modal, message } from 'antd';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -76,7 +66,7 @@ export function ManageCheckInCreate({ onClose }: CheckInCreateFormProps) {
         name: values.name,
         description: values.description,
         priceCod: values.priceCod,
-        isCod: values.isCod,
+        isCod: values.priceCod > 0,
         weight: values.weight,
         height: values.height,
         width: values.width,
@@ -160,22 +150,6 @@ export function ManageCheckInCreate({ onClose }: CheckInCreateFormProps) {
         >
           <Input.TextArea />
         </Form.Item>
-        <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
-          <Form.Item label="is Cod" name="isCod" valuePropName="checked">
-            <Checkbox />
-          </Form.Item>
-          <Form.Item
-            label="Price Cod"
-            name="priceCod"
-            required
-            rules={[
-              { required: true, message: 'Please input priceCod' },
-              { validator: validateNumber as any },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-        </div>
         <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-4">
           <Form.Item
             label="Weight"
@@ -244,6 +218,11 @@ export function ManageCheckInCreate({ onClose }: CheckInCreateFormProps) {
             ]}
           >
             <Input onChange={(e) => getUserInfoByPhoneNumber(e.target.value, setReceiverInfo)} />
+          </Form.Item>
+        </div>
+        <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
+          <Form.Item label="Price" name="priceCod" rules={[{ validator: validateNumber as any }]}>
+            <Input />
           </Form.Item>
         </div>
         <Form.Item label="package Images" name="avatarUrl" getValueFromEvent={normFile}>
