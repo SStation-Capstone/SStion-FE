@@ -1,12 +1,13 @@
-import { Drawer } from 'antd';
+import { Button, Drawer, Modal, message } from 'antd';
 import Color from 'color';
 import { CSSProperties, useState } from 'react';
 
-import { IconButton, SvgIcon } from '@/components/icon';
+import { IconButton, Iconify, SvgIcon } from '@/components/icon';
 // import LocalePicker from '@/components/locale-picker';
 // import { useSettings } from '@/store/settingStore';
 import { useSettings } from '@/store/settingStore';
 import { useResponsive, useThemeToken } from '@/theme/hooks';
+import { Html5QrcodePlugin } from '@/utils/Html5QrcodePlugin';
 
 import AccountDropdown from '../_common/account-dropdown';
 import BreadCrumb from '../_common/bread-crumb';
@@ -23,9 +24,26 @@ type Props = {
   offsetTop?: boolean;
 };
 export default function Header({ className = '', offsetTop = false }: Props) {
+  const [messageApi, contextHolder] = message.useMessage();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
+  const onNewScanResult = (decodedText: any) => {
+    const newWindow = window.open(decodedText, '_blank');
+    if (newWindow) {
+      newWindow.opener = null;
+      onClose();
+    } else {
+      messageApi.open({
+        type: 'error',
+        content: 'The new tab could not be opened. Please check your browser settings.',
+      });
+    }
+  };
+  const onClose = async () => {
+    setShowInfo(false);
+  };
   const { themeLayout } = useSettings();
-  const { colorBgElevated, colorBorder } = useThemeToken();
+  const { colorBgElevated } = useThemeToken();
   const { screenMap } = useResponsive();
 
   const headerStyle: CSSProperties = {
@@ -46,9 +64,10 @@ export default function Header({ className = '', offsetTop = false }: Props) {
 
   return (
     <>
+      {contextHolder}
       <header className={`z-20 w-full ${className}`} style={headerStyle}>
         <div
-          className="flex flex-grow items-center justify-between px-4 text-gray backdrop-blur xl:px-6 2xl:px-10"
+          className="text-gray flex flex-grow items-center justify-between px-4 backdrop-blur xl:px-6 2xl:px-10"
           style={{
             height: offsetTop ? OFFSET_HEADER_HEIGHT : HEADER_HEIGHT,
             transition: 'height 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
@@ -69,6 +88,9 @@ export default function Header({ className = '', offsetTop = false }: Props) {
             {/* <IconButton onClick={() => window.open('https://github.com/d3george/slash-admin')}>
               <Iconify icon="mdi:github" size={24} />
             </IconButton> */}
+            <IconButton onClick={() => setShowInfo(true)}>
+              <Iconify icon="streamline:qr-code-solid" size={24} />
+            </IconButton>
             <NoticeButton />
             {/* <SettingButton /> */}
             <AccountDropdown />
@@ -86,6 +108,26 @@ export default function Header({ className = '', offsetTop = false }: Props) {
       >
         <Nav closeSideBarDrawer={() => setDrawerOpen(false)} />
       </Drawer>
+      {showInfo && (
+        <Modal
+          title="Scan QR"
+          open
+          onCancel={() => onClose()}
+          footer={[
+            <Button key="back" onClick={onClose}>
+              Cancel
+            </Button>,
+          ]}
+          width={1000}
+        >
+          <Html5QrcodePlugin
+            fps={10}
+            qrbox={500}
+            disableFlip={false}
+            qrCodeSuccessCallback={onNewScanResult}
+          />
+        </Modal>
+      )}
     </>
   );
 }

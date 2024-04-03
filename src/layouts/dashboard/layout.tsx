@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import { CircleLoading } from '@/components/loading';
 import ProgressBar from '@/components/progress-bar';
 // import { useSettings } from '@/store/settingStore';
-import ManageZoneManagerList from '@/pages/station/zone-list.container';
 import { useThemeToken } from '@/theme/hooks';
 
 import Header from './header';
@@ -13,7 +12,8 @@ import Nav from './nav';
 
 import { ThemeMode } from '#/enum';
 
-function ZoneLayout() {
+// eslint-disable-next-line react/prop-types
+function Layout({ Component }: any) {
   const { colorTextBase } = useThemeToken();
   // const { themeLayout, themeMode } = useSettings();
 
@@ -52,9 +52,7 @@ function ZoneLayout() {
           width: '100vw',
         }}
       >
-        <div className="m-auto h-full w-full flex-grow sm:p-2 xl:max-w-screen-xl">
-          <ManageZoneManagerList />
-        </div>
+        <div className="m-auto h-full w-full flex-grow sm:p-2 xl:max-w-screen-xl">{Component}</div>
       </main>
     </>
   );
@@ -87,7 +85,7 @@ function ZoneLayout() {
     </StyleWrapper>
   );
 }
-export default ZoneLayout;
+export default Layout;
 
 const StyleWrapper = styled.div<{ $themeMode?: ThemeMode }>`
   /* 设置滚动条的整体样式 */
