@@ -16,11 +16,12 @@ type Props = {
 const Main = forwardRef<HTMLDivElement, Props>(({ offsetTop = false }, ref) => {
   const { themeLayout } = useSettings();
   const { screenMap } = useResponsive();
-  console.log('main', themeLayout, screenMap.md);
+
   const mainStyle: CSSProperties = {
     paddingTop: HEADER_HEIGHT + MULTI_TABS_HEIGHT,
     transition: 'padding 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
     width: '100%',
+    backgroundColor: '#fafafa',
   };
   if (themeLayout === ThemeLayout.Horizontal) {
     mainStyle.width = '100vw';

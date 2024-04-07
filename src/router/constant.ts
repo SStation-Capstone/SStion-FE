@@ -35,7 +35,7 @@ const STATION_MANAGER_PERMISSION: Permission = {
   type: PermissionType.MENU,
   route: 'manager',
   order: 3,
-  component: '/manager/manager-list.container.tsx',
+  component: '/admin/manager/manager-list.container.tsx',
   // children: [
   //   {
   //     id: '8426999229400979',
@@ -58,7 +58,7 @@ const STATION_MANAGE_PERMISSION: Permission = {
   type: PermissionType.MENU,
   route: 'station',
   order: 2,
-  component: '/station/station-list.container.tsx',
+  component: '/admin/station/station-list.container.tsx',
   // children: [
   //   {
   //     id: '8426999229400979',
@@ -119,7 +119,7 @@ const STATION_MANAGER_CONFIG_PERMISSION: Permission = {
 const STATION_MANAGER_PACKAGEMANAGEMENT_PERMISSION: Permission = {
   id: '9100714781927706',
   parentId: '',
-  label: 'PackageManagement',
+  label: 'Package Management',
   name: 'packagemanagement',
   icon: 'ic-package',
   type: PermissionType.CATALOGUE,
@@ -137,16 +137,16 @@ const STATION_MANAGER_PACKAGEMANAGEMENT_PERMISSION: Permission = {
       component: '/station/station-list.container.tsx',
       icon: 'ic-checkin',
     },
-    {
-      id: '8426999229400979',
-      parentId: '9100714781927706',
-      label: 'Check Out',
-      name: 'checkout',
-      type: PermissionType.MENU,
-      route: 'checkout/:id',
-      component: '/station/station-list.container.tsx',
-      icon: 'ic-checkout',
-    },
+    // {
+    //   id: '8426999229400979',
+    //   parentId: '9100714781927706',
+    //   label: 'Check Out',
+    //   name: 'checkout',
+    //   type: PermissionType.MENU,
+    //   route: 'checkout/:id',
+    //   component: '/station/station-list.container.tsx',
+    //   icon: 'ic-checkout',
+    // },
   ],
 };
 

@@ -75,7 +75,7 @@ function Layout({ Component }: any) {
         className="flex h-screen overflow-hidden"
         style={{
           color: colorTextBase,
-          background: '#fafafa',
+          background: '#EB1111',
           transition:
             'color 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, background 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
         }}
