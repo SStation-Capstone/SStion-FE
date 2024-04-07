@@ -82,6 +82,7 @@ export const useSignIn = () => {
           'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
         ].toLowerCase() === 'admin'
       ) {
+        console.log('admin');
         user.permissions = ADMIN_PERMISSION;
       } else if (
         decodetoken[
