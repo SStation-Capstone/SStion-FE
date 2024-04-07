@@ -75,7 +75,7 @@ const STATION_MANAGE_PERMISSION: Permission = {
 const STATION_MANAGER_CONFIG_PERMISSION: Permission = {
   id: '9100714781927705',
   parentId: '',
-  label: 'Configuration',
+  label: 'Config',
   name: 'config',
   icon: 'ic-configuration',
   type: PermissionType.CATALOGUE,
