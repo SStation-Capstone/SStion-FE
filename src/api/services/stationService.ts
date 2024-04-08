@@ -421,7 +421,7 @@ export const useListPackages = (values?: string) => {
     apiClient.get<PackageGetRes>({
       url: `${StationApi.Packages}?${
         values === 'checkIn' ? valueCheckIn : valueCheckOut
-      }&PageSize=8`,
+      }&PageSize=7`,
     }),
   );
 };
