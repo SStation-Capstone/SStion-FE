@@ -50,13 +50,14 @@ export interface PutStaffPayload {
   fullName: string;
   avatarUrl: string;
 }
+
 export interface ShelfPayload {
   name: string;
   description: string;
-  index: number;
-  width: number;
-  height: number;
-  length: number;
+  // index: number;
+  // width: number;
+  // height: number;
+  // length: number;
   zoneId: any;
   numberOfRacks: number;
   numberOfSlotsPerRack: number;
@@ -72,6 +73,24 @@ export interface CheckInPayload {
   width: number;
   length: number;
   stationId: number;
+  zoneId: number;
+  shelfId: any;
+  rackId: any;
+  slotId: any;
+  senderId: string;
+  receiverId: string;
+  packageImages: any[];
+}
+export interface CheckInForcePayload {
+  name: string;
+  description: string;
+  priceCod: number;
+  isCod: boolean;
+  weight: number;
+  height: number;
+  width: number;
+  length: number;
+  slotId: any;
   senderId: string;
   receiverId: string;
   packageImages: any[];
@@ -89,6 +108,8 @@ export enum StationApi {
   GetShelfs = '/shelfs',
   Packages = '/packages',
   Staffs = '/staffs',
+  Racks = '/racks',
+  Slots = '/slots',
 }
 
 const createStation = (data: StationPayload) =>
@@ -218,9 +239,6 @@ export const useUpdateStation = () => {
   );
 };
 
-/**
- * 新建
- */
 export const useCreateStation = () => {
   return useMutation(
     async (payload: StationPayload) =>
@@ -266,6 +284,22 @@ export const useCreateCheckIn = () => {
         // globalSuccess();
         message.success('Create check in sucessfully');
         queryClient.invalidateQueries(['listCheckIn']);
+      },
+    },
+  );
+};
+export const useCreateCheckInForce = () => {
+  return useMutation(
+    async (payload: CheckInForcePayload) =>
+      apiClient.post<StationCreateResponse>({
+        url: `${StationApi.Packages}/force`,
+        data: payload,
+      }),
+    {
+      onSuccess: () => {
+        // globalSuccess();
+        message.success('Create check in sucessfully');
+        queryClient.invalidateQueries(['listShelf']);
       },
     },
   );
@@ -400,6 +434,13 @@ export const useGetCheckOut = (id?: string) => {
     }),
   );
 };
+export const useGetPackageBySlot = (id?: string) => {
+  return useQuery(['package'], () =>
+    apiClient.get({
+      url: `${StationApi.Packages}?SlotId=${id}`,
+    }),
+  );
+};
 export const useCreateCheckOut = () => {
   return useMutation(
     async (payload: any) =>
@@ -423,5 +464,109 @@ export const useListPackages = (values?: string) => {
         values === 'checkIn' ? valueCheckIn : valueCheckOut
       }&PageSize=7`,
     }),
+  );
+};
+export const useCreateRack = () => {
+  return useMutation(
+    async (payload) =>
+      apiClient.post<StationCreateResponse>({
+        url: `${StationApi.Racks}`,
+        data: payload,
+      }),
+    {
+      onSuccess: () => {
+        // globalSuccess();
+        message.success('Create rack sucessfully');
+        queryClient.invalidateQueries(['listShelf']);
+      },
+    },
+  );
+};
+export const useUpdateRack = () => {
+  return useMutation(
+    async (payload: any) =>
+      apiClient.put<StationCreateResponse>({
+        url: `${StationApi.Racks}/${payload.id}`,
+        data: {
+          name: payload.name,
+          description: payload.description,
+        },
+      }),
+    {
+      onSuccess: () => {
+        // globalSuccess();
+        message.success('update rack sucessfully');
+        queryClient.invalidateQueries(['listShelf']);
+      },
+    },
+  );
+};
+export const useDeleteRack = () => {
+  return useMutation(
+    async (id: string) =>
+      apiClient.delete<StationCreateResponse>({
+        url: `${StationApi.Racks}/${id}`,
+      }),
+    {
+      onSuccess: () => {
+        // globalSuccess();
+        message.success('Delete rack sucessfully');
+        queryClient.invalidateQueries(['listShelf']);
+      },
+    },
+  );
+};
+export const useCreateSlot = () => {
+  return useMutation(
+    async (payload) =>
+      apiClient.post<StationCreateResponse>({
+        url: `${StationApi.Slots}`,
+        data: payload,
+      }),
+    {
+      onSuccess: () => {
+        // globalSuccess();
+        message.success('Create slot sucessfully');
+        queryClient.invalidateQueries(['listShelf']);
+      },
+    },
+  );
+};
+export const useUpdateSlot = () => {
+  return useMutation(
+    async (payload: any) =>
+      apiClient.put<StationCreateResponse>({
+        url: `${StationApi.Slots}/${payload.id}`,
+        data: {
+          name: payload.name,
+          description: payload.description,
+          width: payload.width,
+          height: payload.height,
+          length: payload.length,
+          isActive: payload.isActive,
+        },
+      }),
+    {
+      onSuccess: () => {
+        // globalSuccess();
+        message.success('update slot sucessfully');
+        queryClient.invalidateQueries(['listShelf']);
+      },
+    },
+  );
+};
+export const useDeleteSlot = () => {
+  return useMutation(
+    async (id: string) =>
+      apiClient.delete<StationCreateResponse>({
+        url: `${StationApi.Slots}/${id}`,
+      }),
+    {
+      onSuccess: () => {
+        // globalSuccess();
+        message.success('Delete slot sucessfully');
+        queryClient.invalidateQueries(['listShelf']);
+      },
+    },
   );
 };

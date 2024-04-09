@@ -2,7 +2,12 @@ import { Button, Form, Input, Upload, UploadFile, UploadProps, Modal, message, S
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { CheckInPayload, useCreateCheckIn } from '@/api/services/stationService';
+import {
+  CheckInPayload,
+  // useCreateCheckIn,
+  useCreateCheckInForce,
+} from '@/api/services/stationService';
+import { queryClient } from '@/http/tanstack/react-query';
 import { beforeUpload, fakeUpload, normFile, uploadFileToFirebase } from '@/utils/file';
 import { getItem } from '@/utils/storage';
 
@@ -10,12 +15,15 @@ import { UserToken } from '#/entity';
 import { StorageEnum } from '#/enum';
 
 export type CheckInCreateFormProps = {
+  zoneId?: any;
+  slotId?: any;
   onClose: () => void;
 };
-export function ManageCheckInCreate({ onClose }: CheckInCreateFormProps) {
+export function ManageCheckInCreate({ zoneId, slotId, onClose }: CheckInCreateFormProps) {
   const [form] = Form.useForm();
   const { id } = useParams();
-  const { mutateAsync: createMutate } = useCreateCheckIn();
+  // const { mutateAsync: createMutate } = useCreateCheckIn();
+  const { mutateAsync: createForceMutate } = useCreateCheckInForce();
   const [loading, setLoading] = useState<boolean>(false);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [senderInfo, setSenderInfo] = useState<any>([]);
@@ -46,9 +54,9 @@ export function ManageCheckInCreate({ onClose }: CheckInCreateFormProps) {
 
   // eslint-disable-next-line consistent-return
   const submitHandle = async () => {
-    const values = await form.validateFields();
     try {
       setLoading(true);
+      const values = await form.validateFields();
       const createData: CheckInPayload = {
         name: values.name,
         description: values.description,
@@ -59,6 +67,10 @@ export function ManageCheckInCreate({ onClose }: CheckInCreateFormProps) {
         width: values.width,
         length: values.length,
         stationId: id as unknown as number,
+        zoneId: zoneId as unknown as number,
+        shelfId: null,
+        rackId: null,
+        slotId: slotId ? (slotId as unknown as number) : null,
         senderId: values.senderId,
         receiverId: values.receiverId,
         packageImages: [],
@@ -73,12 +85,40 @@ export function ManageCheckInCreate({ onClose }: CheckInCreateFormProps) {
         }
         createData.packageImages = imageUrls;
       }
-      createMutate(createData);
+      // createMutate(createData);
+      const accessToken = getItem(StorageEnum.Token) as unknown as UserToken;
+      const response = await fetch(`${import.meta.env.VITE_APP_BASE_API}/packages`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken.accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(createData),
+      });
+      if (response.status === 200) {
+        message.success('Create check in sucessfully');
+        queryClient.invalidateQueries(['listZone']);
+      } else {
+        message.error('Please check in the slots');
+      }
+      if (response.status === 404) {
+        if (slotId) {
+          try {
+            // eslint-disable-next-line unused-imports/no-unused-vars-ts, @typescript-eslint/no-unused-vars
+            const { stationId, zoneId, shelfId, rackId, ...rest } = createData;
+            createForceMutate(rest);
+            setLoading(false);
+            onClose();
+          } catch (error) {
+            setLoading(false);
+          }
+        } else {
+          message.error('Please check in the slots');
+        }
+      }
       setLoading(false);
       onClose();
     } catch (error) {
-      message.error(error.message || error);
-      console.log(error);
       setLoading(false);
     }
   };
@@ -105,12 +145,9 @@ export function ManageCheckInCreate({ onClose }: CheckInCreateFormProps) {
   const onImageChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
     setFileList(newFileList);
   };
-  const onChange = (value: string) => {
-    console.log(`selected ${value}`);
-  };
+  const onChange = (_value: string) => {};
 
   const onSearch = (value: string, setState: Function) => {
-    console.log('search:', value);
     getUserInfoByPhoneNumber(value, setState);
   };
 

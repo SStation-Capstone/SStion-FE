@@ -247,7 +247,7 @@ export default function MenuLevel() {
                         </td>
                         <td>
                           <div className="percent-progress">
-                            <Progress percent={d.priceCod} size="small" />
+                            <Progress percent={d.priceCod as any} size="small" />
                           </div>
                         </td>
                       </tr>
