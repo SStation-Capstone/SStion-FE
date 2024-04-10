@@ -1,7 +1,7 @@
 import { Button, message, Descriptions, Col, Card, Row, Avatar, List, Modal } from 'antd';
 import { useState } from 'react';
 
-import { useGetPackageBySlot } from '@/api/services/stationService';
+import { useDeletePackage, useGetPackageBySlot } from '@/api/services/stationService';
 import { CircleLoading } from '@/components/loading';
 
 import { ManageCheckInCreate } from './checkin.create';
@@ -12,7 +12,8 @@ export type PackagesFormProps = {
   onClose: () => void;
 };
 export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
-  const { data, isLoading } = useGetPackageBySlot(clickOne.numberOfPackages);
+  const { data, isLoading } = useGetPackageBySlot(clickOne.id);
+  const { mutateAsync: deleteMutate } = useDeletePackage();
   const [loading, setLoading] = useState<boolean>(false);
   const [showFormCheckIn, setShowFormCheckIn] = useState(false);
   if (isLoading) return <CircleLoading />;
@@ -22,6 +23,7 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
   const submitHandle = async () => {
     setLoading(true);
     try {
+      setLoading(false);
       onClose();
     } catch (error) {
       message.error(error.message || error);
@@ -29,8 +31,19 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
       setLoading(false);
     }
   };
-  const updateHandle = async () => {};
-  const deleteHandle = async () => {};
+  // const updateHandle = async () => {};
+  const deleteHandle = async () => {
+    setLoading(true);
+    try {
+      deleteMutate(data.contends[0].id.toString());
+      setLoading(false);
+      onClose();
+    } catch (error) {
+      message.error(error.message || error);
+      console.log(error);
+      setLoading(false);
+    }
+  };
 
   return (
     <Modal
@@ -43,15 +56,20 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
         <Button key="back" onClick={onClose}>
           Cancel
         </Button>,
+        // data.contends.length > 0 && (
+        //   <Button key="submit" type="primary" loading={loading} onClick={updateHandle}>
+        //     Update
+        //   </Button>
+        // ),
         data.contends.length > 0 && (
-          <Button key="submit" type="primary" loading={loading} onClick={updateHandle}>
-            Update
-          </Button>
-        ),
-        data.contends.length > 0 && (
-          <Button key="submit" type="primary" loading={loading} onClick={deleteHandle}>
-            Delete
-          </Button>
+          // eslint-disable-next-line react/jsx-no-useless-fragment
+          <>
+            {data.contends[0].name && (
+              <Button key="submit" type="primary" loading={loading} onClick={deleteHandle}>
+                Delete
+              </Button>
+            )}
+          </>
         ),
         <Button key="submit" type="primary" onClick={() => setShowFormCheckIn(true)}>
           Check In
@@ -154,7 +172,12 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
           )
         : 'not found'}
       {showFormCheckIn && (
-        <ManageCheckInCreate zoneId={zoneId} slotId={clickOne.id} onClose={closeFormCheckIn} />
+        <ManageCheckInCreate
+          zoneId={zoneId}
+          slotId={clickOne.id}
+          onClose={closeFormCheckIn}
+          onCloseCheckIn={onClose}
+        />
       )}
     </Modal>
   );

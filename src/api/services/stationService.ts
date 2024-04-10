@@ -304,6 +304,22 @@ export const useCreateCheckInForce = () => {
     },
   );
 };
+export const useDeletePackage = () => {
+  return useMutation(
+    async (id: string) =>
+      apiClient.delete<StationCreateResponse>({
+        url: `${StationApi.Packages}/${id}`,
+      }),
+    {
+      onSuccess: () => {
+        // globalSuccess();
+        message.success('Delete packages sucessfully');
+        queryClient.invalidateQueries(['listShelf']);
+        queryClient.invalidateQueries(['package']);
+      },
+    },
+  );
+};
 export const useListStaff = (values?: any) => {
   return useQuery(['listStaff', values], () =>
     apiClient.get<StationGetRes>({

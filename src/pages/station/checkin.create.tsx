@@ -1,4 +1,15 @@
-import { Button, Form, Input, Upload, UploadFile, UploadProps, Modal, message, Select } from 'antd';
+import {
+  Button,
+  Form,
+  Input,
+  Upload,
+  UploadFile,
+  UploadProps,
+  Modal,
+  message,
+  Select,
+  Alert,
+} from 'antd';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -18,14 +29,22 @@ export type CheckInCreateFormProps = {
   zoneId?: any;
   slotId?: any;
   onClose: () => void;
+  onCloseCheckIn: () => void;
 };
-export function ManageCheckInCreate({ zoneId, slotId, onClose }: CheckInCreateFormProps) {
+export function ManageCheckInCreate({
+  zoneId,
+  slotId,
+  onClose,
+  onCloseCheckIn,
+}: CheckInCreateFormProps) {
   const [form] = Form.useForm();
   const { id } = useParams();
   // const { mutateAsync: createMutate } = useCreateCheckIn();
   const { mutateAsync: createForceMutate } = useCreateCheckInForce();
   const [loading, setLoading] = useState<boolean>(false);
+  const [visible, setVisible] = useState(false);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [dataForce, setDataForce] = useState<any>({});
   const [senderInfo, setSenderInfo] = useState<any>([]);
   const [receiverInfo, setReceiverInfo] = useState<any>([]);
   const getUserInfoByPhoneNumber = async (phoneNumber: string, setState: Function) => {
@@ -85,6 +104,7 @@ export function ManageCheckInCreate({ zoneId, slotId, onClose }: CheckInCreateFo
         }
         createData.packageImages = imageUrls;
       }
+      setDataForce(createData);
       // createMutate(createData);
       const accessToken = getItem(StorageEnum.Token) as unknown as UserToken;
       const response = await fetch(`${import.meta.env.VITE_APP_BASE_API}/packages`, {
@@ -97,28 +117,40 @@ export function ManageCheckInCreate({ zoneId, slotId, onClose }: CheckInCreateFo
       });
       if (response.status === 200) {
         message.success('Create check in sucessfully');
-        queryClient.invalidateQueries(['listZone']);
-      } else {
-        message.error('Please check in the slots');
+        return await queryClient.invalidateQueries(['listShelf']);
       }
       if (response.status === 404) {
         if (slotId) {
           try {
-            // eslint-disable-next-line unused-imports/no-unused-vars-ts, @typescript-eslint/no-unused-vars
-            const { stationId, zoneId, shelfId, rackId, ...rest } = createData;
-            createForceMutate(rest);
-            setLoading(false);
-            onClose();
+            return setVisible(true);
           } catch (error) {
             setLoading(false);
           }
         } else {
           message.error('Please check in the slots');
         }
+      } else {
+        message.error('Please check in the slots');
       }
       setLoading(false);
       onClose();
+      onCloseCheckIn();
     } catch (error) {
+      setLoading(false);
+    }
+  };
+  const handleAccept = async () => {
+    try {
+      // eslint-disable-next-line unused-imports/no-unused-vars-ts, @typescript-eslint/no-unused-vars
+      const { stationId, zoneId, shelfId, rackId, ...rest } = dataForce;
+      createForceMutate(rest);
+      setVisible(false);
+      setLoading(false);
+      onClose();
+      onCloseCheckIn();
+    } catch (error) {
+      message.error(error.message || error);
+      console.log(error);
       setLoading(false);
     }
   };
@@ -153,7 +185,6 @@ export function ManageCheckInCreate({ zoneId, slotId, onClose }: CheckInCreateFo
 
   const filterOption = (input: string, option?: { label: string; value: string }) =>
     (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
-
   return (
     <Modal
       title="Create Check In"
@@ -286,6 +317,25 @@ export function ManageCheckInCreate({ zoneId, slotId, onClose }: CheckInCreateFo
           </Upload>
         </Form.Item>
       </Form>
+      {visible && (
+        <Alert
+          message="The slot is almost full"
+          showIcon
+          description="Do you want to force?"
+          type="info"
+          action={
+            <div className="absolute bottom-4 right-4 flex gap-2">
+              <Button size="small" type="primary" onClick={handleAccept}>
+                Accept
+              </Button>
+              <Button size="small" danger ghost onClick={onClose}>
+                Decline
+              </Button>
+            </div>
+          }
+          closable
+        />
+      )}
     </Modal>
   );
 }
