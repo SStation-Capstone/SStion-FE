@@ -1,8 +1,24 @@
-import { Button, Form, Input, Upload, UploadFile, UploadProps, Modal, message } from 'antd';
-import { useEffect, useState } from 'react';
+import {
+  Button,
+  Form,
+  Input,
+  Upload,
+  UploadFile,
+  UploadProps,
+  Modal,
+  message,
+  Select,
+  Alert,
+} from 'antd';
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { CheckInPayload, useCreateCheckIn } from '@/api/services/stationService';
+import {
+  CheckInPayload,
+  // useCreateCheckIn,
+  useCreateCheckInForce,
+} from '@/api/services/stationService';
+import { queryClient } from '@/http/tanstack/react-query';
 import { beforeUpload, fakeUpload, normFile, uploadFileToFirebase } from '@/utils/file';
 import { getItem } from '@/utils/storage';
 
@@ -10,21 +26,32 @@ import { UserToken } from '#/entity';
 import { StorageEnum } from '#/enum';
 
 export type CheckInCreateFormProps = {
+  zoneId?: any;
+  slotId?: any;
   onClose: () => void;
+  onCloseCheckIn: () => void;
 };
-export function ManageCheckInCreate({ onClose }: CheckInCreateFormProps) {
+export function ManageCheckInCreate({
+  zoneId,
+  slotId,
+  onClose,
+  onCloseCheckIn,
+}: CheckInCreateFormProps) {
   const [form] = Form.useForm();
   const { id } = useParams();
-  const { mutateAsync: createMutate } = useCreateCheckIn();
+  // const { mutateAsync: createMutate } = useCreateCheckIn();
+  const { mutateAsync: createForceMutate } = useCreateCheckInForce();
   const [loading, setLoading] = useState<boolean>(false);
+  const [visible, setVisible] = useState(false);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const [senderInfo, setSenderInfo] = useState<any>(null);
-  const [receiverInfo, setReceiverInfo] = useState<any>(null);
+  const [dataForce, setDataForce] = useState<any>({});
+  const [senderInfo, setSenderInfo] = useState<any>([]);
+  const [receiverInfo, setReceiverInfo] = useState<any>([]);
   const getUserInfoByPhoneNumber = async (phoneNumber: string, setState: Function) => {
     try {
       const accessToken = getItem(StorageEnum.Token) as unknown as UserToken;
       const response = await fetch(
-        `${import.meta.env.VITE_APP_BASE_API}/staffs/users/phone/${phoneNumber}`,
+        `${import.meta.env.VITE_APP_BASE_API}/staffs/users?Search=${phoneNumber}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken.accessToken}`,
@@ -32,36 +59,23 @@ export function ManageCheckInCreate({ onClose }: CheckInCreateFormProps) {
         },
       );
       const data = await response.json();
-      setState(data);
+      const transformedData = data.contends.map(
+        (item: { id: any; phoneNumber: any; fullName: any }) => ({
+          value: item.id,
+          label: `${item.phoneNumber} - ${item.fullName}`,
+        }),
+      );
+      setState(transformedData);
     } catch (error) {
       console.error('Error fetching user info:', error);
     }
   };
 
-  useEffect(() => {
-    const phoneSenderValue = form.getFieldValue('senderId');
-    if (phoneSenderValue) {
-      getUserInfoByPhoneNumber(phoneSenderValue, setSenderInfo);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [form.getFieldValue('senderId')]);
-
-  useEffect(() => {
-    const phoneReceiverValue = form.getFieldValue('receiverId');
-    if (phoneReceiverValue) {
-      getUserInfoByPhoneNumber(phoneReceiverValue, setReceiverInfo);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [form.getFieldValue('receiverId')]);
-
   // eslint-disable-next-line consistent-return
   const submitHandle = async () => {
-    const values = await form.validateFields();
     try {
       setLoading(true);
-      if (!senderInfo.id || !receiverInfo.id) {
-        throw new Error('Sender or receiver information is missing.');
-      }
+      const values = await form.validateFields();
       const createData: CheckInPayload = {
         name: values.name,
         description: values.description,
@@ -72,8 +86,12 @@ export function ManageCheckInCreate({ onClose }: CheckInCreateFormProps) {
         width: values.width,
         length: values.length,
         stationId: id as unknown as number,
-        senderId: senderInfo.id,
-        receiverId: receiverInfo.id,
+        zoneId: zoneId as unknown as number,
+        shelfId: null,
+        rackId: null,
+        slotId: slotId ? (slotId as unknown as number) : null,
+        senderId: values.senderId,
+        receiverId: values.receiverId,
         packageImages: [],
       };
       if (values.avatarUrl && values.avatarUrl.length > 0) {
@@ -86,9 +104,50 @@ export function ManageCheckInCreate({ onClose }: CheckInCreateFormProps) {
         }
         createData.packageImages = imageUrls;
       }
-      createMutate(createData);
+      setDataForce(createData);
+      // createMutate(createData);
+      const accessToken = getItem(StorageEnum.Token) as unknown as UserToken;
+      const response = await fetch(`${import.meta.env.VITE_APP_BASE_API}/packages`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken.accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(createData),
+      });
+      if (response.status === 200) {
+        message.success('Create check in sucessfully');
+        return await queryClient.invalidateQueries(['listShelf']);
+      }
+      if (response.status === 404) {
+        if (slotId) {
+          try {
+            return setVisible(true);
+          } catch (error) {
+            setLoading(false);
+          }
+        } else {
+          message.error('Please check in the slots');
+        }
+      } else {
+        message.error('Please check in the slots');
+      }
       setLoading(false);
       onClose();
+      onCloseCheckIn();
+    } catch (error) {
+      setLoading(false);
+    }
+  };
+  const handleAccept = async () => {
+    try {
+      // eslint-disable-next-line unused-imports/no-unused-vars-ts, @typescript-eslint/no-unused-vars
+      const { stationId, zoneId, shelfId, rackId, ...rest } = dataForce;
+      createForceMutate(rest);
+      setVisible(false);
+      setLoading(false);
+      onClose();
+      onCloseCheckIn();
     } catch (error) {
       message.error(error.message || error);
       console.log(error);
@@ -118,6 +177,14 @@ export function ManageCheckInCreate({ onClose }: CheckInCreateFormProps) {
   const onImageChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
     setFileList(newFileList);
   };
+  const onChange = (_value: string) => {};
+
+  const onSearch = (value: string, setState: Function) => {
+    getUserInfoByPhoneNumber(value, setState);
+  };
+
+  const filterOption = (input: string, option?: { label: string; value: string }) =>
+    (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
   return (
     <Modal
       title="Create Check In"
@@ -134,14 +201,19 @@ export function ManageCheckInCreate({ onClose }: CheckInCreateFormProps) {
       ]}
     >
       <Form form={form} layout="vertical">
-        <Form.Item
-          label="Name"
-          name="name"
-          required
-          rules={[{ required: true, message: 'Please input shelf name' }]}
-        >
-          <Input />
-        </Form.Item>
+        <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
+          <Form.Item
+            label="Name"
+            name="name"
+            required
+            rules={[{ required: true, message: 'Please input shelf name' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item label="Price" name="priceCod" rules={[{ validator: validateNumber as any }]}>
+            <Input />
+          </Form.Item>
+        </div>
         <Form.Item
           label="Description"
           name="description"
@@ -198,31 +270,36 @@ export function ManageCheckInCreate({ onClose }: CheckInCreateFormProps) {
         </div>
         <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
           <Form.Item
-            label={`Phone Sender (${senderInfo ? senderInfo.fullName : 'not found'})`}
+            label="Phone Sender"
             name="senderId"
             required
-            rules={[
-              { required: true, message: 'Please input senderId' },
-              { validator: validateNumber as any },
-            ]}
+            rules={[{ required: true, message: 'Please input senderId' }]}
           >
-            <Input onChange={(e) => getUserInfoByPhoneNumber(e.target.value, setSenderInfo)} />
+            <Select
+              showSearch
+              placeholder="Select a senderId"
+              optionFilterProp="children"
+              onChange={onChange}
+              onSearch={(value) => onSearch(value, setSenderInfo)}
+              filterOption={filterOption}
+              options={senderInfo}
+            />
           </Form.Item>
           <Form.Item
-            label={`Phone Receiver (${receiverInfo ? receiverInfo.fullName : 'not found'})`}
+            label="Phone Receiver"
             name="receiverId"
             required
-            rules={[
-              { required: true, message: 'Please input receiverId' },
-              { validator: validateNumber as any },
-            ]}
+            rules={[{ required: true, message: 'Please input receiverId' }]}
           >
-            <Input onChange={(e) => getUserInfoByPhoneNumber(e.target.value, setReceiverInfo)} />
-          </Form.Item>
-        </div>
-        <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
-          <Form.Item label="Price" name="priceCod" rules={[{ validator: validateNumber as any }]}>
-            <Input />
+            <Select
+              showSearch
+              placeholder="Select a receiverId"
+              optionFilterProp="children"
+              onChange={onChange}
+              onSearch={(value) => onSearch(value, setReceiverInfo)}
+              filterOption={filterOption}
+              options={receiverInfo}
+            />
           </Form.Item>
         </div>
         <Form.Item label="package Images" name="avatarUrl" getValueFromEvent={normFile}>
@@ -240,6 +317,25 @@ export function ManageCheckInCreate({ onClose }: CheckInCreateFormProps) {
           </Upload>
         </Form.Item>
       </Form>
+      {visible && (
+        <Alert
+          message="The slot is almost full"
+          showIcon
+          description="Do you want to force?"
+          type="info"
+          action={
+            <div className="absolute bottom-4 right-4 flex gap-2">
+              <Button size="small" type="primary" onClick={handleAccept}>
+                Accept
+              </Button>
+              <Button size="small" danger ghost onClick={onClose}>
+                Decline
+              </Button>
+            </div>
+          }
+          closable
+        />
+      )}
     </Modal>
   );
 }

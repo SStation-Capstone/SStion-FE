@@ -1,4 +1,4 @@
-import { Button, Card, Col, Form, Input, Pagination, Row } from 'antd';
+import { Avatar, Button, Card, Col, Form, Input, Pagination, Row, Typography } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -10,6 +10,8 @@ import { ManageStationEdit } from './station.edit';
 
 import { InputType } from '#/api';
 import { Station } from '#/entity';
+
+const { Title } = Typography;
 
 const DEFAULE_ROLE_VALUE: Station = {
   id: -1,
@@ -45,8 +47,25 @@ export default function ManageStationManagerList() {
   };
   const columns: ColumnsType<Station> = [
     {
-      title: 'Id',
-      dataIndex: 'id',
+      title: 'No',
+      dataIndex: 'no',
+      // eslint-disable-next-line no-plusplus
+      render: (_text, _data, index) => <Title level={5}>{++index}</Title>,
+      width: '5%',
+    },
+    {
+      title: 'Images',
+      dataIndex: 'stationImages',
+      render: (_, record) => (
+        <Avatar.Group>
+          <Avatar
+            className="shape-avatar"
+            shape="square"
+            size={40}
+            src={record.stationImages[0].imageUrl}
+          />
+        </Avatar.Group>
+      ),
     },
     {
       title: 'Name',

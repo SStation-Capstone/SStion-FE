@@ -21,10 +21,10 @@ export function ManageShelfCreate({ clickOne, onClose }: ZoneCreateFormProps) {
       const createData: ShelfPayload = {
         name: values.name,
         description: values.description,
-        index: values.index,
-        width: values.width,
-        height: values.height,
-        length: values.length,
+        // index: values.index,
+        // width: values.width,
+        // height: values.height,
+        // length: values.length,
         zoneId: clickOne?.id,
         numberOfRacks: values.numberOfRacks,
         numberOfSlotsPerRack: values.numberOfSlotsPerRack,
@@ -88,7 +88,7 @@ export function ManageShelfCreate({ clickOne, onClose }: ZoneCreateFormProps) {
           <Input.TextArea />
         </Form.Item>
         <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
-          <Form.Item
+          {/* <Form.Item
             label="Width"
             name="width"
             required
@@ -120,7 +120,7 @@ export function ManageShelfCreate({ clickOne, onClose }: ZoneCreateFormProps) {
             ]}
           >
             <Input />
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item
             label="Width Slot"
             name="widthSlot"
@@ -154,7 +154,7 @@ export function ManageShelfCreate({ clickOne, onClose }: ZoneCreateFormProps) {
           >
             <Input />
           </Form.Item>
-          <Form.Item
+          {/* <Form.Item
             label="Index"
             name="index"
             required
@@ -164,7 +164,7 @@ export function ManageShelfCreate({ clickOne, onClose }: ZoneCreateFormProps) {
             ]}
           >
             <Input />
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item
             label="Number Racks"
             name="numberOfRacks"
