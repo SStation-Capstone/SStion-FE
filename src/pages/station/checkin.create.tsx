@@ -117,7 +117,10 @@ export function ManageCheckInCreate({
       });
       if (response.status === 200) {
         message.success('Create check in sucessfully');
-        return await queryClient.invalidateQueries(['listShelf']);
+        await queryClient.invalidateQueries(['listShelf']);
+        setLoading(false);
+        onClose();
+        return onCloseCheckIn();
       }
       if (response.status === 404) {
         if (slotId) {
