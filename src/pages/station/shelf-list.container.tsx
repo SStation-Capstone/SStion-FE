@@ -109,7 +109,19 @@ export default function ManageShelfManagerList({ id }: StationEditFormProps) {
                               <div className="mb-2 grid">
                                 <span className="font-semibold text-black">name - {slot.name}</span>
                                 <span className="font-semibold text-black">
-                                  description - {slot.description}
+                                  description - {slot.description} cm
+                                </span>
+                                <span className="font-semibold text-black">
+                                  width - {slot.width} cm
+                                </span>
+                                <span className="font-semibold text-black">
+                                  length - {slot.length} cm
+                                </span>
+                                <span className="font-semibold text-black">
+                                  height - {slot.height} cm
+                                </span>
+                                <span className="font-semibold text-black">
+                                  weight - {slot.weight} gram
                                 </span>
                               </div>
                               <div className="flex">

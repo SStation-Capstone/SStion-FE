@@ -450,14 +450,15 @@ export const useGetCheckOut = (id?: string) => {
     }),
   );
 };
-export const useGetPackageBySlot = (id?: string) => {
+export const useGetPackageBySlot = (data?: any) => {
   return useQuery(['package'], () =>
     apiClient.get({
-      url: `${StationApi.Packages}?SlotId=${id}`,
+      url: `${StationApi.Packages}?SlotId=${data.id}`,
+      params: data.payload,
     }),
   );
 };
-export const useCreateCheckOut = () => {
+export const useCreateCheckOutConfirm = () => {
   return useMutation(
     async (payload: any) =>
       apiClient.post<StationCreateResponse>({
@@ -466,7 +467,22 @@ export const useCreateCheckOut = () => {
       }),
     {
       onSuccess: () => {
-        message.success('Create check in sucessfully');
+        message.success('Cancel checkout sucessfully');
+      },
+    },
+  );
+};
+
+export const useCreateCheckOutCancel = () => {
+  return useMutation(
+    async (payload: any) =>
+      apiClient.post<StationCreateResponse>({
+        url: `${StationApi.Packages}/${payload.id}/${payload.status}`,
+        data: {},
+      }),
+    {
+      onSuccess: () => {
+        message.success('Check out sucessfully !!!');
       },
     },
   );

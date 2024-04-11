@@ -1,239 +1,132 @@
 import {
   Button,
   message,
-  Descriptions,
-  Col,
-  Card,
-  Row,
   Avatar,
   List,
   Modal,
-  Tabs,
   Image,
+  Table,
+  Pagination,
+  Typography,
+  Popconfirm,
 } from 'antd';
 import { useState } from 'react';
 
 import { useDeletePackage, useGetPackageBySlot } from '@/api/services/stationService';
+import { IconButton, Iconify } from '@/components/icon';
 import { CircleLoading } from '@/components/loading';
 
 import { ManageCheckInCreate } from './checkin.create';
 
+const { Title } = Typography;
 export type PackagesFormProps = {
   zoneId?: any;
   clickOne?: any;
   onClose: () => void;
 };
 export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
-  const { data, isLoading } = useGetPackageBySlot(clickOne.id);
   const { mutateAsync: deleteMutate } = useDeletePackage();
+  const [listRelateParams, setListRelateParams] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
   const [showFormCheckIn, setShowFormCheckIn] = useState(false);
-  const [packageId, setPackageId] = useState<any>(false);
+  const { data, isLoading } = useGetPackageBySlot({ id: clickOne.id, payload: listRelateParams });
   if (isLoading) return <CircleLoading />;
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const transformedArray = data.contends.map((item: any, index: number) => ({
-    key: item.id,
-    label: `Package ${index + 1}`,
-    children: (
-      <>
-        <Card
-          bodyStyle={{ display: 'none' }}
-          title={
-            <Row justify="space-between" align="middle" gutter={[24, 0]} className="p-4">
-              <Col span={24} md={12} className="col-info">
-                <Avatar.Group className="gap-4">
-                  {item.packageImages.map((image: any, i: any) => (
-                    <Image
-                      width={100}
-                      src={image.imageUrl}
-                      key={i}
-                      placeholder={<Image preview={false} src={image.imageUrl} width={200} />}
-                      style={{ borderRadius: '5px' }}
-                    />
-                  ))}
-                  <div className="flex items-center pl-4">
-                    <div>
-                      <h4 className="m-0 font-semibold">{item.name}</h4>
-                      <p>{item.location}</p>
-                      <p>{item.description}</p>
-                    </div>
-                  </div>
-                </Avatar.Group>
-              </Col>
-            </Row>
-          }
-        />
-
-        <Row gutter={[24, 0]} className="mt-4">
-          <Col span={24} md={8} className="mb-2">
-            <Card
-              bordered={false}
-              title={<h6 className="m-0 font-semibold">Station</h6>}
-              className="header-solid card-profile-information h-full"
-              bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
+  const onPageChange = (page: number, pageSize: number) => {
+    const values = { PageIndex: page, PageSize: pageSize };
+    setListRelateParams(values);
+  };
+  const columns = [
+    {
+      title: 'No',
+      dataIndex: 'no',
+      // eslint-disable-next-line no-plusplus
+      render: (_text: any, _data: any, index: number) => <Title level={5}>{++index}</Title>,
+      width: '5%',
+    },
+    {
+      title: 'Images',
+      dataIndex: 'packageImages',
+      render: (_: any, record: { packageImages: { imageUrl: string }[] }) => (
+        <Avatar.Group className="gap-4">
+          {record.packageImages.map((image: any, i: any) => (
+            <Image
+              width={50}
+              src={image.imageUrl}
+              key={i}
+              placeholder={<Image preview={false} src={image.imageUrl} width={200} />}
+              style={{ borderRadius: '5px' }}
+            />
+          ))}
+        </Avatar.Group>
+      ),
+    },
+    {
+      title: 'Name',
+      dataIndex: 'name',
+    },
+    {
+      title: 'Description',
+      dataIndex: 'description',
+    },
+    { title: 'Location', dataIndex: 'location' },
+    {
+      title: 'Sender',
+      dataIndex: 'sender',
+      render: (_: any, record: any) => (
+        <List.Item>
+          <List.Item.Meta
+            className="flex gap-3"
+            avatar={<Avatar shape="square" size={48} src={record.sender.avatarUrl} />}
+            title={record.sender.fullName}
+            description={record.sender.phoneNumber}
+          />
+        </List.Item>
+      ),
+    },
+    {
+      title: 'Receiver',
+      dataIndex: 'receiver',
+      render: (_: any, record: any) => (
+        <List.Item>
+          <List.Item.Meta
+            className="flex gap-3"
+            avatar={<Avatar shape="square" size={48} src={record.receiver.avatarUrl} />}
+            title={record.receiver.fullName}
+            description={record.receiver.phoneNumber}
+          />
+        </List.Item>
+      ),
+    },
+    {
+      title: 'Action',
+      key: 'operation',
+      align: 'center',
+      width: 100,
+      render: (_: any, record: any) => (
+        <>
+          {/* <IconButton onClick={() => onOpenFormHandler(record)}>
+            <Iconify icon="solar:pen-bold-duotone" size={18} />
+          </IconButton> */}
+          {clickOne.isActive && (
+            <Popconfirm
+              title="Delete the package"
+              okText="Yes"
+              cancelText="No"
+              placement="right"
+              onConfirm={() => {
+                deleteMutate(record.id.toString());
+                onClose();
+              }}
             >
-              <p className="text-dark">{item.station.description}</p>
-              <hr className="my-25" />
-              <Descriptions title="Information">
-                <Descriptions.Item label="name" span={3}>
-                  {item.station.name}
-                </Descriptions.Item>
-                <Descriptions.Item label="address" span={3}>
-                  {item.station.address}
-                </Descriptions.Item>
-                <Descriptions.Item label="contact Phone" span={3}>
-                  {item.station.contactPhone}
-                </Descriptions.Item>
-              </Descriptions>
-            </Card>
-          </Col>
-          <Col span={24} md={8} className="mb-2">
-            <Card
-              bordered={false}
-              title={<h6 className="m-0 font-semibold">Zone</h6>}
-              className="header-solid card-profile-information h-full"
-              bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
-            >
-              <p className="text-dark">{item.zone.description}</p>
-              <hr className="my-25" />
-              <Descriptions title="Information">
-                <Descriptions.Item label="name" span={3}>
-                  {item.zone.name}
-                </Descriptions.Item>
-              </Descriptions>
-            </Card>
-          </Col>
-          <Col span={24} md={8} className="mb-2">
-            <Card
-              bordered={false}
-              title={<h6 className="m-0 font-semibold">sender - receiver</h6>}
-              className="header-solid card-profile-information h-full"
-              bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
-            >
-              <List
-                itemLayout="horizontal"
-                dataSource={[item.sender, item.receiver]}
-                split={false}
-                className="conversations-list"
-                renderItem={(item) => (
-                  <List.Item>
-                    <List.Item.Meta
-                      avatar={<Avatar shape="square" size={48} src={item.avatarUrl} />}
-                      title={item.fullName}
-                      description={item.phoneNumber}
-                    />
-                  </List.Item>
-                )}
-              />
-            </Card>
-          </Col>
-        </Row>
-      </>
-    ),
-  }));
-  // useEffect(() => {
-  //   const transformedArray = data.contends.map((item: any, index: number) => ({
-  //     key: item.id,
-  //     label: `Package ${index + 1}`,
-  //     children: (
-  //       <>
-  //         <Card
-  //           bodyStyle={{ display: 'none' }}
-  //           title={
-  //             <Row justify="space-between" align="middle" gutter={[24, 0]} className="p-4">
-  //               <Col span={24} md={12} className="col-info">
-  //                 <Avatar.Group className="gap-4">
-  //                   {item.packageImages.map((image: any, i: any) => (
-  //                     <Image
-  //                       width={100}
-  //                       src={image.imageUrl}
-  //                       key={i}
-  //                       placeholder={<Image preview={false} src={image.imageUrl} width={200} />}
-  //                       style={{ borderRadius: '5px' }}
-  //                     />
-  //                   ))}
-  //                   <div className="flex items-center pl-4">
-  //                     <div>
-  //                       <h4 className="m-0 font-semibold">{item.name}</h4>
-  //                       <p>{item.location}</p>
-  //                       <p>{item.description}</p>
-  //                     </div>
-  //                   </div>
-  //                 </Avatar.Group>
-  //               </Col>
-  //             </Row>
-  //           }
-  //         />
-
-  //         <Row gutter={[24, 0]} className="mt-4">
-  //           <Col span={24} md={8} className="mb-2">
-  //             <Card
-  //               bordered={false}
-  //               title={<h6 className="m-0 font-semibold">Station</h6>}
-  //               className="header-solid card-profile-information h-full"
-  //               bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
-  //             >
-  //               <p className="text-dark">{item.station.description}</p>
-  //               <hr className="my-25" />
-  //               <Descriptions title="Information">
-  //                 <Descriptions.Item label="name" span={3}>
-  //                   {item.station.name}
-  //                 </Descriptions.Item>
-  //                 <Descriptions.Item label="address" span={3}>
-  //                   {item.station.address}
-  //                 </Descriptions.Item>
-  //                 <Descriptions.Item label="contact Phone" span={3}>
-  //                   {item.station.contactPhone}
-  //                 </Descriptions.Item>
-  //               </Descriptions>
-  //             </Card>
-  //           </Col>
-  //           <Col span={24} md={8} className="mb-2">
-  //             <Card
-  //               bordered={false}
-  //               title={<h6 className="m-0 font-semibold">Zone</h6>}
-  //               className="header-solid card-profile-information h-full"
-  //               bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
-  //             >
-  //               <p className="text-dark">{item.zone.description}</p>
-  //               <hr className="my-25" />
-  //               <Descriptions title="Information">
-  //                 <Descriptions.Item label="name" span={3}>
-  //                   {item.zone.name}
-  //                 </Descriptions.Item>
-  //               </Descriptions>
-  //             </Card>
-  //           </Col>
-  //           <Col span={24} md={8} className="mb-2">
-  //             <Card
-  //               bordered={false}
-  //               title={<h6 className="m-0 font-semibold">sender - receiver</h6>}
-  //               className="header-solid card-profile-information h-full"
-  //               bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
-  //             >
-  //               <List
-  //                 itemLayout="horizontal"
-  //                 dataSource={[item.sender, item.receiver]}
-  //                 split={false}
-  //                 className="conversations-list"
-  //                 renderItem={(item) => (
-  //                   <List.Item>
-  //                     <List.Item.Meta
-  //                       avatar={<Avatar shape="square" size={48} src={item.avatarUrl} />}
-  //                       title={item.fullName}
-  //                       description={item.phoneNumber}
-  //                     />
-  //                   </List.Item>
-  //                 )}
-  //               />
-  //             </Card>
-  //           </Col>
-  //         </Row>
-  //       </>
-  //     ),
-  //   }));
-  //   setDataPackage(transformedArray);
-  // }, [data]);
+              <IconButton>
+                <Iconify icon="mingcute:delete-2-fill" size={18} className="text-error" />
+              </IconButton>
+            </Popconfirm>
+          )}
+        </>
+      ),
+    },
+  ];
   const closeFormCheckIn = async () => {
     setShowFormCheckIn(false);
   };
@@ -248,23 +141,6 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
       setLoading(false);
     }
   };
-  // const updateHandle = async () => {};
-  const deleteHandle = async () => {
-    setLoading(true);
-    try {
-      deleteMutate(packageId ? packageId.toString() : data.contends[0].id.toString());
-      setLoading(false);
-      onClose();
-    } catch (error) {
-      message.error(error.message || error);
-      console.log(error);
-      setLoading(false);
-    }
-  };
-  const onChange = (key: string) => {
-    console.log(key);
-    setPackageId(key);
-  };
   return (
     <Modal
       title="Packages by slot"
@@ -276,21 +152,6 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
         <Button key="back" onClick={onClose}>
           Cancel
         </Button>,
-        // data.contends.length > 0 && (
-        //   <Button key="submit" type="primary" loading={loading} onClick={updateHandle}>
-        //     Update
-        //   </Button>
-        // ),
-        clickOne.isActive && data.contends.length > 0 && (
-          // eslint-disable-next-line react/jsx-no-useless-fragment
-          <>
-            {data.contends[0].name && (
-              <Button key="submit" type="primary" loading={loading} onClick={deleteHandle}>
-                Delete
-              </Button>
-            )}
-          </>
-        ),
         clickOne.isActive && (
           <Button key="submit" type="primary" onClick={() => setShowFormCheckIn(true)}>
             Check In
@@ -298,16 +159,22 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
         ),
       ]}
     >
-      {transformedArray.length > 0
-        ? data.contends[0] && (
-            <Tabs
-              defaultActiveKey={data.contends[0].id}
-              type="card"
-              items={transformedArray}
-              onChange={onChange}
-            />
-          )
-        : 'not found'}
+      <Table
+        rowKey="id"
+        size="small"
+        scroll={{ x: 'max-content' }}
+        pagination={false}
+        columns={columns as any}
+        dataSource={data?.contends}
+        loading={isLoading}
+      />
+      <Pagination
+        showSizeChanger
+        onChange={onPageChange}
+        total={data?.totalPages}
+        current={data?.page}
+        style={{ marginTop: '1rem' }}
+      />
       {showFormCheckIn && (
         <ManageCheckInCreate
           zoneId={zoneId}
