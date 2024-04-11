@@ -305,7 +305,7 @@ export function ManageCheckInCreate({
             />
           </Form.Item>
         </div>
-        <Form.Item label="package Images" name="avatarUrl" getValueFromEvent={normFile}>
+        <Form.Item label="Package Images" name="avatarUrl" getValueFromEvent={normFile}>
           <Upload
             name="image"
             maxCount={4}

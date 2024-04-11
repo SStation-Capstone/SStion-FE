@@ -75,13 +75,13 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
               <p className="text-dark">{item.station.description}</p>
               <hr className="my-25" />
               <Descriptions title="Information">
-                <Descriptions.Item label="name" span={3}>
+                <Descriptions.Item label="Name" span={3}>
                   {item.station.name}
                 </Descriptions.Item>
-                <Descriptions.Item label="address" span={3}>
+                <Descriptions.Item label="Address" span={3}>
                   {item.station.address}
                 </Descriptions.Item>
-                <Descriptions.Item label="contact Phone" span={3}>
+                <Descriptions.Item label="Contact Phone" span={3}>
                   {item.station.contactPhone}
                 </Descriptions.Item>
               </Descriptions>
@@ -97,7 +97,7 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
               <p className="text-dark">{item.zone.description}</p>
               <hr className="my-25" />
               <Descriptions title="Information">
-                <Descriptions.Item label="name" span={3}>
+                <Descriptions.Item label="Name" span={3}>
                   {item.zone.name}
                 </Descriptions.Item>
               </Descriptions>

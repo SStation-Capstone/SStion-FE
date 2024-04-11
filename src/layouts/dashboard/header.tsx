@@ -28,7 +28,10 @@ export default function Header({ className = '', offsetTop = false }: Props) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
   const onNewScanResult = (decodedText: any) => {
-    const newWindow = window.open(`http://localhost:5173/#/checkout/${decodedText}`, '_blank');
+    const newWindow =
+      import.meta.env.MODE === 'development'
+        ? window.open(`http://localhost:5173/#/checkout/${decodedText}`, '_blank')
+        : window.open(`https://sstation-web.netlify.app/#/checkout/${decodedText}`, '_blank');
     if (newWindow) {
       newWindow.opener = null;
       onClose();

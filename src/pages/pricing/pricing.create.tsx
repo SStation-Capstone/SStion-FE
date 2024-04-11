@@ -76,7 +76,7 @@ export function PricingCreate({ clickOne, onClose }: StaffCreateFormProps) {
       >
         <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
           <Form.Item
-            label="fromDate"
+            label="From Date"
             name="fromDate"
             required
             rules={[
@@ -87,7 +87,7 @@ export function PricingCreate({ clickOne, onClose }: StaffCreateFormProps) {
             <Input />
           </Form.Item>
           <Form.Item
-            label="toDate"
+            label="To Date"
             name="toDate"
             required
             rules={[
@@ -98,7 +98,7 @@ export function PricingCreate({ clickOne, onClose }: StaffCreateFormProps) {
             <Input />
           </Form.Item>
           <Form.Item
-            label="price"
+            label="Price"
             name="price"
             required
             rules={[

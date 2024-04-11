@@ -45,15 +45,15 @@ export default function StaffManagerList() {
       width: '5%',
     },
     {
-      title: 'fromDate',
+      title: 'From Date',
       dataIndex: 'fromDate',
     },
     {
-      title: 'toDate',
+      title: 'To Date',
       dataIndex: 'toDate',
     },
     {
-      title: 'formatPrice',
+      title: 'Format Price',
       dataIndex: 'formatPrice',
     },
     {
