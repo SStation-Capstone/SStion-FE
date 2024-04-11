@@ -135,7 +135,7 @@ export default function ManageZoneManagerList() {
                     >
                       Check in
                     </Button>
-                    <Button onClick={() => onOpenFormShelf(item)}>+ shelf</Button>
+                    <Button onClick={() => onOpenFormShelf(item)}>+ Shelf</Button>
                     <IconButton onClick={() => onOpenFormHandler(item)}>
                       <Iconify icon="solar:pen-bold-duotone" size={18} />
                     </IconButton>

@@ -149,6 +149,10 @@ export default function ManageShelfManagerList({ id }: StationEditFormProps) {
                               percent={100 - slot.capacity}
                               size="small"
                               // showInfo={false}
+                              style={{
+                                background: `${slot.isActive ? '#fff' : '#ccc'}`,
+                                borderRadius: '10px',
+                              }}
                             />
                           </div>
                         </Tooltip>
