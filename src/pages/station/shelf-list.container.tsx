@@ -60,23 +60,50 @@ export default function ManageShelfManagerList({ id }: StationEditFormProps) {
             className="relative mb-8 flex flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md"
             key={index}
           >
-            <div className="shadow-blue-gray-500/40 relative mx-4 -mt-3 flex h-10 w-24 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-border text-white shadow-lg">
-              <span className="text-blue-gray-900 block font-sans text-base font-semibold leading-snug tracking-normal antialiased">
-                Shelf {index + 1}
-              </span>
-              <Popconfirm
-                title="Delete the shelf"
-                okText="Yes"
-                cancelText="No"
-                placement="left"
-                onConfirm={() => {
-                  deleteMutate(item.id.toString());
-                }}
-              >
-                <IconButton>
-                  <Iconify icon="mingcute:delete-2-fill" size={18} className="text-error" />
-                </IconButton>
-              </Popconfirm>
+            <div className="flex">
+              <div className="shadow-blue-gray-500/40 relative mx-2 -mt-3 flex h-10 w-auto items-center justify-center overflow-hidden rounded-xl bg-gradient-to-r from-blue-500 to-blue-500 bg-clip-border pl-2 text-white shadow-lg">
+                <Tooltip
+                  placement="left"
+                  color="#fefefe"
+                  key={item.id}
+                  title={
+                    <div>
+                      <div className="mb-2 grid">
+                        <span className="font-semibold text-black">name - {item.name}</span>
+                        <span className="font-semibold text-black">volume - {item.volume}</span>
+                        <span className="font-semibold text-black">
+                          volumeUsed - {item.volumeUsed}
+                        </span>
+                      </div>
+                    </div>
+                  }
+                >
+                  <span className="text-blue-gray-900 block font-sans text-base font-semibold leading-snug tracking-normal antialiased">
+                    Shelf index: {item.index}
+                  </span>
+                </Tooltip>
+
+                <Popconfirm
+                  title="Delete the shelf"
+                  okText="Yes"
+                  cancelText="No"
+                  placement="left"
+                  onConfirm={() => {
+                    deleteMutate(item.id.toString());
+                  }}
+                >
+                  <IconButton>
+                    <Iconify icon="mingcute:delete-2-fill" size={18} className="text-error" />
+                  </IconButton>
+                </Popconfirm>
+              </div>
+              <div className="shadow-blue-gray-500/40 relative -mt-3 flex h-10 w-36 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-r from-blue-200 to-blue-200 bg-clip-border pl-2 text-white shadow-lg">
+                <Progress
+                  percent={100 - item.capacity}
+                  size="small"
+                  // showInfo={false}
+                />
+              </div>
             </div>
             <div className="flex flex-wrap gap-2 p-6 ">
               {item.rackSorts.length > 0 &&
@@ -111,10 +138,31 @@ export default function ManageShelfManagerList({ id }: StationEditFormProps) {
                                 <span className="font-semibold text-black">
                                   description - {slot.description}
                                 </span>
+                                <span className="font-semibold text-black">
+                                  width - {slot.width} cm
+                                </span>
+                                <span className="font-semibold text-black">
+                                  length - {slot.length} cm
+                                </span>
+                                <span className="font-semibold text-black">
+                                  height - {slot.height} cm
+                                </span>
+                                <span className="font-semibold text-black">
+                                  weight - {slot.weight} gram
+                                </span>
+                                <span className="font-semibold text-black">
+                                  index - {slot.index}
+                                </span>
+                                <span className="font-semibold text-black">
+                                  volume - {slot.volume}
+                                </span>
+                                <span className="font-semibold text-black">
+                                  volumeUsed - {slot.volumeUsed}
+                                </span>
                               </div>
-                              <div className="flex">
+                              <div className="flex justify-center">
                                 <span
-                                  className="mr-2 bg-blue-100 p-2 font-semibold text-black"
+                                  className="mr-2 bg-green-300 p-1.5 font-semibold text-black transition-all duration-200 hover:bg-green-200"
                                   style={{ borderRadius: '5px', cursor: 'pointer' }}
                                   onClick={() => onOpenFormSlot(slot)}
                                 >
@@ -130,7 +178,7 @@ export default function ManageShelfManagerList({ id }: StationEditFormProps) {
                                   }}
                                 >
                                   <span
-                                    className="bg-blue-100 p-2 font-semibold text-black"
+                                    className="bg-red-300 p-1.5 font-semibold text-black transition-all duration-200 hover:bg-red-200"
                                     style={{ borderRadius: '5px', cursor: 'pointer' }}
                                   >
                                     Delete
@@ -150,7 +198,7 @@ export default function ManageShelfManagerList({ id }: StationEditFormProps) {
                               size="small"
                               // showInfo={false}
                               style={{
-                                background: `${slot.isActive ? '#fff' : '#ccc'}`,
+                                background: `${slot.isActive ? '#fff' : '#ffccc7'}`,
                                 borderRadius: '10px',
                               }}
                             />
@@ -166,7 +214,7 @@ export default function ManageShelfManagerList({ id }: StationEditFormProps) {
                   </div>
                 ))}
               <div
-                className="relative flex flex-col rounded-xl bg-gray-100 bg-clip-border text-gray-700 shadow-md"
+                className="relative flex flex-col rounded-xl bg-gray-200 bg-clip-border text-gray-700 shadow-md"
                 onClick={() => onOpenFormRack(item.id)}
               >
                 <div className="flex cursor-pointer flex-wrap justify-center gap-2 p-3">

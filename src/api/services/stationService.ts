@@ -450,10 +450,11 @@ export const useGetCheckOut = (id?: string) => {
     }),
   );
 };
-export const useGetPackageBySlot = (id?: string) => {
+export const useGetPackageBySlot = (data?: any) => {
   return useQuery(['package'], () =>
     apiClient.get({
-      url: `${StationApi.Packages}?SlotId=${id}`,
+      url: `${StationApi.Packages}?SlotId=${data.id}`,
+      params: data.payload,
     }),
   );
 };
