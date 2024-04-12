@@ -56,7 +56,7 @@ export default function ManageStationManagerList() {
     {
       title: 'Images',
       dataIndex: 'stationImages',
-      render: (_, record) => (
+      render: (_, record: any) => (
         <Avatar.Group>
           <Avatar
             className="shape-avatar"
