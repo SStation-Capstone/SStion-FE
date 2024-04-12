@@ -113,7 +113,7 @@ export function StaffCreate({ clickOne, onClose }: StaffCreateFormProps) {
           <Input />
         </Form.Item>
         {clickOne?.id ? (
-          <Form.Item label="package Images" name="avatarUrl" getValueFromEvent={normFile}>
+          <Form.Item label="Avartar Images" name="avatarUrl" getValueFromEvent={normFile}>
             <Upload
               name="image"
               maxCount={1}

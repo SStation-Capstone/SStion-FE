@@ -1,4 +1,4 @@
-import { Button, Card, Col, Form, Input, Pagination, Typography, Popconfirm, Row } from 'antd';
+import { Button, Card, Col, Form, Input, Pagination, Typography, Popconfirm, Row, Tag } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -23,7 +23,7 @@ export default function StaffManagerList() {
   const { data, isLoading } = useListStaff(id);
   const { mutateAsync: deleteMutate } = useDeleteStaff(id);
   if (isLoading) return <CircleLoading />;
-
+  console.log('data', data);
   const onOpenFormHandler = (record?: Staff) => {
     if (record) {
       setClickOne(record);
@@ -50,13 +50,19 @@ export default function StaffManagerList() {
     //   render: (text) => <Image style={{ width: 100, height: 'auto' }} src={text} />,
     // },
     {
-      title: 'fullName',
+      title: 'Full Name',
       dataIndex: 'fullName',
     },
     {
-      title: 'userName',
+      title: 'username',
       dataIndex: 'userName',
     },
+    {
+      title: 'Role',
+      dataIndex: 'roles',
+      render: (text) => <Tag color="cyan">{text[0].name}</Tag>,
+    },
+
     {
       title: 'Action',
       key: 'operation',
@@ -138,7 +144,7 @@ export default function StaffManagerList() {
         scroll={{ x: 'max-content' }}
         pagination={false}
         columns={columns}
-        dataSource={data?.contends}
+        dataSource={data?.contends.filter((e) => e.roles[0].name !== 'StationManager')}
         loading={isLoading}
       />
       <Pagination
