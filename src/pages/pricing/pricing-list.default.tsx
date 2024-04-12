@@ -1,17 +1,12 @@
 import { Button, Card, Col, Form, Input, Pagination, Typography, Popconfirm, Row } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
 
-import {
-  useDeletePricing,
-  useGoPricingDefault,
-  useListPricing,
-} from '@/api/services/stationService';
+import { useDeletePricingDefault, useListPricingDefault } from '@/api/services/stationService';
 import { IconButton, Iconify } from '@/components/icon';
 import { CircleLoading } from '@/components/loading';
 
-import { PricingCreate } from './pricing.create';
+import { PricingDefaultCreate } from './pricingDefault.create';
 
 import { InputType } from '#/api';
 import { Pricing } from '#/entity';
@@ -20,13 +15,11 @@ const { Title } = Typography;
 
 export default function StaffManagerList() {
   const [form] = Form.useForm();
-  const { id } = useParams();
   const [listRelateParams, setListRelateParams] = useState<InputType>();
   const [clickOne, setClickOne] = useState<Pricing>();
   const [showInfo, setShowInfo] = useState(false);
-  const { data, isLoading } = useListPricing(id);
-  const { mutateAsync: deleteMutate } = useDeletePricing(id);
-  const { mutateAsync: createMutate } = useGoPricingDefault(id);
+  const { data, isLoading } = useListPricingDefault();
+  const { mutateAsync: deleteMutate } = useDeletePricingDefault();
   if (isLoading) return <CircleLoading />;
 
   const onOpenFormHandler = (record?: Pricing) => {
@@ -58,8 +51,8 @@ export default function StaffManagerList() {
       dataIndex: 'toDate',
     },
     {
-      title: 'Format Price',
-      dataIndex: 'formatPrice',
+      title: 'Price',
+      dataIndex: 'price',
     },
     {
       title: 'Action',
@@ -106,14 +99,9 @@ export default function StaffManagerList() {
     <Card
       title="List Pricing"
       extra={
-        <div className="flex gap-3">
-          <Button type="primary" onClick={() => onOpenFormHandler()}>
-            New
-          </Button>
-          <Button type="primary" onClick={() => createMutate()}>
-            Do you get pricing default?
-          </Button>
-        </div>
+        <Button type="primary" onClick={() => onOpenFormHandler()}>
+          New
+        </Button>
       }
     >
       <Form form={form} onFinish={onFinishHandler}>
@@ -147,7 +135,7 @@ export default function StaffManagerList() {
         scroll={{ x: 'max-content' }}
         pagination={false}
         columns={columns}
-        dataSource={data}
+        dataSource={data.contends}
         loading={isLoading}
       />
       <Pagination
@@ -158,7 +146,7 @@ export default function StaffManagerList() {
         current={data?.page}
         style={{ marginTop: '1rem' }}
       />
-      {showInfo && <PricingCreate clickOne={clickOne} onClose={closeAndRefetchHandler} />}
+      {showInfo && <PricingDefaultCreate clickOne={clickOne} onClose={closeAndRefetchHandler} />}
     </Card>
   );
 }

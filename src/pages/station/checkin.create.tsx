@@ -11,7 +11,6 @@ import {
   Alert,
 } from 'antd';
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
 
 import {
   CheckInPayload,
@@ -26,19 +25,20 @@ import { UserToken } from '#/entity';
 import { StorageEnum } from '#/enum';
 
 export type CheckInCreateFormProps = {
+  stationId?: any;
   zoneId?: any;
   slotId?: any;
   onClose: () => void;
   onCloseCheckIn: () => void;
 };
 export function ManageCheckInCreate({
+  stationId,
   zoneId,
   slotId,
   onClose,
   onCloseCheckIn,
 }: CheckInCreateFormProps) {
   const [form] = Form.useForm();
-  const { id } = useParams();
   // const { mutateAsync: createMutate } = useCreateCheckIn();
   const { mutateAsync: createForceMutate } = useCreateCheckInForce();
   const [loading, setLoading] = useState<boolean>(false);
@@ -85,7 +85,7 @@ export function ManageCheckInCreate({
         height: values.height,
         width: values.width,
         length: values.length,
-        stationId: id as unknown as number,
+        stationId: stationId as unknown as number,
         zoneId: zoneId as unknown as number,
         shelfId: null,
         rackId: null,

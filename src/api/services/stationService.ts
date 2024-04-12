@@ -110,16 +110,29 @@ export enum StationApi {
   Staffs = '/staffs',
   Racks = '/racks',
   Slots = '/slots',
+  Payments = '/payments',
 }
 
 const createStation = (data: StationPayload) =>
   apiClient.post<StationCreateResponse>({ url: StationApi.CreateStation, data });
 
 const getStation = () => apiClient.get<StationGetRes>({ url: StationApi.GetStation });
-
+export const useListOrdersHistory = (values?: InputType) => {
+  return useQuery(['listOrdersHistory', values], () =>
+    apiClient.get<StationGetRes>({ url: StationApi.Payments, params: values }),
+  );
+};
 export const useListStation = (values?: InputType) => {
   return useQuery(['listStation', values], () =>
     apiClient.get<StationGetRes>({ url: StationApi.GetListStation, params: values }),
+  );
+};
+export const useListZoneStaff = (values?: any) => {
+  return useQuery(['listZone', values], () =>
+    apiClient.get<StationGetRes>({
+      url: `${StationApi.Staffs}${StationApi.GetStation}`,
+      // params: values,
+    }),
   );
 };
 export const useListZone = (values?: any) => {
@@ -443,6 +456,82 @@ export const useDeletePricing = (values?: any) => {
     },
   );
 };
+export const useListPricingDefault = (values?: any) => {
+  return useQuery(['listPricingDefault', values], () =>
+    apiClient.get<StationGetRes>({
+      url: `default-pricings`,
+      // params: values,
+    }),
+  );
+};
+
+export const useCreatePricingDefault = () => {
+  return useMutation(
+    async (payload: PricingPayload) =>
+      apiClient.post<StationCreateResponse>({
+        url: `default-pricings`,
+        data: payload,
+      }),
+    {
+      onSuccess: () => {
+        // globalSuccess();
+        message.success('Create pricingDefault sucessfully');
+        queryClient.invalidateQueries(['listPricingDefault']);
+      },
+    },
+  );
+};
+export const useUpdatePricingDefault = () => {
+  return useMutation(
+    async (payload: PricingPayload) =>
+      apiClient.put<StationCreateResponse>({
+        url: `default-pricings/${payload.id}`,
+        data: {
+          fromDate: payload.fromDate,
+          toDate: payload.toDate,
+          price: payload.price,
+        },
+      }),
+    {
+      onSuccess: () => {
+        // globalSuccess();
+        message.success('update pricingDefault sucessfully');
+        queryClient.invalidateQueries(['listPricingDefault']);
+      },
+    },
+  );
+};
+
+export const useDeletePricingDefault = () => {
+  return useMutation(
+    async (id: string) =>
+      apiClient.delete<StationCreateResponse>({
+        url: `default-pricings/${id}`,
+      }),
+    {
+      onSuccess: () => {
+        // globalSuccess();
+        message.success('Delete pricingDefault sucessfully');
+        queryClient.invalidateQueries(['listPricingDefault']);
+      },
+    },
+  );
+};
+export const useGoPricingDefault = (values?: any) => {
+  return useMutation(
+    async () =>
+      apiClient.post<StationCreateResponse>({
+        url: `${StationApi.GetStation}/${values}/pricings/default`,
+      }),
+    {
+      onSuccess: () => {
+        // globalSuccess();
+        message.success('Delete pricingDefault sucessfully');
+        queryClient.invalidateQueries(['listPricing']);
+      },
+    },
+  );
+};
 export const useGetCheckOut = (id?: string) => {
   return useQuery(['checkOut'], () =>
     apiClient.get({
@@ -503,7 +592,7 @@ export const useCreateRack = () => {
     async (payload) =>
       apiClient.post<StationCreateResponse>({
         url: `${StationApi.Racks}`,
-        data: payload,
+        data: { shelfId: payload },
       }),
     {
       onSuccess: () => {

@@ -122,7 +122,7 @@ export function ManageShelfCreate({ clickOne, onClose }: ZoneCreateFormProps) {
             <Input />
           </Form.Item> */}
           <Form.Item
-            label="Width Slot"
+            label="Width Slot (cm)"
             name="widthSlot"
             required
             rules={[
@@ -133,7 +133,7 @@ export function ManageShelfCreate({ clickOne, onClose }: ZoneCreateFormProps) {
             <Input />
           </Form.Item>
           <Form.Item
-            label="Height Slot"
+            label="Height Slot (cm)"
             name="heightSlot"
             required
             rules={[
@@ -144,7 +144,7 @@ export function ManageShelfCreate({ clickOne, onClose }: ZoneCreateFormProps) {
             <Input />
           </Form.Item>
           <Form.Item
-            label="Length Slot"
+            label="Length Slot (cm)"
             name="lengthSlot"
             required
             rules={[
