@@ -321,7 +321,7 @@ Set the default cursor for buttons.
 */
 
 button,
-[role="button"] {
+[role='button'] {
   cursor: pointer;
 }
 
@@ -352,7 +352,7 @@ object {
 /*
 Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
 */
-#html5qr-code-full-region__scan_region{
+#html5qr-code-full-region__scan_region {
   display: flex;
   justify-content: center;
 }
@@ -369,8 +369,7 @@ video {
 }
 
 .bar-chart {
-  background: transparent
-    linear-gradient(62deg, #00369e 0%, #005cfd 53%, #a18dff 100%) 0% 0%
+  background: transparent linear-gradient(62deg, #00369e 0%, #005cfd 53%, #a18dff 100%) 0% 0%
     no-repeat padding-box;
   border-radius: 8px;
   box-shadow: 0 4px 6px #0000001f;
@@ -544,35 +543,46 @@ small.redtext {
   display: flex;
   box-sizing: border-box;
   margin-top: 0;
-  margin-bottom: .5em;
+  margin-bottom: 0.5em;
   color: rgb(0 0 0 / 85%);
   font-weight: 500;
   font-size: 16px;
-} 
+}
 
-.ant-progress-custom{
-  width: 50px!important;
+.ant-progress-custom {
+  width: 50px !important;
   height: 50px;
 }
 
-.ant-progress-custom.css-dev-only-do-not-override-1de8xem.ant-progress .ant-progress-inner{
+.ant-progress-custom.css-dev-only-do-not-override-1de8xem.ant-progress .ant-progress-inner {
   width: 50px;
   height: 50px;
   border-radius: 10px;
 }
 
-.ant-progress-custom .ant-progress .ant-progress-inner{
+.ant-progress-custom .ant-progress .ant-progress-inner {
   width: 50px;
   height: 50px;
   border-radius: 10px;
 }
 
-.ant-progress-custom.css-dev-only-do-not-override-1de8xem.ant-progress .ant-progress-bg{
-  height: 50px!important;
+.ant-progress-custom.ant-progress .ant-progress-bg {
+  height: 50px !important;
   border-radius: 10px 5px 5px 10px;
 }
 
-.ant-progress-custom.css-dev-only-do-not-override-1de8xem.ant-progress .ant-progress-text{
+.ant-progress-custom.ant-progress .ant-progress-text {
+  position: sticky;
+  z-index: 1;
+  margin: 0;
+}
+
+/* .ant-progress-custom.css-dev-only-do-not-override-1de8xem.ant-progress .ant-progress-bg {
+  height: 50px !important;
+  border-radius: 10px 5px 5px 10px;
+} */
+
+.ant-progress-custom.css-dev-only-do-not-override-1de8xem.ant-progress .ant-progress-text {
   position: sticky;
   z-index: 1;
   margin: 0;
@@ -589,5 +599,5 @@ small.redtext {
   line-height: 55px;
   text-align: center;
   background: #1890ff;
-  border-radius: .5rem;
+  border-radius: 0.5rem;
 }
