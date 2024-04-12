@@ -2,7 +2,7 @@ import { Button, Card, Col, Popconfirm, Row } from 'antd';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { useDeleteZone, useListZone } from '@/api/services/stationService';
+import { useDeleteZone, useListStation, useListZone } from '@/api/services/stationService';
 import { IconButton, Iconify } from '@/components/icon';
 import { CircleLoading } from '@/components/loading';
 
@@ -25,9 +25,10 @@ export default function ManageZoneManagerList() {
   const [showInfo, setShowInfo] = useState(false);
   const [showInfoShelf, setShowInfoShelf] = useState(false);
   const [showFormCheckIn, setShowFormCheckIn] = useState(false);
+  const { data: stationData, isLoading: stationLoading } = useListStation({ Search: id });
   const { data, isLoading } = useListZone(id);
   const { mutateAsync: deleteMutate } = useDeleteZone(id);
-  if (isLoading) return <CircleLoading />;
+  if (stationLoading || isLoading) return <CircleLoading />;
 
   const onOpenFormHandler = (record?: Station) => {
     if (record) {
@@ -74,7 +75,7 @@ export default function ManageZoneManagerList() {
 
   return (
     <Card
-      title="Package Management"
+      title={`Package Management - balance : ${stationData.contends[0].balance}`}
       extra={
         <>
           <Button type="primary" onClick={() => onOpenFormHandler()}>
@@ -161,8 +162,12 @@ export default function ManageZoneManagerList() {
           ))}
         </Row>
       )}
-      {showInfo && <ManageZoneCreate clickOne={clickOne} onClose={closeAndRefetchHandler} />}
-      {showFormCheckIn && <ManageCheckInCreate zoneId={clickThree} onClose={closeFormCheckIn} />}
+      {showInfo && (
+        <ManageZoneCreate stationId={id} clickOne={clickOne} onClose={closeAndRefetchHandler} />
+      )}
+      {showFormCheckIn && (
+        <ManageCheckInCreate stationId={id} zoneId={clickThree} onClose={closeFormCheckIn} />
+      )}
       {showInfoShelf && <ManageShelfCreate clickOne={clickTwo} onClose={closeAndRefetchShelf} />}
     </Card>
   );

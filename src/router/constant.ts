@@ -159,7 +159,7 @@ const STATION_MANAGER_STAFF_MANAGE_PERMISSION: Permission = {
   type: PermissionType.MENU,
   route: 'staff',
   order: 3,
-  component: '/staff/staff-list.user.tsx',
+  component: '/staff/staff-list.station.tsx',
   // children: [
   //   {
   //     id: '8426999229400979',
@@ -181,7 +181,7 @@ const STATION_MANAGER_PRICING_MANAGE_PERMISSION: Permission = {
   type: PermissionType.MENU,
   route: 'pricing',
   order: 3,
-  component: '/pricing/pricing-list.container.tsx',
+  component: '/pricing/pricing-list.default.tsx',
   // children: [
   //   {
   //     id: '8426999229400979',
@@ -198,13 +198,12 @@ export const ADMIN_PERMISSION = [
   DASHBOARD_PERMISSION,
   STATION_MANAGER_PERMISSION,
   STATION_MANAGE_PERMISSION,
+  STATION_MANAGER_PRICING_MANAGE_PERMISSION,
 ];
 export const STATION_MANAGER_LIST_PERMISSION = [
   STATION_MANAGER_CONFIG_PERMISSION,
   DASHBOARD_PERMISSION,
   STATION_MANAGER_PACKAGEMANAGEMENT_PERMISSION,
-  // STATION_MANAGER_STAFF_MANAGE_PERMISSION,
-  // STATION_MANAGER_PRICING_MANAGE_PERMISSION,
 ];
 
 export const STAFF_LIST_PERRMISSION = [

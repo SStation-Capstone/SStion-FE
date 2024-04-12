@@ -1,9 +1,8 @@
-import { MenuUnfoldOutlined } from '@ant-design/icons';
 import { Card, Col, Row, Typography, Progress, Button, Timeline, Radio } from 'antd';
 import Paragraph from 'antd/lib/typography/Paragraph';
 import { useState } from 'react';
 
-import { useListPackages } from '@/api/services/stationService';
+import { useListOrdersHistory, useListPackages } from '@/api/services/stationService';
 import EChart from '@/components/chart/EChart';
 import LineChart from '@/components/chart/LineChart';
 
@@ -11,8 +10,8 @@ export default function MenuLevel() {
   const { Title, Text } = Typography;
 
   const [listRelateParams, setListRelateParams] = useState<string>('checkIn');
-  const [reverse, setReverse] = useState(false);
-  const { data, isLoading } = useListPackages(listRelateParams);
+  const { data: OrdersHistoryData } = useListOrdersHistory();
+  const { data } = useListPackages(listRelateParams);
   // if (isLoading) return <CircleLoading />;
   const dollor = [
     <svg
@@ -127,36 +126,6 @@ export default function MenuLevel() {
       bnb: 'bnb2',
     },
   ];
-
-  const timelineList = [
-    {
-      title: '$2,400 - Redesign store',
-      time: '09 JUN 7:20 PM',
-      color: 'green',
-    },
-    {
-      title: 'New order #3654323',
-      time: '08 JUN 12:20 PM',
-      color: 'green',
-    },
-    {
-      title: 'Company server payments',
-      time: '04 JUN 3:10 PM',
-    },
-    {
-      title: 'New card added for order #4826321',
-      time: '02 JUN 2:45 PM',
-    },
-    {
-      title: 'Unlock folders for development',
-      time: '18 MAY 1:30 PM',
-    },
-    {
-      title: 'New order #46282344',
-      time: '14 MAY 3:30 PM',
-      color: 'gray',
-    },
-  ];
   const onStatusChange = (e: any) => {
     const values = e.target.value;
     setListRelateParams(values.toString());
@@ -261,21 +230,20 @@ export default function MenuLevel() {
           <Card bordered={false} className="criclebox h-full">
             <div className="timeline-box">
               <Title level={5}>Orders History</Title>
-              <Paragraph className="lastweek" style={{ marginBottom: 24 }}>
+              {/* <Paragraph className="lastweek" style={{ marginBottom: 24 }}>
                 this month <span className="bnb2">20%</span>
-              </Paragraph>
+              </Paragraph> */}
 
-              <Timeline pending="Recording..." className="timelinelist" reverse={reverse}>
-                {timelineList.map((t, index) => (
-                  <Timeline.Item color={t.color} key={index}>
-                    <Title level={5}>{t.title}</Title>
-                    <Text>{t.time}</Text>
+              <Timeline pending="Recording..." className="timelinelist">
+                {OrdersHistoryData?.contends.map((t, index) => (
+                  <Timeline.Item color="green" key={index}>
+                    <Title level={5}>
+                      {t.status} - {t.priceCod}
+                    </Title>
+                    <Text>total price : {t.totalPrice}</Text>
                   </Timeline.Item>
                 ))}
               </Timeline>
-              <Button type="primary" className="width-100" onClick={() => setReverse(!reverse)}>
-                <MenuUnfoldOutlined /> REVERSE
-              </Button>
             </div>
           </Card>
         </Col>

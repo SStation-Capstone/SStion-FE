@@ -1,36 +1,41 @@
-import { Button, Checkbox, Form, Input, Modal, message } from 'antd';
+import { Button, Form, Input, Modal, message } from 'antd';
 import { useState } from 'react';
 
-import { useCreateSlot, useUpdateSlot } from '@/api/services/stationService';
+import {
+  PricingPayload,
+  useCreatePricingDefault,
+  useUpdatePricingDefault,
+} from '@/api/services/stationService';
 
-export type ZoneCreateFormProps = {
-  clickOne?: any;
+import { Pricing } from '#/entity';
+
+export type StaffCreateFormProps = {
+  clickOne?: Pricing;
   onClose: () => void;
 };
-export function ManageSlotCreate({ clickOne, onClose }: ZoneCreateFormProps) {
+export function PricingDefaultCreate({ clickOne, onClose }: StaffCreateFormProps) {
   const [form] = Form.useForm();
-  const { mutateAsync: createMutate } = useCreateSlot();
-  const { mutateAsync: updateMutate } = useUpdateSlot();
+  const { mutateAsync: createMutate } = useCreatePricingDefault();
+  const { mutateAsync: updateMutate } = useUpdatePricingDefault();
   const [loading, setLoading] = useState<boolean>(false);
-
   const submitHandle = async () => {
     setLoading(true);
     const values = await form.validateFields();
     try {
-      if (clickOne?.name) {
-        const updateData: any = {
+      if (clickOne) {
+        const updateData: PricingPayload = {
           ...clickOne,
           id: clickOne.id,
         };
-        updateData.width = values.width;
-        updateData.height = values.height;
-        updateData.length = values.length;
-        updateData.isActive = values.isActive;
+        updateData.fromDate = values.fromDate;
+        updateData.toDate = values.toDate;
+        updateData.price = values.price;
         updateMutate(updateData);
         setLoading(false);
       } else {
-        const createData: any = { ...values };
-        createData.rackId = clickOne;
+        const createData: PricingPayload = {
+          ...values,
+        };
         createMutate(createData);
         setLoading(false);
       }
@@ -51,7 +56,7 @@ export function ManageSlotCreate({ clickOne, onClose }: ZoneCreateFormProps) {
   };
   return (
     <Modal
-      title={clickOne?.name ? 'Edit Slot' : 'Create Slot'}
+      title={clickOne?.id ? 'Edit Staff' : 'Create Staff'}
       open
       onOk={submitHandle}
       onCancel={() => onClose()}
@@ -65,48 +70,45 @@ export function ManageSlotCreate({ clickOne, onClose }: ZoneCreateFormProps) {
       ]}
     >
       <Form
-        initialValues={clickOne?.name ? clickOne : null}
+        initialValues={clickOne}
         form={form}
         // labelCol={{ span: 4 }}
         // wrapperCol={{ span: 18 }}
         layout="vertical"
       >
-        <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-4">
+        <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
           <Form.Item
-            label="Width (cm)"
-            name="width"
+            label="From Date"
+            name="fromDate"
             required
             rules={[
-              { required: true, message: 'Please input width' },
+              { required: true, message: 'Please input fromDate' },
               { validator: validateNumber as any },
             ]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            label="Height (cm)"
-            name="height"
+            label="To Date"
+            name="toDate"
             required
             rules={[
-              { required: true, message: 'Please input height' },
+              { required: true, message: 'Please input toDate' },
               { validator: validateNumber as any },
             ]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            label="Length (cm)"
-            name="length"
+            label="Price"
+            name="price"
             required
             rules={[
-              { required: true, message: 'Please input length' },
+              { required: true, message: 'Please input price' },
               { validator: validateNumber as any },
             ]}
           >
             <Input />
-          </Form.Item>
-          <Form.Item label="is Active" name="isActive" valuePropName="checked">
-            <Checkbox />
           </Form.Item>
         </div>
       </Form>
