@@ -3,6 +3,7 @@ import { message } from 'antd';
 
 import { queryClient } from '@/http/tanstack/react-query';
 
+// eslint-disable-next-line import/no-cycle
 import apiClient from '../apiClient';
 
 import { InputType, PaginationRes } from '#/api';
@@ -111,6 +112,7 @@ export enum StationApi {
   Racks = '/racks',
   Slots = '/slots',
   Payments = '/payments',
+  GetListStationByStaff = 'staffs/stations',
 }
 
 const createStation = (data: StationPayload) =>
@@ -125,6 +127,12 @@ export const useListOrdersHistory = (values?: InputType) => {
 export const useListStation = (values?: InputType) => {
   return useQuery(['listStation', values], () =>
     apiClient.get<StationGetRes>({ url: StationApi.GetListStation, params: values }),
+  );
+};
+
+export const useGetStationByStaff = () => {
+  return useQuery(['listStationStaff'], () =>
+    apiClient.get<StationGetRes>({ url: StationApi.GetListStationByStaff }),
   );
 };
 export const useListZoneStaff = (values?: any) => {

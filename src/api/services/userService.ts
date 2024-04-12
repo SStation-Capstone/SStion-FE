@@ -1,6 +1,8 @@
 // eslint-disable-next-line import/no-cycle
 import apiClient from '../apiClient';
 
+import { StationPayload } from './stationService';
+
 import { UserInfo, UserToken } from '#/entity';
 
 export interface SignInReq {
@@ -20,16 +22,19 @@ export enum UserApi {
   Logout = '/auth/logout',
   Refresh = '/auth/refresh',
   User = '/user',
+  Station = '/staffs/stations',
 }
 
 const signin = (data: SignInReq) => apiClient.post<SignInRes>({ url: UserApi.SignIn, data });
 const signup = (data: SignUpReq) => apiClient.post<SignInRes>({ url: UserApi.SignUp, data });
 const logout = () => apiClient.get({ url: UserApi.Logout });
 const findById = (id: string) => apiClient.get<UserInfo[]>({ url: `${UserApi.User}/${id}` });
+const getStation = () => apiClient.get<StationPayload>({ url: `${UserApi.Station}` });
 
 export default {
   signin,
   signup,
   findById,
   logout,
+  getStation,
 };

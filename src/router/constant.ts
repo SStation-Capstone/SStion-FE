@@ -1,7 +1,7 @@
 import { Permission } from '#/entity';
 import { PermissionType } from '#/enum';
 
-const STAFF_PERMISSION = [];
+// const STAFF_PERMISSION = [];
 
 const DASHBOARD_PERMISSION: Permission = {
   id: '9100714781927703',
@@ -173,28 +173,28 @@ const STATION_MANAGER_PACKAGEMANAGEMENT_PERMISSION: Permission = {
   ],
 };
 
-const STATION_MANAGER_STAFF_MANAGE_PERMISSION: Permission = {
-  id: '9100714781927712',
-  parentId: '',
-  label: 'Staff',
-  name: 'staff',
-  icon: 'ic-user',
-  type: PermissionType.MENU,
-  route: 'staff',
-  order: 3,
-  component: '/staff/staff-list.station.tsx',
-  // children: [
-  //   {
-  //     id: '8426999229400979',
-  //     parentId: '9100714781927703',
-  //     label: 'sys.menu.workbench',
-  //     name: 'Workbench',
-  //     type: PermissionType.MENU,
-  //     route: 'workbench',
-  //     component: '/dashboard/workbench/index.tsx',
-  //   },
-  // ],
-};
+// const STATION_MANAGER_STAFF_MANAGE_PERMISSION: Permission = {
+//   id: '9100714781927712',
+//   parentId: '',
+//   label: 'Staff',
+//   name: 'staff',
+//   icon: 'ic-user',
+//   type: PermissionType.MENU,
+//   route: 'staff',
+//   order: 3,
+//   component: '/staff/staff-list.station.tsx',
+//   // children: [
+//   //   {
+//   //     id: '8426999229400979',
+//   //     parentId: '9100714781927703',
+//   //     label: 'sys.menu.workbench',
+//   //     name: 'Workbench',
+//   //     type: PermissionType.MENU,
+//   //     route: 'workbench',
+//   //     component: '/dashboard/workbench/index.tsx',
+//   //   },
+//   // ],
+// };
 const STATION_MANAGER_PRICING_MANAGE_PERMISSION: Permission = {
   id: '9100714781927712',
   parentId: '',
@@ -217,6 +217,29 @@ const STATION_MANAGER_PRICING_MANAGE_PERMISSION: Permission = {
   //   },
   // ],
 };
+
+const STAFF_PACKAGEMANAGEMENT_PERMISSION: Permission = {
+  id: '9100714781927707',
+  parentId: '',
+  label: 'Package Management',
+  name: 'packagemanagement',
+  icon: 'ic-package',
+  type: PermissionType.CATALOGUE,
+  route: 'package',
+  order: 2,
+  children: [
+    {
+      id: '8426999229400979',
+      parentId: '9100714781927707',
+      label: 'Check In',
+      name: 'checkin',
+      type: PermissionType.MENU,
+      route: 'checkin',
+      component: '/staff/zone-list.container.tsx',
+      icon: 'ic-checkin',
+    },
+  ],
+};
 export const ADMIN_PERMISSION = [
   ADMIN_DASHBOARD_PERMISSION,
   STATION_MANAGER_PERMISSION,
@@ -229,7 +252,4 @@ export const STATION_MANAGER_LIST_PERMISSION = [
   STATION_MANAGER_PACKAGEMANAGEMENT_PERMISSION,
 ];
 
-export const STAFF_LIST_PERRMISSION = [
-  DASHBOARD_PERMISSION,
-  STATION_MANAGER_STAFF_MANAGE_PERMISSION,
-];
+export const STAFF_LIST_PERRMISSION = [DASHBOARD_PERMISSION, STAFF_PACKAGEMANAGEMENT_PERMISSION];

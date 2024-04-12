@@ -82,7 +82,6 @@ export const useSignIn = () => {
           'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
         ].toLowerCase() === 'admin'
       ) {
-        console.log('admin');
         user.permissions = ADMIN_PERMISSION;
       } else if (
         decodetoken[
@@ -92,10 +91,12 @@ export const useSignIn = () => {
         user.permissions = STATION_MANAGER_LIST_PERMISSION;
       } else {
         user.permissions = STAFF_LIST_PERRMISSION;
+        setUserInfo(user);
+        const station = await userService.getStation();
+        user.stationId = station.id;
       }
       setUserInfo(user);
       navigatge(HOMEPAGE, { replace: true });
-
       notification.success({
         message: 'Login sucessfully',
         description: `Welcome back: ${data.username}`,
