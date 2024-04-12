@@ -29,7 +29,7 @@ export function ManageCheckOutCreate() {
         createMutate({ id, status: 'confirm' });
         setLoading(false);
       } else {
-        createCancelMutate({ id, status: 'cancel' });
+        createCancelMutate({ id, status: 'return' });
         setLoading(false);
       }
     } catch (error) {

@@ -26,6 +26,29 @@ const DASHBOARD_PERMISSION: Permission = {
   // ],
 };
 
+const ADMIN_DASHBOARD_PERMISSION: Permission = {
+  id: '9100714781927703',
+  parentId: '',
+  label: 'Dashboard',
+  name: 'Dashboard',
+  icon: 'ic-analysis',
+  type: PermissionType.MENU,
+  route: 'dashboard',
+  order: 1,
+  component: '/admin/dashboard/index.tsx',
+  // children: [
+  //   {
+  //     id: '8426999229400979',
+  //     parentId: '9100714781927703',
+  //     label: 'sys.menu.workbench',
+  //     name: 'Workbench',
+  //     type: PermissionType.MENU,
+  //     route: 'workbench',
+  //     component: '/dashboard/workbench/index.tsx',
+  //   },
+  // ],
+};
+
 const STATION_MANAGER_PERMISSION: Permission = {
   id: '9100714781927704',
   parentId: '',
@@ -195,7 +218,7 @@ const STATION_MANAGER_PRICING_MANAGE_PERMISSION: Permission = {
   // ],
 };
 export const ADMIN_PERMISSION = [
-  DASHBOARD_PERMISSION,
+  ADMIN_DASHBOARD_PERMISSION,
   STATION_MANAGER_PERMISSION,
   STATION_MANAGE_PERMISSION,
   STATION_MANAGER_PRICING_MANAGE_PERMISSION,
@@ -209,5 +232,4 @@ export const STATION_MANAGER_LIST_PERMISSION = [
 export const STAFF_LIST_PERRMISSION = [
   STATION_MANAGER_PACKAGEMANAGEMENT_PERMISSION,
   DASHBOARD_PERMISSION,
-  STATION_MANAGER_STAFF_MANAGE_PERMISSION,
 ];

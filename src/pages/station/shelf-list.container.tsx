@@ -331,30 +331,6 @@ export default function ManageShelfManagerList({ id }: StationEditFormProps) {
                                 <span className="font-semibold text-black">
                                   description - {slot.description}
                                 </span>
-                                <span className="font-semibold text-black">
-                                  width - {slot.width} cm
-                                </span>
-                                <span className="font-semibold text-black">
-                                  length - {slot.length} cm
-                                </span>
-                                <span className="font-semibold text-black">
-                                  height - {slot.height} cm
-                                </span>
-                                <span className="font-semibold text-black">
-                                  weight - {slot.weight} gram
-                                </span>
-                                <span className="font-semibold text-black">
-                                  numberOfPackages - {slot.numberOfPackages}
-                                </span>
-                                <span className="font-semibold text-black">
-                                  index - {slot.index}
-                                </span>
-                                <span className="font-semibold text-black">
-                                  volume - {slot.volume}
-                                </span>
-                                <span className="font-semibold text-black">
-                                  volumeUsed - {slot.volumeUsed}
-                                </span>
                               </div>
                               <div className="flex justify-center">
                                 <span
@@ -410,8 +386,8 @@ export default function ManageShelfManagerList({ id }: StationEditFormProps) {
                   </div>
                 ))}
               <div
-                className="relative flex flex-col rounded-xl bg-gray-200 bg-clip-border text-gray-700 shadow-md"
-                onClick={() => createMutate(item.id)}
+                className="relative flex flex-col rounded-xl bg-gray-100 bg-clip-border text-gray-700 shadow-md"
+                onClick={() => onOpenFormRack(item.id)}
               >
                 <div className="flex cursor-pointer flex-wrap justify-center gap-2 p-3">
                   <h5 className="text-blue-gray-900 block font-sans text-base font-semibold leading-snug tracking-normal antialiased">
