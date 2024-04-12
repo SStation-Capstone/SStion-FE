@@ -111,7 +111,7 @@ export default function StaffManagerList() {
             New
           </Button>
           <Button type="primary" onClick={() => createMutate()}>
-            Do you get pricing default?
+            Use default pricing
           </Button>
         </div>
       }

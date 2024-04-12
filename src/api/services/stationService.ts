@@ -526,7 +526,7 @@ export const useGoPricingDefault = (values?: any) => {
     {
       onSuccess: () => {
         // globalSuccess();
-        message.success('Delete pricingDefault sucessfully');
+        message.success('Update pricing default sucessfully');
         queryClient.invalidateQueries(['listPricing']);
       },
     },
