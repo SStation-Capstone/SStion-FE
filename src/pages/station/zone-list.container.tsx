@@ -75,7 +75,7 @@ export default function ManageZoneManagerList() {
 
   return (
     <Card
-      title={`Package Management - balance : ${stationData.contends[0].balance}`}
+      title={`Package Management - balance : ${stationData?.contends[0]?.balance || 0}`}
       extra={
         <>
           <Button type="primary" onClick={() => onOpenFormHandler()}>
