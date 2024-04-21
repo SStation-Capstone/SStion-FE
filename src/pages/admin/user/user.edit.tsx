@@ -1,12 +1,16 @@
-import { Form, Modal, Input, Upload, UploadFile, UploadProps } from 'antd';
+import { Form, Modal, Input, Upload, UploadFile, UploadProps, message, Button } from 'antd';
 
 // import { PERMISSION_LIST } from '@/_mock/assets';
 
+import { isArray } from 'lodash';
 import { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-import { MangerPayload, useCreateSManager, useUpdateManager } from '@/api/services/managerService';
-import { useListStation } from '@/api/services/stationService';
+import {
+  MangerPayload,
+  useCreateSManager,
+  useUpdateManager,
+} from '@/api/services/admin/managerService';
 import { beforeUpload, fakeUpload, normFile, uploadFileToFirebase } from '@/utils/file';
 
 import { Manager } from '#/entity';
@@ -18,12 +22,11 @@ export type ManagerEditFormProps = {
   // onCancel: VoidFunction;
 };
 // const PERMISSIONS: Permission[] = PERMISSION_LIST;
-export function ManagerEdit({ clickOne, onClose }: ManagerEditFormProps) {
+export function UserEdit({ clickOne, onClose }: ManagerEditFormProps) {
   const [form] = Form.useForm();
 
   const { mutateAsync: createMutate } = useCreateSManager();
   const { mutateAsync: updateMutate } = useUpdateManager();
-  const { data: listStation } = useListStation();
   const [loading, setLoading] = useState<boolean>(false);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   // const submitHandle = async () => {
@@ -54,46 +57,42 @@ export function ManagerEdit({ clickOne, onClose }: ManagerEditFormProps) {
       setFileList([]);
     };
   }, [clickOne, form]);
+
   const submitHandle = async () => {
-    setLoading(true);
     const values = await form.validateFields();
-    const imageUrl = await uploadFileToFirebase(values?.avatarUrl[0]);
-    if (clickOne) {
-      const updateData: MangerPayload = {
-        ...clickOne,
-        id: clickOne.id,
-      };
-      if (values.avatarUrl) {
-        const updateImageUrl: string = await uploadFileToFirebase(values?.avatarUrl[0]);
-        const imageUrl = updateImageUrl;
-        updateData.avatarUrl = imageUrl;
+    setLoading(true);
+    try {
+      if (clickOne) {
+        const updateData: MangerPayload = {
+          ...clickOne,
+          id: clickOne.id,
+        };
+        if (isArray(values.avatarUrl) && values.avatarUrl.length > 0) {
+          const updateImageUrl: string = await uploadFileToFirebase(values?.avatarUrl[0]);
+          const imageUrl = updateImageUrl;
+          updateData.avatarUrl = imageUrl;
+        }
+        updateData.userName = values.userNamec;
+        updateData.email = values.email;
+        updateData.fullName = values.fullName;
+        updateData.password = values.password;
+        updateMutate(updateData);
+        setLoading(false);
+      } else {
+        const imageUrl: string = await uploadFileToFirebase(values?.avatarUrl[0]);
+        const createData: MangerPayload = {
+          ...values,
+          avatarUrl: imageUrl,
+        };
+        createMutate(createData);
+        setLoading(false);
       }
-      updateData.userName = values.userNamec;
-      updateData.email = values.email;
-      updateData.fullName = values.fullName;
-      updateData.password = values.password;
-      updateMutate(updateData);
-      setLoading(false);
-    } else {
-      const imageUrl: string = await uploadFileToFirebase(values?.avatarUrl[0]);
-      const createData: MangerPayload = {
-        ...values,
-        avatarUrl: imageUrl,
-      };
-      createMutate(createData);
+      onClose();
+    } catch (error) {
+      message.error(error.message || error);
+      console.log(error);
       setLoading(false);
     }
-    onClose();
-  };
-
-  // const flattenedPermissions = flattenTrees(formValue.permission);
-  // const checkedKeys = flattenedPermissions.map((item) => item.id);
-  // useEffect(() => {
-  //   form.setFieldsValue({ ...formValue });
-  // }, [formValue, form]);
-  const [treeValue, setTreeValue] = useState<string>();
-  const onChange = (newValue: string) => {
-    setTreeValue(newValue);
   };
 
   const onImageChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
@@ -105,6 +104,14 @@ export function ManagerEdit({ clickOne, onClose }: ManagerEditFormProps) {
       open
       onOk={submitHandle}
       onCancel={() => onClose()}
+      footer={[
+        <Button key="back" onClick={onClose}>
+          Cancel
+        </Button>,
+        <Button key="submit" type="primary" loading={loading} onClick={submitHandle}>
+          Submit
+        </Button>,
+      ]}
     >
       <Form
         initialValues={clickOne}
@@ -174,7 +181,7 @@ export function ManagerEdit({ clickOne, onClose }: ManagerEditFormProps) {
           rules={[{ required: true, message: 'Please input Password ' }]}
           initialValue={clickOne?.password}
         >
-          <Input />
+          <Input.Password />
         </Form.Item>
         <Form.Item label="AvatarUrl" name="avatarUrl" getValueFromEvent={normFile}>
           <Upload

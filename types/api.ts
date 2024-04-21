@@ -10,6 +10,7 @@ export interface PaginationRes {
   totalPages: number;
   hasPreviousPage: boolean;
   hasNextPage: boolean;
+  totalItems: number;
 }
 
 export interface InputType {
