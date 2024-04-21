@@ -15,19 +15,23 @@ import { PackagesInfo } from './packages.info';
 import { ManageRackCreate } from './rack.create';
 // eslint-disable-next-line import/named
 import { ManageSlotCreate } from './slot.create';
+import { ManageCheckInCreate } from './checkin.create';
 
 export type StationEditFormProps = {
+  stationId: any;
   id: String;
 };
-export default function ManageShelfManagerList({ id }: StationEditFormProps) {
+export default function ManageShelfManagerList({ stationId, id }: StationEditFormProps) {
   const { mutateAsync: deleteMutate } = useDeleteShelf();
   const { mutateAsync: createMutate } = useCreateRack();
   const { mutateAsync: deleteRack } = useDeleteRack();
   const { mutateAsync: deleteSlot } = useDeleteSlot();
   const { data, isLoading } = useListShelf(id);
+  const [dataSlot, setDataSlot] = useState<any>();
   const [clickOne, setClickOne] = useState();
   const [clickTwo, setClickTwo] = useState();
   const [clickThree, setClickThree] = useState();
+  const [showFormCheckIn, setShowFormCheckIn] = useState(false);
   const [showFormRack, setShowFormRack] = useState(false);
   const [showFormSlot, setShowFormSlot] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
@@ -35,6 +39,10 @@ export default function ManageShelfManagerList({ id }: StationEditFormProps) {
   const onOpenFormHandler = (record?: any) => {
     setClickOne(record);
     setShowInfo(true);
+  };
+  const onOpenFormCheckInHandler = (record?: any) => {
+    setDataSlot(record);
+    setShowFormCheckIn(true);
   };
   const onOpenFormRack = (record?: any) => {
     setClickTwo(record);
@@ -46,6 +54,9 @@ export default function ManageShelfManagerList({ id }: StationEditFormProps) {
   };
   const closeAndRefetchHandler = async () => {
     setShowInfo(false);
+  };
+  const closeFormCheckIn = async () => {
+    setShowFormCheckIn(false);
   };
   const closeFormRack = async () => {
     setShowFormRack(false);
@@ -180,6 +191,15 @@ export default function ManageShelfManagerList({ id }: StationEditFormProps) {
                                       </span>
                                     </div>
                                     <div className="flex justify-center">
+                                      {slot.isActive && (
+                                        <span
+                                          className="mr-2 bg-blue-300 p-1.5 font-semibold text-black transition-all duration-200 hover:bg-blue-200"
+                                          style={{ borderRadius: '5px', cursor: 'pointer' }}
+                                          onClick={() => onOpenFormCheckInHandler(slot)}
+                                        >
+                                          Check In
+                                        </span>
+                                      )}
                                       <span
                                         className="mr-2 bg-green-300 p-1.5 font-semibold text-black transition-all duration-200 hover:bg-green-200"
                                         style={{ borderRadius: '5px', cursor: 'pointer' }}
@@ -400,6 +420,15 @@ export default function ManageShelfManagerList({ id }: StationEditFormProps) {
         ))} */}
         {showInfo && (
           <PackagesInfo zoneId={id} clickOne={clickOne} onClose={closeAndRefetchHandler} />
+        )}
+        {showFormCheckIn && (
+          <ManageCheckInCreate
+            stationId={stationId}
+            zoneId={id}
+            slotId={dataSlot.id}
+            onClose={closeFormCheckIn}
+            onCloseCheckIn={closeAndRefetchHandler}
+          />
         )}
         {showFormRack && <ManageRackCreate clickOne={clickTwo} onClose={closeFormRack} />}
         {showFormSlot && <ManageSlotCreate clickOne={clickThree} onClose={closeFormSlot} />}

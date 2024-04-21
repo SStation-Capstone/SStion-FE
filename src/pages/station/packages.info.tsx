@@ -17,6 +17,7 @@ import { IconButton, Iconify } from '@/components/icon';
 import { CircleLoading } from '@/components/loading';
 
 import { ManageCheckInCreate } from './checkin.create';
+import { PackageDetail } from './packages.detail';
 
 const { Title } = Typography;
 export type PackagesFormProps = {
@@ -30,10 +31,19 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [showFormCheckIn, setShowFormCheckIn] = useState(false);
   const { data, isLoading } = useGetPackageBySlot({ id: clickOne.id, payload: listRelateParams });
+  const [showInfo, setShowInfo] = useState(false);
+  const [clickTwo, setClickTwo] = useState();
   if (isLoading) return <CircleLoading />;
   const onPageChange = (page: number, pageSize: number) => {
     const values = { PageIndex: page, PageSize: pageSize };
     setListRelateParams(values);
+  };
+  const onOpenFormHandler = (record?: any) => {
+    setClickTwo(record);
+    setShowInfo(true);
+  };
+  const closeAndRefetchHandler = async () => {
+    setShowInfo(false);
   };
   const columns = [
     {
@@ -152,11 +162,11 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
         <Button key="back" onClick={onClose}>
           Cancel
         </Button>,
-        clickOne.isActive && (
-          <Button key="submit" type="primary" onClick={() => setShowFormCheckIn(true)}>
-            Check In
-          </Button>
-        ),
+        // clickOne.isActive && (
+        //   <Button key="submit" type="primary" onClick={() => setShowFormCheckIn(true)}>
+        //     Check In
+        //   </Button>
+        // ),
       ]}
     >
       <Table
@@ -167,6 +177,13 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
         columns={columns as any}
         dataSource={data?.contends}
         loading={isLoading}
+        onRow={(record, rowIndex) => {
+          return {
+            onClick: (event) => {
+              onOpenFormHandler(record);
+            },
+          };
+        }}
       />
       <Pagination
         showSizeChanger
@@ -181,6 +198,14 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
           slotId={clickOne.id}
           onClose={closeFormCheckIn}
           onCloseCheckIn={onClose}
+        />
+      )}
+      {showInfo && (
+        <PackageDetail
+          clickOne={clickTwo}
+          check
+          slotId={clickOne.id}
+          onClose={closeAndRefetchHandler}
         />
       )}
     </Modal>

@@ -10,6 +10,7 @@ import { InputType, PaginationRes } from '#/api';
 import { ImageUrl } from '#/entity';
 
 export interface StationPayload {
+  contends: any;
   id: number;
   name: string;
   address: string;
@@ -41,9 +42,10 @@ export interface PostStaffPayload {
 }
 export interface PricingPayload {
   id: number;
-  fromDate: number;
-  toDate: number;
-  price: number;
+  startTime: number;
+  endTime: number;
+  pricePerUnit: number;
+  unitDuration: number;
 }
 export interface PutStaffPayload {
   id: string;
@@ -124,12 +126,40 @@ export const useListOrdersHistory = (values?: InputType) => {
     apiClient.get<StationGetRes>({ url: StationApi.Payments, params: values }),
   );
 };
+export const useListStationManagers = (values?: any) => {
+  return useQuery(['listStationManagers', values], () =>
+    apiClient.get<StationGetRes>({ url: `/managers/stations/${values}` }),
+  );
+};
 export const useListStation = (values?: InputType) => {
   return useQuery(['listStation', values], () =>
     apiClient.get<StationGetRes>({ url: StationApi.GetListStation, params: values }),
   );
 };
-
+export const useListPackageStation = (payload?: any) => {
+  return useQuery(['listPackageStation', payload], () =>
+    apiClient.get<StationGetRes>({
+      url: `${StationApi.Packages}?${payload.stationIds}&PageSize=10`,
+      params: payload.values,
+    }),
+  );
+};
+export const useListPackageHistoryStation = (payload?: any) => {
+  return useQuery(['listPackageHistoryStation', payload], () =>
+    apiClient.get<StationGetRes>({
+      url: `/package-status-histories?${payload.stationIds}&PageSize=10`,
+      params: payload.values,
+    }),
+  );
+};
+export const useListPaymentStation = (payload?: any) => {
+  return useQuery(['listPaymentStation', payload], () =>
+    apiClient.get<StationGetRes>({
+      url: `${StationApi.Payments}?${payload.stationIds}&PageSize=10`,
+      params: payload.values,
+    }),
+  );
+};
 export const useGetStationByStaff = () => {
   return useQuery(['listStationStaff'], () =>
     apiClient.get<StationGetRes>({ url: StationApi.GetListStationByStaff }),
@@ -309,6 +339,7 @@ export const useCreateCheckIn = () => {
     },
   );
 };
+
 export const useCreateCheckInForce = () => {
   return useMutation(
     async (payload: CheckInForcePayload) =>
@@ -341,6 +372,23 @@ export const useDeletePackage = () => {
     },
   );
 };
+export const useListStaffPackage = (values?: any) => {
+  return useQuery(['listStaffPackage', values], () =>
+    apiClient.get<StationGetRes>({
+      url: `/packages?StationIds=${values.id}&PageSize=10`,
+      params: values.listRelateParams,
+    }),
+  );
+};
+export const useListStaffUser = () => {
+  return useQuery(['listStaffUser'], () =>
+    apiClient.get<StationGetRes>({
+      url: `/staffs/users`,
+      // params: values,
+    }),
+  );
+};
+
 export const useListStaff = (values?: any) => {
   return useQuery(['listStaff', values], () =>
     apiClient.get<StationGetRes>({
@@ -349,7 +397,6 @@ export const useListStaff = (values?: any) => {
     }),
   );
 };
-
 export const useCreateStaff = (values?: any) => {
   return useMutation(
     async (payload: PostStaffPayload) =>
@@ -434,9 +481,10 @@ export const useUpdatePricing = (values?: any) => {
       apiClient.put<StationCreateResponse>({
         url: `${StationApi.GetStation}/${values}/pricings/${payload.id}`,
         data: {
-          fromDate: payload.fromDate,
-          toDate: payload.toDate,
-          price: payload.price,
+          startTime: payload.startTime,
+          endTime: payload.endTime,
+          pricePerUnit: payload.pricePerUnit,
+          unitDuration: payload.unitDuration,
         },
       }),
     {
@@ -495,9 +543,10 @@ export const useUpdatePricingDefault = () => {
       apiClient.put<StationCreateResponse>({
         url: `default-pricings/${payload.id}`,
         data: {
-          fromDate: payload.fromDate,
-          toDate: payload.toDate,
-          price: payload.price,
+          startTime: payload.startTime,
+          endTime: payload.endTime,
+          pricePerUnit: payload.pricePerUnit,
+          unitDuration: payload.unitDuration,
         },
       }),
     {
@@ -547,6 +596,14 @@ export const useGetCheckOut = (id?: string) => {
     }),
   );
 };
+export const useGetPackageDetail = (data?: any) => {
+  return useQuery(['packageDetail'], () =>
+    apiClient.get({
+      url: `${StationApi.Packages}/${data}`,
+      params: data.payload,
+    }),
+  );
+};
 export const useGetPackageBySlot = (data?: any) => {
   return useQuery(['package'], () =>
     apiClient.get({
@@ -564,12 +621,32 @@ export const useCreateCheckOutConfirm = () => {
       }),
     {
       onSuccess: () => {
-        message.success('Cancel checkout sucessfully');
+        message.success('Confirm checkout sucessfully');
       },
     },
   );
 };
-
+export const useCreateCheckOutPaymentQR = (payload: any) => {
+  return useQuery(['QRCode'], () =>
+    apiClient.get({
+      url: `${StationApi.Packages}/${payload}/qr-payment`,
+    }),
+  );
+};
+export const useCreateCheckOutPayment = () => {
+  return useMutation(
+    async (payload: any) =>
+      apiClient.post<StationCreateResponse>({
+        url: `${StationApi.Packages}/${payload}/payment`,
+        data: {},
+      }),
+    {
+      onSuccess: () => {
+        message.success('payment Check out sucessfully !!!');
+      },
+    },
+  );
+};
 export const useCreateCheckOutCancel = () => {
   return useMutation(
     async (payload: any) =>

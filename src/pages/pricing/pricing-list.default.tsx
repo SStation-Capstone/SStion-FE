@@ -43,16 +43,20 @@ export default function StaffManagerList() {
       width: '5%',
     },
     {
-      title: 'From Date',
-      dataIndex: 'fromDate',
+      title: 'Start Time',
+      dataIndex: 'startTime',
     },
     {
-      title: 'To Date',
-      dataIndex: 'toDate',
+      title: 'End Time',
+      dataIndex: 'endTime',
     },
     {
       title: 'Price',
-      dataIndex: 'price',
+      dataIndex: 'pricePerUnit',
+    },
+    {
+      title: 'Duration',
+      dataIndex: 'unitDuration',
     },
     {
       title: 'Action',

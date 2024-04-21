@@ -15,6 +15,7 @@ export interface UserInfo {
   // status?: BasicStatus;
   permissions?: Permission[];
   stationId?: number;
+  stationManager?: string;
 }
 
 export interface Organization {
@@ -84,9 +85,10 @@ export interface Staff {
 }
 export interface Pricing {
   id: number;
-  fromDate: number;
-  toDate: number;
-  price: number;
+  startTime: number;
+  endTime: number;
+  pricePerUnit: number;
+  unitDuration: number;
 }
 export interface Zone {
   id: number;
