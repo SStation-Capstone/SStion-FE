@@ -1,4 +1,4 @@
-import { Button, Form, Input, Modal, message } from 'antd';
+import { Button, Col, Form, Input, Modal, Row, message } from 'antd';
 import { useState } from 'react';
 
 import {
@@ -56,7 +56,7 @@ export function PricingDefaultCreate({ clickOne, onClose }: StaffCreateFormProps
   };
   return (
     <Modal
-      title={clickOne?.id ? 'Edit Staff' : 'Create Staff'}
+      title={clickOne?.id ? 'Edit default pricing' : 'Create default pricing'}
       open
       onOk={submitHandle}
       onCancel={() => onClose()}
@@ -76,41 +76,62 @@ export function PricingDefaultCreate({ clickOne, onClose }: StaffCreateFormProps
         // wrapperCol={{ span: 18 }}
         layout="vertical"
       >
-        <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
-          <Form.Item
-            label="From Date"
-            name="fromDate"
-            required
-            rules={[
-              { required: true, message: 'Please input fromDate' },
-              { validator: validateNumber as any },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="To Date"
-            name="toDate"
-            required
-            rules={[
-              { required: true, message: 'Please input toDate' },
-              { validator: validateNumber as any },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Price"
-            name="price"
-            required
-            rules={[
-              { required: true, message: 'Please input price' },
-              { validator: validateNumber as any },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-        </div>
+        <Row justify="space-between">
+          <Col span={11}>
+            <Form.Item
+              label="Start Time"
+              name="startTime"
+              required
+              rules={[
+                { required: true, message: 'Please input start time' },
+                { validator: validateNumber as any },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col span={11}>
+            <Form.Item
+              label="End Time"
+              name="endTime"
+              required
+              rules={[
+                { required: true, message: 'Please input end time' },
+                { validator: validateNumber as any },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row justify="space-between">
+          <Col span={11}>
+            <Form.Item
+              label="Price Per Unit"
+              name="pricePerUnit"
+              required
+              rules={[
+                { required: true, message: 'Please input price per unit' },
+                { validator: validateNumber as any },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col span={11}>
+            <Form.Item
+              label="Unit Duration"
+              name="unitDuration"
+              required
+              rules={[
+                { required: true, message: 'Please input unit duration' },
+                { validator: validateNumber as any },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+          </Col>
+        </Row>
       </Form>
     </Modal>
   );
