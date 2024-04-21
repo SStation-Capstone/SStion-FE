@@ -84,9 +84,10 @@ export interface Staff {
 }
 export interface Pricing {
   id: number;
-  fromDate: number;
-  toDate: number;
-  price: number;
+  startTime: number;
+  endTime: number;
+  unitDuration: number;
+  pricePerUnit: number;
 }
 export interface Zone {
   id: number;

@@ -41,10 +41,12 @@ export interface PostStaffPayload {
 }
 export interface PricingPayload {
   id: number;
-  fromDate: number;
-  toDate: number;
-  price: number;
+  startTime: number;
+  endTime: number;
+  unitDuration: number;
+  pricePerUnit: number;
 }
+
 export interface PutStaffPayload {
   id: string;
   email: string;

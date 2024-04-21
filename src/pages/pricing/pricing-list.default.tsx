@@ -1,4 +1,4 @@
-import { Button, Card, Col, Form, Input, Pagination, Typography, Popconfirm, Row } from 'antd';
+import { Button, Card, Form, Pagination, Typography, Popconfirm } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
 
@@ -43,16 +43,20 @@ export default function StaffManagerList() {
       width: '5%',
     },
     {
-      title: 'From Date',
-      dataIndex: 'fromDate',
+      title: 'Start Time',
+      dataIndex: 'startTime',
     },
     {
-      title: 'To Date',
-      dataIndex: 'toDate',
+      title: 'End Time',
+      dataIndex: 'endTime',
     },
     {
-      title: 'Price',
-      dataIndex: 'price',
+      title: 'Price Per Unit',
+      dataIndex: 'pricePerUnit',
+    },
+    {
+      title: 'Unit Duration',
+      dataIndex: 'unitDuration',
     },
     {
       title: 'Action',
@@ -104,7 +108,7 @@ export default function StaffManagerList() {
         </Button>
       }
     >
-      <Form form={form} onFinish={onFinishHandler}>
+      {/* <Form form={form} onFinish={onFinishHandler}>
         <Row gutter={24} justify="space-between">
           <Col span={8}>
             <Form.Item name="Search">
@@ -128,20 +132,20 @@ export default function StaffManagerList() {
             </Row>
           </Col>
         </Row>
-      </Form>
+      </Form> */}
       <Table
         rowKey="id"
         size="small"
         scroll={{ x: 'max-content' }}
         pagination={false}
         columns={columns}
-        dataSource={data.contends}
+        dataSource={data?.contends}
         loading={isLoading}
       />
       <Pagination
         showSizeChanger
         onChange={onPageChange}
-        total={data?.totalPages}
+        total={data?.totalItems}
         // showTotal={(total) => `共 ${total} 条`}
         current={data?.page}
         style={{ marginTop: '1rem' }}
