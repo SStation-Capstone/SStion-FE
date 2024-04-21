@@ -21,7 +21,6 @@ export function ManagerListStation({ clickOne, onClose }: ManagerListStationForm
   const { data: listStation } = useListStation();
   const submitHandle = async () => {
     const values = await form.validateFields();
-    console.log(values);
     const createData: AddToStationPayload = {
       id: values.station,
       station: clickOne.id.toString(),

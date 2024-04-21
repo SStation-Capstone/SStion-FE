@@ -44,9 +44,10 @@ export interface PricingPayload {
   id: number;
   startTime: number;
   endTime: number;
-  pricePerUnit: number;
   unitDuration: number;
+  pricePerUnit: number;
 }
+
 export interface PutStaffPayload {
   id: string;
   email: string;

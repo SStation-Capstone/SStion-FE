@@ -87,8 +87,8 @@ export interface Pricing {
   id: number;
   startTime: number;
   endTime: number;
-  pricePerUnit: number;
   unitDuration: number;
+  pricePerUnit: number;
 }
 export interface Zone {
   id: number;
@@ -115,4 +115,17 @@ export interface Manager {
   fullName: string;
   avatarUrl: string;
   password: string;
+}
+
+export interface User {
+  id: string;
+  userName: string;
+  email: string;
+  phoneNumber: string;
+  fullName: string;
+  avatarUrl: string;
+  password: string;
+  isActive: boolean;
+  isDeleted: boolean;
+  role: any;
 }

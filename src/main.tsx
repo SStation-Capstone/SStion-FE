@@ -41,7 +41,7 @@ console.info(`%c${charAt}`, 'color: #5BE49B');
 // });
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
-console.log(import.meta.env.MODE);
+
 root.render(
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>

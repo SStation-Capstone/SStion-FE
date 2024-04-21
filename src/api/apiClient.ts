@@ -60,7 +60,6 @@ axiosInstance.interceptors.response.use(
       Message.error('Token Expire! Redirect to Login Page');
       setTimeout(() => {
         removeItem(StorageEnum.Token);
-        console.log(window.location.hash);
         window.location.hash = '#/login';
         window.location.reload();
       }, 1000);

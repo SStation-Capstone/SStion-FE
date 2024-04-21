@@ -30,7 +30,6 @@ const Main = forwardRef<HTMLDivElement, Props>(({ offsetTop = false }, ref) => {
     mainStyle.width = `calc(100% - ${
       themeLayout === ThemeLayout.Vertical ? NAV_COLLAPSED_WIDTH : NAV_WIDTH
     })`;
-    console.log('main style', mainStyle.width);
   } else {
     mainStyle.width = '100vw';
   }

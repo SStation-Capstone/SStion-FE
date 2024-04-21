@@ -85,7 +85,6 @@ export function ManageStationEdit({ clickOne, onClose }: StationEditFormProps) {
   const submitHandle = async () => {
     const values = await form.validateFields();
     setLoading(true);
-    console.log('station', values);
     try {
       if (clickOne) {
         const updateData: StationPayload = {

@@ -61,7 +61,6 @@ export function ManagerEdit({ clickOne, onClose }: ManagerEditFormProps) {
   const submitHandle = async () => {
     const values = await form.validateFields();
     setLoading(true);
-    console.log('vaues', values);
     try {
       if (clickOne) {
         const updateData: MangerPayload = {
