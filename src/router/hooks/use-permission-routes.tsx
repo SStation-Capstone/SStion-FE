@@ -25,7 +25,6 @@ function resolveComponent(path: string) {
  */
 export function usePermissionRoutes() {
   const permissions = useUserPermission();
-  console.log('permission', permissions);
   return useMemo(() => {
     const flattenedPermissions = flattenTrees(permissions!);
     const permissionRoutes = transformPermissionToMenuRoutes(
@@ -118,7 +117,6 @@ function transformPermissionToMenuRoutes(
  * @returns {string} - The complete route after splicing
  */
 function getCompleteRoute(permission: Permission, flattenedPermissions: Permission[], route = '') {
-  console.log('per', permission);
   const currentRoute = route ? `/${permission.route}${route}` : `/${permission.route}`;
 
   if (permission.parentId) {

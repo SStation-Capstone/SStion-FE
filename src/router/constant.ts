@@ -49,6 +49,51 @@ const ADMIN_DASHBOARD_PERMISSION: Permission = {
   // ],
 };
 
+const ADMIN_TRANSACTIONS_PERMISSION: Permission = {
+  id: '9100714781927714',
+  parentId: '',
+  label: 'Transactions',
+  name: 'transactions',
+  icon: 'ic-transaction',
+  type: PermissionType.MENU,
+  route: 'transactions',
+  order: 6,
+  component: '/admin/transactions/transactions-list.container.tsx',
+  // children: [
+  //   {
+  //     id: '8426999229400979',
+  //     parentId: '9100714781927703',
+  //     label: 'sys.menu.workbench',
+  //     name: 'Workbench',
+  //     type: PermissionType.MENU,
+  //     route: 'workbench',
+  //     component: '/dashboard/workbench/index.tsx',
+  //   },
+  // ],
+};
+
+const ADMIN_USER_PERMISSION: Permission = {
+  id: '9100714781927723',
+  parentId: '',
+  label: 'Users',
+  name: 'users',
+  icon: 'ic-user',
+  type: PermissionType.MENU,
+  route: 'users',
+  order: 5,
+  component: '/admin/user/user-list.container.tsx',
+  // children: [
+  //   {
+  //     id: '8426999229400979',
+  //     parentId: '9100714781927703',
+  //     label: 'sys.menu.workbench',
+  //     name: 'Workbench',
+  //     type: PermissionType.MENU,
+  //     route: 'workbench',
+  //     component: '/dashboard/workbench/index.tsx',
+  //   },
+  // ],
+};
 const STATION_MANAGER_PERMISSION: Permission = {
   id: '9100714781927704',
   parentId: '',
@@ -245,6 +290,8 @@ export const ADMIN_PERMISSION = [
   STATION_MANAGER_PERMISSION,
   STATION_MANAGE_PERMISSION,
   STATION_MANAGER_PRICING_MANAGE_PERMISSION,
+  ADMIN_TRANSACTIONS_PERMISSION,
+  ADMIN_USER_PERMISSION,
 ];
 export const STATION_MANAGER_LIST_PERMISSION = [
   STATION_MANAGER_CONFIG_PERMISSION,
