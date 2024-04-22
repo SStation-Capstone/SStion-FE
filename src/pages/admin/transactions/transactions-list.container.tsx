@@ -8,10 +8,10 @@ import { CircleLoading } from '@/components/loading';
 import ProTag from '@/theme/antd/components/tag';
 import { numberWithCommas } from '@/utils/string';
 
+import { TransactionDetail } from './transaction.detail';
 import { QueryInput } from './type';
 
 import { InputType } from '#/api';
-import { Station } from '#/entity';
 import type { TableProps } from 'antd';
 
 export default function ManageStationManagerList() {
@@ -19,12 +19,12 @@ export default function ManageStationManagerList() {
   const { RangePicker } = DatePicker;
 
   const [listRelateParams, setListRelateParams] = useState<QueryInput>();
-  const [clickOne, setClickOne] = useState<Station>();
+  const [clickOne, setClickOne] = useState<TransactionData>();
   const [showInfo, setShowInfo] = useState(false);
   const { data, isLoading } = useListTransaction(listRelateParams);
   if (isLoading) return <CircleLoading />;
 
-  const onOpenFormHandler = (record?: Station) => {
+  const onOpenFormHandler = (record?: TransactionData) => {
     if (record) {
       setClickOne(record);
     } else {
@@ -40,6 +40,16 @@ export default function ManageStationManagerList() {
     {
       title: 'Id',
       dataIndex: 'id',
+      render: (_, record) => (
+        <Typography.Link
+          onClick={() => {
+            setShowInfo(true);
+            setClickOne(record);
+          }}
+        >
+          {record.id}
+        </Typography.Link>
+      ),
     },
     // {
     //   title: 'count',
@@ -199,7 +209,7 @@ export default function ManageStationManagerList() {
         style={{ marginTop: '1rem' }}
         showSizeChanger={false}
       />
-      {/* <ManageStationEdit {...roleModalPros} /> */}
+      {showInfo && <TransactionDetail onClose={closeAndRefetchHandler} clickOne={clickOne} />}
     </Card>
   );
 }

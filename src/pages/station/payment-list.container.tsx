@@ -1,26 +1,22 @@
-import { Card, Avatar, Pagination, Typography, Image, List } from 'antd';
+import { Pagination, Typography, Button, Modal } from 'antd';
 import Table from 'antd/es/table';
 import { useState } from 'react';
 
-import { useListPaymentStation } from '@/api/services/stationService';
+import { useListStationPayment } from '@/api/services/stationService';
 import { CircleLoading } from '@/components/loading';
-import { getItem } from '@/utils/storage';
 
 import { InputType } from '#/api';
-import { StorageEnum } from '#/enum';
 
 const { Title } = Typography;
-
-export default function PaymentStationManagerList() {
-  const id = getItem(StorageEnum.User).stationManager as string;
-  const idStaff = getItem(StorageEnum.User).stationId as number;
+export type PackagesFormProps = {
+  clickOne?: any;
+  onClose: () => void;
+};
+export function PaymentStationList({ clickOne, onClose }: PackagesFormProps) {
   const [listRelateParams, setListRelateParams] = useState<InputType>();
-  const { data, isLoading } = useListPaymentStation({
-    stationIds: id || `?StationIds=${idStaff}`,
-    values: listRelateParams,
-  });
-  // const { mutateAsync: deleteMutate } = useDeleteStation();
+  const { data, isLoading } = useListStationPayment({ id: clickOne, listRelateParams });
   if (isLoading) return <CircleLoading />;
+
   const columns = [
     {
       title: 'No',
@@ -29,23 +25,6 @@ export default function PaymentStationManagerList() {
       render: (_text: any, _data: any, index: number) => <Title level={5}>{++index}</Title>,
       width: '5%',
     },
-    // {
-    //   title: 'Images',
-    //   dataIndex: 'packageImages',
-    //   render: (_: any, record: { packageImages: { imageUrl: string }[] }) => (
-    //     <Avatar.Group className="gap-4">
-    //       {record.packageImages.map((image: any, i: any) => (
-    //         <Image
-    //           width={50}
-    //           src={image.imageUrl}
-    //           key={i}
-    //           placeholder={<Image preview={false} src={image.imageUrl} width={200} />}
-    //           style={{ borderRadius: '5px' }}
-    //         />
-    //       ))}
-    //     </Avatar.Group>
-    //   ),
-    // },
     {
       title: 'stationName',
       dataIndex: 'stationName',
@@ -71,15 +50,24 @@ export default function PaymentStationManagerList() {
     const values: InputType = { PageIndex: page, PageSize: pageSize };
     setListRelateParams(values);
   };
-
   return (
-    <Card title="List payment station">
+    <Modal
+      title="List Payment station"
+      open
+      width={1300}
+      onCancel={() => onClose()}
+      footer={[
+        <Button key="back" onClick={onClose}>
+          Cancel
+        </Button>,
+      ]}
+    >
       <Table
         rowKey="id"
         size="small"
         scroll={{ x: 'max-content' }}
         pagination={false}
-        columns={columns as any}
+        columns={columns}
         dataSource={data?.contends}
         loading={isLoading}
       />
@@ -91,6 +79,6 @@ export default function PaymentStationManagerList() {
         current={data?.page}
         style={{ marginTop: '1rem' }}
       />
-    </Card>
+    </Modal>
   );
 }

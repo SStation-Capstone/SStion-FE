@@ -1,6 +1,5 @@
 import { Button, Form, Modal, message, Select, Alert } from 'antd';
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
 
 import { useListShelf, useListZone } from '@/api/services/stationService';
 import { CircleLoading } from '@/components/loading';
@@ -11,14 +10,14 @@ import { UserToken } from '#/entity';
 import { StorageEnum } from '#/enum';
 
 export type ExpireCreateFormProps = {
+  zoneId: any;
   packageId: any;
   slotId: any;
   onClose: () => void;
 };
-export function ManageExpireCreate({ packageId, slotId, onClose }: ExpireCreateFormProps) {
-  const { id } = useParams();
+export function ManageExpireCreate({ zoneId, packageId, slotId, onClose }: ExpireCreateFormProps) {
   const [form] = Form.useForm();
-  const { data, isLoading } = useListZone(id);
+  const { data, isLoading } = useListZone(zoneId);
   const [loading, setLoading] = useState<boolean>(false);
   const [visible, setVisible] = useState(false);
   const [zone, setZone] = useState<any>(false);

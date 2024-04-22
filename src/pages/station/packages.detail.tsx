@@ -1,9 +1,10 @@
 import { Button, Descriptions, Col, Card, Row, Avatar, List, Modal, Table, Typography } from 'antd';
+import { useState } from 'react';
 
 import { useGetPackageDetail } from '@/api/services/stationService';
 import { CircleLoading } from '@/components/loading';
+
 import { ManageExpireCreate } from './expire.create';
-import { useState } from 'react';
 
 const { Title } = Typography;
 export type PackagesFormProps = {
@@ -18,6 +19,7 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
   if (isLoading) return <CircleLoading />;
   const closeExpire = async () => {
     setShowExpire(false);
+    onClose();
   };
   const columns = [
     {
@@ -47,11 +49,11 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
         <Button key="back" onClick={onClose}>
           Cancel
         </Button>,
-        check && (
-          <Button key="submit" type="primary" onClick={() => setShowExpire(true)}>
-            Expire
-          </Button>
-        ),
+        // check && (
+        //   <Button key="submit" type="primary" onClick={() => setShowExpire(true)}>
+        //     Expire
+        //   </Button>
+        // ),
       ]}
     >
       {data && (
@@ -63,7 +65,6 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
                 <Col span={24} md={8} className="col-info">
                   <Avatar.Group>
                     <Avatar size={74} shape="square" src={data.packageImages[0]?.imageUrl} />
-
                     <div className="flex items-center pl-4">
                       <div>
                         <h4 className="m-0 font-semibold">{data.name}</h4>
@@ -73,23 +74,30 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
                     </div>
                   </Avatar.Group>
                 </Col>
-                <Col span={24} md={16} className="col-info">
+                <Col span={24} md={8} className="col-info">
                   <div>
                     <div className="flex items-center">
                       <p className="pl-4">width: {data.width}</p>
                       <p className="pl-4">height: {data.height}</p>
                       <p className="pl-4">length: {data.length}</p>
+                      <p className="pl-4">checkinDays: {data.checkinDays}</p>
                     </div>
                     <div className="flex items-center">
                       <p className="pl-4">volume: {data.volume}</p>
                       <p className="pl-4">weight: {data.weight}</p>
                       <p className="pl-4">status: {data.status}</p>
+                      <p className="pl-4">serviceFee: {data.serviceFee}</p>
                     </div>
                     <div className="flex items-center">
-                      <p className="pl-4">priceCod: {data.priceCod}</p>
+                      <p className="pl-4">priceCod: {data.priceCod} đ</p>
                       <p className="pl-4">isCod: {data.isCod ? 'true' : 'false'}</p>
-                      <p className="pl-4">totalPrice: {data.totalPrice}</p>
+                      <p className="pl-4">totalHours: {data.totalHours}</p>
                     </div>
+                  </div>
+                </Col>
+                <Col span={24} md={8} className="col-info">
+                  <div className="flex items-center justify-end">
+                    <p className="pl-4 text-xl">totalPrice: {data.totalPrice} đ</p>
                   </div>
                 </Col>
               </Row>

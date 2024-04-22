@@ -246,7 +246,6 @@ export function ManageStationEdit({ clickOne, onClose }: StationEditFormProps) {
               setSearchCity(vietnamLocations);
               form.setFieldValue(['adress', 'district'], undefined);
               form.setFieldValue(['adress', 'ward'], undefined);
-              form.setFieldValue(['adress', 'detail'], undefined);
             }}
             onSearch={(value) => {
               const findCity = vietnamLocations.filter((city: Location) =>
@@ -260,7 +259,8 @@ export function ManageStationEdit({ clickOne, onClose }: StationEditFormProps) {
             }))}
           />
         </Form.Item>
-        {selectedCity && ( // Render district select only if city is selected
+        {
+          // Render district select only if city is selected
           <Form.Item label="District" name={['address', 'district']}>
             <Select
               allowClear
@@ -271,19 +271,19 @@ export function ManageStationEdit({ clickOne, onClose }: StationEditFormProps) {
               onClear={() => {
                 setSelectedWard(null);
                 form.setFieldValue(['address', 'ward'], undefined);
-                form.setFieldValue(['address', 'detail'], undefined);
               }}
             >
-              {selectedCity.Districts?.map((district: District) => (
+              {selectedCity?.Districts?.map((district: District) => (
                 <Select.Option key={district.Id} value={district.Name}>
                   {district.Name}
                 </Select.Option>
               ))}
             </Select>
           </Form.Item>
-        )}
+        }
 
-        {selectedDistrict && ( // Render ward select only if district is selected
+        {
+          // Render ward select only if district is selected
           <Form.Item label="Ward" name={['address', 'ward']}>
             <Select
               optionFilterProp="name"
@@ -295,34 +295,32 @@ export function ManageStationEdit({ clickOne, onClose }: StationEditFormProps) {
               onClear={() => {
                 setSelectedWard(null);
                 form.setFieldValue(['address', 'ward'], undefined);
-                form.setFieldValue(['address', 'detail'], undefined);
               }}
             >
-              {selectedDistrict.Wards?.map((ward: Ward) => (
+              {selectedDistrict?.Wards?.map((ward: Ward) => (
                 <Select.Option key={ward.Id} value={ward.Name}>
                   {ward.Name}
                 </Select.Option>
               ))}
             </Select>
           </Form.Item>
-        )}
-        {selectedCity &&
-          selectedDistrict &&
-          selectedWard && ( // Render ward select only if district is selected
-            <Form.Item
-              label="Detail"
-              name={['address', 'detail']}
-              required
-              rules={[
-                {
-                  required: true,
-                  message: 'Please input detail address (Street name, Building, House no)',
-                },
-              ]}
-            >
-              <Input placeholder="Street name, Building, House no" />
-            </Form.Item>
-          )}
+        }
+        {
+          // Render ward select only if district is selected
+          <Form.Item
+            label="Detail"
+            name={['address', 'detail']}
+            required
+            rules={[
+              {
+                required: true,
+                message: 'Please input detail address (Street name, Building, House no)',
+              },
+            ]}
+          >
+            <Input placeholder="Street name, Building, House no" />
+          </Form.Item>
+        }
       </Form>
     </Modal>
   );
