@@ -618,7 +618,6 @@ export const useCreateCheckOutConfirm = () => {
     async (payload: any) =>
       apiClient.post<StationCreateResponse>({
         url: `${StationApi.Packages}/${payload.id}/${payload.status}`,
-        data: {},
       }),
     {
       onSuccess: () => {
@@ -638,8 +637,8 @@ export const useCreateCheckOutPayment = () => {
   return useMutation(
     async (payload: any) =>
       apiClient.post<StationCreateResponse>({
-        url: `${StationApi.Packages}/${payload}/payment`,
-        data: {},
+        url: `${StationApi.Packages}/${payload.id}/payment`,
+        data: { totalPrice: payload.totalPrice },
       }),
     {
       onSuccess: () => {

@@ -76,7 +76,7 @@ export function ManageCheckOutCreate() {
   const submitHandle = async () => {
     setLoading(true);
     try {
-      createPayment(id);
+      createPayment({ totalPrice: data.totalPrice, id });
       createMutate({ id, status: 'confirm' });
       setLoading(false);
     } catch (error) {
