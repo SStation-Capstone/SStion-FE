@@ -218,28 +218,28 @@ const STATION_MANAGER_PACKAGEMANAGEMENT_PERMISSION: Permission = {
   ],
 };
 
-// const STATION_MANAGER_STAFF_MANAGE_PERMISSION: Permission = {
-//   id: '9100714781927712',
-//   parentId: '',
-//   label: 'Staff',
-//   name: 'staff',
-//   icon: 'ic-user',
-//   type: PermissionType.MENU,
-//   route: 'staff',
-//   order: 3,
-//   component: '/staff/staff-list.station.tsx',
-//   // children: [
-//   //   {
-//   //     id: '8426999229400979',
-//   //     parentId: '9100714781927703',
-//   //     label: 'sys.menu.workbench',
-//   //     name: 'Workbench',
-//   //     type: PermissionType.MENU,
-//   //     route: 'workbench',
-//   //     component: '/dashboard/workbench/index.tsx',
-//   //   },
-//   // ],
-// };
+const STATION_MANAGER_STAFF_MANAGE_PERMISSION: Permission = {
+  id: '9100714781927712',
+  parentId: '',
+  label: 'Staff',
+  name: 'staff',
+  icon: 'ic-user',
+  type: PermissionType.MENU,
+  route: 'staff',
+  order: 3,
+  component: '/staff/staff-list.container.tsx',
+  // children: [
+  //   {
+  //     id: '8426999229400979',
+  //     parentId: '9100714781927703',
+  //     label: 'sys.menu.workbench',
+  //     name: 'Workbench',
+  //     type: PermissionType.MENU,
+  //     route: 'workbench',
+  //     component: '/dashboard/workbench/index.tsx',
+  //   },
+  // ],
+};
 const STATION_MANAGER_PRICING_MANAGE_PERMISSION: Permission = {
   id: '9100714781927712',
   parentId: '',
@@ -283,8 +283,53 @@ const STAFF_PACKAGEMANAGEMENT_PERMISSION: Permission = {
       component: '/staff/zone-list.container.tsx',
       icon: 'ic-checkin',
     },
+    {
+      id: '8426999229400979',
+      parentId: '9100714781927707',
+      label: 'List packages',
+      name: 'packages',
+      type: PermissionType.MENU,
+      route: 'packages',
+      component: '/staff/packages-list.container.tsx',
+      icon: 'ic-package',
+    },
   ],
 };
+
+const PACKAGE_STATION_MANAGE_PERMISSION: Permission = {
+  id: '9100714781927733',
+  parentId: '',
+  label: 'Package Manager',
+  name: 'packageManager',
+  icon: 'material-symbols:package',
+  type: PermissionType.MENU,
+  route: 'packageManager',
+  order: 4,
+  component: '/package/package-list.manager.tsx',
+};
+const PACKAGE_HISTORY_STATION_MANAGE_PERMISSION: Permission = {
+  id: '9100714781927733',
+  parentId: '',
+  label: 'Package History',
+  name: 'packageHistory',
+  icon: 'lucide:package-search',
+  type: PermissionType.MENU,
+  route: 'packageHistory',
+  order: 6,
+  component: '/package/packageHistory-list.manager.tsx',
+};
+const PAYMENT_STATION_MANAGE_PERMISSION: Permission = {
+  id: '9100714781927733',
+  parentId: '',
+  label: 'Payment Manager',
+  name: 'paymentManager',
+  icon: 'fluent:payment-48-filled',
+  type: PermissionType.MENU,
+  route: 'paymentManager',
+  order: 6,
+  component: '/payment/payment-list.manager.tsx',
+};
+
 export const ADMIN_PERMISSION = [
   ADMIN_DASHBOARD_PERMISSION,
   STATION_MANAGER_PERMISSION,
@@ -297,6 +342,13 @@ export const STATION_MANAGER_LIST_PERMISSION = [
   STATION_MANAGER_CONFIG_PERMISSION,
   DASHBOARD_PERMISSION,
   STATION_MANAGER_PACKAGEMANAGEMENT_PERMISSION,
+  PACKAGE_STATION_MANAGE_PERMISSION,
+  PACKAGE_HISTORY_STATION_MANAGE_PERMISSION,
+  PAYMENT_STATION_MANAGE_PERMISSION,
 ];
 
-export const STAFF_LIST_PERRMISSION = [DASHBOARD_PERMISSION, STAFF_PACKAGEMANAGEMENT_PERMISSION];
+export const STAFF_LIST_PERRMISSION = [
+  DASHBOARD_PERMISSION,
+  STAFF_PACKAGEMANAGEMENT_PERMISSION,
+  STATION_MANAGER_STAFF_MANAGE_PERMISSION,
+];

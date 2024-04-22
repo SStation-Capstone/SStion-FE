@@ -1,8 +1,8 @@
-import { Button, Card, Col, Popconfirm, Row } from 'antd';
+import { Avatar, Button, Card, Col, Popconfirm, Row } from 'antd';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { useDeleteZone, useListStation, useListZone } from '@/api/services/stationService';
+import { useDeleteZone, useListStationManagers, useListZone } from '@/api/services/stationService';
 import { IconButton, Iconify } from '@/components/icon';
 import { CircleLoading } from '@/components/loading';
 
@@ -25,7 +25,7 @@ export default function ManageZoneManagerList() {
   const [showInfo, setShowInfo] = useState(false);
   const [showInfoShelf, setShowInfoShelf] = useState(false);
   const [showFormCheckIn, setShowFormCheckIn] = useState(false);
-  const { data: stationData, isLoading: stationLoading } = useListStation({ Search: id });
+  const { data: stationData, isLoading: stationLoading } = useListStationManagers(id);
   const { data, isLoading } = useListZone(id);
   const { mutateAsync: deleteMutate } = useDeleteZone(id);
   if (stationLoading || isLoading) return <CircleLoading />;
@@ -75,7 +75,7 @@ export default function ManageZoneManagerList() {
 
   return (
     <Card
-      title={`Package Management - balance : ${stationData?.contends[0]?.balance || 0}`}
+      title={`Package Management`}
       extra={
         <>
           <Button type="primary" onClick={() => onOpenFormHandler()}>
@@ -119,6 +119,16 @@ export default function ManageZoneManagerList() {
           </Col>
         </Row>
       </Form> */}
+      {stationData && (
+        <Avatar.Group>
+          <Avatar size={74} shape="square" src={stationData.stationImages[0].imageUrl} />
+          <div className="flex items-center pl-4">
+            <div>
+              <h4 className="m-0 font-semibold">balance: {stationData?.balance || 0}</h4>
+            </div>
+          </div>
+        </Avatar.Group>
+      )}
       {data && (
         <Row gutter={[24, 0]}>
           {data.contends.map((item, index) => (
@@ -126,7 +136,7 @@ export default function ManageZoneManagerList() {
               <Card
                 bordered={false}
                 className="header-solid h-full"
-                title={<h6 className="m-0 font-semibold">Zone {index + 1}</h6>}
+                title={<h6 className="m-0 font-semibold">{item.name}</h6>}
                 extra={
                   <div className="text-gray flex w-full items-center justify-center gap-2">
                     <Button
@@ -156,7 +166,7 @@ export default function ManageZoneManagerList() {
                   </div>
                 }
               >
-                <ManageShelfManagerList id={item.id.toString()} />
+                <ManageShelfManagerList stationId={id} id={item.id.toString()} />
               </Card>
             </Col>
           ))}

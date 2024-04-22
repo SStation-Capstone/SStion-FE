@@ -1,11 +1,24 @@
-import { Avatar, Button, Card, Col, Form, Input, Pagination, Row, Typography } from 'antd';
+import { TinyColor } from '@ctrl/tinycolor';
+import {
+  Avatar,
+  Button,
+  Card,
+  Col,
+  ConfigProvider,
+  Form,
+  Input,
+  Pagination,
+  Row,
+  Typography,
+} from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { useDeleteStation, useListStation } from '@/api/services/stationService';
+import { useListStation } from '@/api/services/stationService';
 import { CircleLoading } from '@/components/loading';
 
+import { PackageList } from './package-list.container';
 import { ManageStationEdit } from './station.edit';
 
 import { InputType } from '#/api';
@@ -13,25 +26,32 @@ import { Station } from '#/entity';
 
 const { Title } = Typography;
 
-const DEFAULE_ROLE_VALUE: Station = {
-  id: -1,
-  name: '',
-  description: '',
-  contactPhone: '',
-  address: '',
-  latitude: '',
-  longitude: '',
-  stationImages: [],
-};
+// const DEFAULE_ROLE_VALUE: Station = {
+//   id: -1,
+//   name: '',
+//   description: '',
+//   contactPhone: '',
+//   address: '',
+//   latitude: '',
+//   longitude: '',
+//   stationImages: [],
+// };
 export default function ManageStationManagerList() {
   const [form] = Form.useForm();
-
+  const colors1 = ['#6253E1', '#04BEFE'];
+  const colors2 = ['#40e495', '#30dd8a', '#2bb673'];
   const [listRelateParams, setListRelateParams] = useState<InputType>();
   const [clickOne, setClickOne] = useState<Station>();
+  const [clickTwo, setClickTwo] = useState();
   const [showInfo, setShowInfo] = useState(false);
+  const [showPackageDetail, setShowPackageDetail] = useState(false);
   const { data, isLoading } = useListStation(listRelateParams);
-  const { mutateAsync: deleteMutate } = useDeleteStation();
+  // const { mutateAsync: deleteMutate } = useDeleteStation();
   if (isLoading) return <CircleLoading />;
+  const getHoverColors = (colors: string[]) =>
+    colors.map((color) => new TinyColor(color).lighten(5).toString());
+  const getActiveColors = (colors: string[]) =>
+    colors.map((color) => new TinyColor(color).darken(5).toString());
 
   const onOpenFormHandler = (record?: Station) => {
     if (record) {
@@ -42,8 +62,20 @@ export default function ManageStationManagerList() {
     setShowInfo(true);
   };
 
+  const onOpenPackageDetail = (record?: any) => {
+    if (record) {
+      setClickTwo(record);
+    } else {
+      setClickTwo(undefined);
+    }
+    setShowPackageDetail(true);
+  };
+
   const closeAndRefetchHandler = async () => {
     setShowInfo(false);
+  };
+  const closePackageDetail = async () => {
+    setShowPackageDetail(false);
   };
   const columns: ColumnsType<Station> = [
     {
@@ -89,7 +121,7 @@ export default function ManageStationManagerList() {
     // },
     { title: 'Address', dataIndex: 'address' },
     {
-      title: 'Action',
+      title: 'View',
       key: 'operation',
       align: 'center',
       width: 100,
@@ -131,6 +163,63 @@ export default function ManageStationManagerList() {
         </div>
       ),
     },
+    {
+      title: 'Action',
+      key: 'operation',
+      align: 'center',
+      width: 100,
+      render: (_, record) => (
+        <div className="text-gray flex w-full items-center justify-center">
+          <div className="flex gap-2">
+            <ConfigProvider
+              theme={{
+                components: {
+                  Button: {
+                    colorPrimary: `linear-gradient(135deg, ${colors1.join(', ')})`,
+                    colorPrimaryHover: `linear-gradient(135deg, ${getHoverColors(colors1).join(
+                      ', ',
+                    )})`,
+                    colorPrimaryActive: `linear-gradient(135deg, ${getActiveColors(colors1).join(
+                      ', ',
+                    )})`,
+                    lineWidth: 0,
+                  },
+                },
+              }}
+            >
+              <Button type="primary" size="large" style={{ padding: '0 10px', height: '35px' }}>
+                Payment
+              </Button>
+            </ConfigProvider>
+            <ConfigProvider
+              theme={{
+                components: {
+                  Button: {
+                    colorPrimary: `linear-gradient(135deg, ${colors2.join(', ')})`,
+                    colorPrimaryHover: `linear-gradient(135deg, ${getHoverColors(colors2).join(
+                      ', ',
+                    )})`,
+                    colorPrimaryActive: `linear-gradient(135deg, ${getActiveColors(colors2).join(
+                      ', ',
+                    )})`,
+                    lineWidth: 0,
+                  },
+                },
+              }}
+            >
+              <Button
+                type="primary"
+                size="large"
+                style={{ padding: '0 10px', height: '35px' }}
+                onClick={() => onOpenPackageDetail(record)}
+              >
+                Package
+              </Button>
+            </ConfigProvider>
+          </div>
+        </div>
+      ),
+    },
   ];
 
   const resetHandler = () => {
@@ -150,11 +239,11 @@ export default function ManageStationManagerList() {
   return (
     <Card
       title="List station"
-      // extra={
-      //   <Button type="primary" onClick={() => onOpenFormHandler()}>
-      //     New
-      //   </Button>
-      // }
+      extra={
+        <Button type="primary" onClick={() => onOpenFormHandler()}>
+          New
+        </Button>
+      }
     >
       <Form form={form} onFinish={onFinishHandler}>
         <Row gutter={24} justify="space-between">
@@ -199,6 +288,7 @@ export default function ManageStationManagerList() {
         style={{ marginTop: '1rem' }}
       />
       {/* <ManageStationEdit {...roleModalPros} /> */}
+      {showPackageDetail && <PackageList clickOne={clickTwo} onClose={closePackageDetail} />}
       {showInfo && <ManageStationEdit clickOne={clickOne} onClose={closeAndRefetchHandler} />}
     </Card>
   );

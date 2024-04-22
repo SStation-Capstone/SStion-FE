@@ -23,6 +23,7 @@ export enum UserApi {
   Refresh = '/auth/refresh',
   User = '/user',
   Station = '/staffs/stations',
+  StationManager = '/managers/stations',
 }
 
 const signin = (data: SignInReq) => apiClient.post<SignInRes>({ url: UserApi.SignIn, data });
@@ -30,6 +31,7 @@ const signup = (data: SignUpReq) => apiClient.post<SignInRes>({ url: UserApi.Sig
 const logout = () => apiClient.get({ url: UserApi.Logout });
 const findById = (id: string) => apiClient.get<UserInfo[]>({ url: `${UserApi.User}/${id}` });
 const getStation = () => apiClient.get<StationPayload>({ url: `${UserApi.Station}` });
+const getStationManager = () => apiClient.get<StationPayload>({ url: `${UserApi.StationManager}` });
 
 export default {
   signin,
@@ -37,4 +39,5 @@ export default {
   findById,
   logout,
   getStation,
+  getStationManager,
 };

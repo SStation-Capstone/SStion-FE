@@ -15,6 +15,7 @@ export interface UserInfo {
   // status?: BasicStatus;
   permissions?: Permission[];
   stationId?: number;
+  stationManager?: string;
 }
 
 export interface Organization {

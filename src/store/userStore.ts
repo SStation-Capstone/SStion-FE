@@ -89,6 +89,10 @@ export const useSignIn = () => {
         ].toLowerCase() === 'stationmanager'
       ) {
         user.permissions = STATION_MANAGER_LIST_PERMISSION;
+        setUserInfo(user);
+        const station = await userService.getStationManager();
+        const stationIds = station.contends.map((s: { id: any }) => `StationIds=${s.id}`).join('&');
+        user.stationManager = stationIds;
       } else {
         user.permissions = STAFF_LIST_PERRMISSION;
         setUserInfo(user);
