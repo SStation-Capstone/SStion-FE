@@ -203,7 +203,7 @@ export default function MenuLevel() {
                         <td>
                           <h6 className="package-avatar-title">
                             <img
-                              src={d.packageImages[0].imageUrl}
+                              src={d?.packageImages[0]?.imageUrl}
                               alt=""
                               className="avatar-sm mr-2"
                             />

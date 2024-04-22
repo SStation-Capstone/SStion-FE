@@ -9,7 +9,6 @@ import {
   message,
   Select,
   Alert,
-  Checkbox,
 } from 'antd';
 import { useState } from 'react';
 
@@ -32,7 +31,7 @@ export type CheckInCreateFormProps = {
   onClose: () => void;
   onCloseCheckIn: () => void;
 };
-export function ManageCheckInCreate({
+export function ManageStationCreate({
   stationId,
   zoneId,
   slotId,
@@ -77,12 +76,11 @@ export function ManageCheckInCreate({
     try {
       setLoading(true);
       const values = await form.validateFields();
-      console.log('🚀 ~ submitHandle ~ values:', values.isCod);
       const createData: CheckInPayload = {
         name: values.name,
         description: values.description,
-        priceCod: values.isCod ? values.priceCod || 0 : 0,
-        isCod: values.isCod,
+        priceCod: values.priceCod,
+        isCod: values.priceCod > 0,
         weight: values.weight,
         height: values.height,
         width: values.width,
@@ -159,22 +157,10 @@ export function ManageCheckInCreate({
       setLoading(false);
     }
   };
-  // const validateNumber = (_: any, value: any, callback: (error?: Error) => void) => {
-  //   // eslint-disable-next-line no-restricted-globals
-  //   if (isNaN(value)) {
-  //     callback(new Error('Please input a number'));
-  //   } else {
-  //     callback();
-  //   }
-  // };
-  const validateIsPrice = (_: any, value: any, callback: (error?: Error) => void) => {
-    if (value) {
-      // eslint-disable-next-line no-restricted-globals
-      if (isNaN(value)) {
-        callback(new Error('Please input a number'));
-      } else {
-        callback();
-      }
+  const validateNumber = (_: any, value: any, callback: (error?: Error) => void) => {
+    // eslint-disable-next-line no-restricted-globals
+    if (isNaN(value)) {
+      callback(new Error('Please input a number'));
     } else {
       callback();
     }
@@ -227,18 +213,9 @@ export function ManageCheckInCreate({
           >
             <Input />
           </Form.Item>
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-            <Form.Item
-              label="Price"
-              name="priceCod"
-              rules={[{ validator: validateIsPrice as any }]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item label="is cod" name="isCod" valuePropName="checked">
-              <Checkbox />
-            </Form.Item>
-          </div>
+          <Form.Item label="Price" name="priceCod" rules={[{ validator: validateNumber as any }]}>
+            <Input />
+          </Form.Item>
         </div>
         <Form.Item
           label="Description"
@@ -248,7 +225,7 @@ export function ManageCheckInCreate({
         >
           <Input.TextArea />
         </Form.Item>
-        <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-4">
+        <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
           <Form.Item
             label="Weight"
             name="weight"
@@ -266,28 +243,6 @@ export function ManageCheckInCreate({
             required
             rules={[
               { required: true, message: 'Please input width' },
-              { validator: validateNumberThan as any },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Height"
-            name="height"
-            required
-            rules={[
-              { required: true, message: 'Please input height' },
-              { validator: validateNumberThan as any },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Length"
-            name="length"
-            required
-            rules={[
-              { required: true, message: 'Please input length' },
               { validator: validateNumberThan as any },
             ]}
           >

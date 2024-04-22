@@ -15,6 +15,7 @@ import { PricingCreate } from './pricing.create';
 
 import { InputType } from '#/api';
 import { Pricing } from '#/entity';
+import PricingDefaultModal from './pricingDefault.modal';
 
 const { Title } = Typography;
 
@@ -23,7 +24,9 @@ export default function StaffManagerList() {
   const { id } = useParams();
   const [listRelateParams, setListRelateParams] = useState<InputType>();
   const [clickOne, setClickOne] = useState<Pricing>();
+  const [clickTwo, setClickTwo] = useState<any>();
   const [showInfo, setShowInfo] = useState(false);
+  const [showDefault, setShowDefault] = useState(false);
   const { data, isLoading } = useListPricing(id);
   const { mutateAsync: deleteMutate } = useDeletePricing(id);
   const { mutateAsync: createMutate } = useGoPricingDefault(id);
@@ -41,6 +44,18 @@ export default function StaffManagerList() {
   const closeAndRefetchHandler = async () => {
     setShowInfo(false);
   };
+  const onOpenDefault = (record?: any) => {
+    if (record) {
+      setClickTwo(record);
+    } else {
+      setClickTwo(undefined);
+    }
+    setShowDefault(true);
+  };
+
+  const closeDefault = async () => {
+    setShowDefault(false);
+  };
   const columns: ColumnsType<any> = [
     {
       title: 'No',
@@ -50,16 +65,20 @@ export default function StaffManagerList() {
       width: '5%',
     },
     {
-      title: 'From Date',
-      dataIndex: 'fromDate',
+      title: 'Start Time',
+      dataIndex: 'startTime',
     },
     {
-      title: 'To Date',
-      dataIndex: 'toDate',
+      title: 'End Time',
+      dataIndex: 'endTime',
     },
     {
-      title: 'Format Price',
-      dataIndex: 'formatPrice',
+      title: 'Price',
+      dataIndex: 'pricePerUnit',
+    },
+    {
+      title: 'Duration',
+      dataIndex: 'unitDuration',
     },
     {
       title: 'Action',
@@ -110,7 +129,7 @@ export default function StaffManagerList() {
           <Button type="primary" onClick={() => onOpenFormHandler()}>
             New
           </Button>
-          <Button type="primary" onClick={() => createMutate()}>
+          <Button type="primary" onClick={() => onOpenDefault(id)}>
             Use default pricing
           </Button>
         </div>
@@ -159,6 +178,7 @@ export default function StaffManagerList() {
         style={{ marginTop: '1rem' }}
       />
       {showInfo && <PricingCreate clickOne={clickOne} onClose={closeAndRefetchHandler} />}
+      {showDefault && <PricingDefaultModal click={clickTwo} onClose={closeDefault} />}
     </Card>
   );
 }

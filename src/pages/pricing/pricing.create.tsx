@@ -25,9 +25,10 @@ export function PricingCreate({ clickOne, onClose }: StaffCreateFormProps) {
           ...clickOne,
           id: clickOne.id,
         };
-        updateData.fromDate = values.fromDate;
-        updateData.toDate = values.toDate;
-        updateData.price = values.price;
+        updateData.startTime = values.startTime;
+        updateData.endTime = values.endTime;
+        updateData.pricePerUnit = values.pricePerUnit;
+        updateData.unitDuration = values.unitDuration;
         updateMutate(updateData);
         setLoading(false);
       } else {
@@ -74,24 +75,24 @@ export function PricingCreate({ clickOne, onClose }: StaffCreateFormProps) {
         // wrapperCol={{ span: 18 }}
         layout="vertical"
       >
-        <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
+        <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-4">
           <Form.Item
-            label="From Date"
-            name="fromDate"
+            label="Start Time"
+            name="startTime"
             required
             rules={[
-              { required: true, message: 'Please input fromDate' },
+              { required: true, message: 'Please input startTime' },
               { validator: validateNumber as any },
             ]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            label="To Date"
-            name="toDate"
+            label="End Time"
+            name="endTime"
             required
             rules={[
-              { required: true, message: 'Please input toDate' },
+              { required: true, message: 'Please input endTime' },
               { validator: validateNumber as any },
             ]}
           >
@@ -99,10 +100,21 @@ export function PricingCreate({ clickOne, onClose }: StaffCreateFormProps) {
           </Form.Item>
           <Form.Item
             label="Price"
-            name="price"
+            name="pricePerUnit"
             required
             rules={[
               { required: true, message: 'Please input price' },
+              { validator: validateNumber as any },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Duration"
+            name="unitDuration"
+            required
+            rules={[
+              { required: true, message: 'Please input Duration' },
               { validator: validateNumber as any },
             ]}
           >

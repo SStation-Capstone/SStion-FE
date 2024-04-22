@@ -27,9 +27,10 @@ export function PricingDefaultCreate({ clickOne, onClose }: StaffCreateFormProps
           ...clickOne,
           id: clickOne.id,
         };
-        updateData.fromDate = values.fromDate;
-        updateData.toDate = values.toDate;
-        updateData.price = values.price;
+        updateData.startTime = values.startTime;
+        updateData.endTime = values.endTime;
+        updateData.pricePerUnit = values.pricePerUnit;
+        updateData.unitDuration = values.unitDuration;
         updateMutate(updateData);
         setLoading(false);
       } else {

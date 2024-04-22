@@ -4,47 +4,93 @@ import {
   ExclamationCircleOutlined,
   MinusCircleOutlined,
 } from '@ant-design/icons';
-import { Button, message, Descriptions, Col, Card, Row, Avatar, List, Tag } from 'antd';
+import { TinyColor } from '@ctrl/tinycolor';
+import {
+  Button,
+  message,
+  Descriptions,
+  Col,
+  Card,
+  Row,
+  Avatar,
+  List,
+  Tag,
+  ConfigProvider,
+} from 'antd';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import {
   useGetCheckOut,
   useCreateCheckOutConfirm,
-  useCreateCheckOutCancel,
+  useCreateCheckOutPayment,
 } from '@/api/services/stationService';
 import { CircleLoading } from '@/components/loading';
 
+import { QRCodeComponent } from './qr-code';
+
 export function ManageCheckOutCreate() {
   const { id } = useParams();
+  const colors1 = ['#6253E1', '#04BEFE'];
+  const colors2 = ['#40e495', '#30dd8a', '#2bb673'];
   const { data, isLoading } = useGetCheckOut(id);
+  const [clickOne, setClickOne] = useState();
+  const [showInfo, setShowInfo] = useState(false);
+  const { mutateAsync: createPayment } = useCreateCheckOutPayment();
   const { mutateAsync: createMutate } = useCreateCheckOutConfirm();
-  const { mutateAsync: createCancelMutate } = useCreateCheckOutCancel();
+  // const { mutateAsync: createCancelMutate } = useCreateCheckOutCancel();
   const [loading, setLoading] = useState<boolean>(false);
   if (isLoading) return <CircleLoading />;
-  const submitHandle = async (status: string) => {
+  const getHoverColors = (colors: string[]) =>
+    colors.map((color) => new TinyColor(color).lighten(5).toString());
+  const getActiveColors = (colors: string[]) =>
+    colors.map((color) => new TinyColor(color).darken(5).toString());
+  const onOpenFormHandler = (record: any) => {
+    if (record) {
+      setClickOne(record);
+    } else {
+      setClickOne(undefined);
+    }
+    setShowInfo(true);
+  };
+  const closeAndRefetchHandler = async () => {
+    setShowInfo(false);
+  };
+  // const submitHandle = async (status: string) => {
+  //   setLoading(true);
+  //   try {
+  //     if (status === 'confirm') {
+  //       createMutate({ id, status: 'confirm' });
+  //       setLoading(false);
+  //     } else {
+  //       createCancelMutate({ id, status: 'return' });
+  //       setLoading(false);
+  //     }
+  //   } catch (error) {
+  //     message.error(error.message || error);
+  //     console.log(error);
+  //     setLoading(false);
+  //   }
+  // };
+
+  const submitHandle = async () => {
     setLoading(true);
     try {
-      if (status === 'confirm') {
-        createMutate({ id, status: 'confirm' });
-        setLoading(false);
-      } else {
-        createCancelMutate({ id, status: 'return' });
-        setLoading(false);
-      }
+      createPayment(id);
+      createMutate({ id, status: 'confirm' });
+      setLoading(false);
     } catch (error) {
       message.error(error.message || error);
       console.log(error);
       setLoading(false);
     }
   };
-
   return (
     <Card
       title="Check Out"
       extra={
         <div className="flex gap-2">
-          {data.status === 'Canceled' && (
+          {/* {data.status === 'Canceled' && (
             <Button
               key="submit"
               type="primary"
@@ -63,6 +109,60 @@ export function ManageCheckOutCreate() {
             >
               Confirm
             </Button>
+          )} */}
+          {data.status !== 'Completed' && (
+            <>
+              <ConfigProvider
+                theme={{
+                  components: {
+                    Button: {
+                      colorPrimary: `linear-gradient(135deg, ${colors1.join(', ')})`,
+                      colorPrimaryHover: `linear-gradient(135deg, ${getHoverColors(colors1).join(
+                        ', ',
+                      )})`,
+                      colorPrimaryActive: `linear-gradient(135deg, ${getActiveColors(colors1).join(
+                        ', ',
+                      )})`,
+                      lineWidth: 0,
+                    },
+                  },
+                }}
+              >
+                <Button
+                  key="submit"
+                  type="primary"
+                  loading={loading}
+                  onClick={() => submitHandle()}
+                >
+                  cash payment
+                </Button>
+              </ConfigProvider>
+              <ConfigProvider
+                theme={{
+                  components: {
+                    Button: {
+                      colorPrimary: `linear-gradient(135deg, ${colors2.join(', ')})`,
+                      colorPrimaryHover: `linear-gradient(135deg, ${getHoverColors(colors2).join(
+                        ', ',
+                      )})`,
+                      colorPrimaryActive: `linear-gradient(135deg, ${getActiveColors(colors2).join(
+                        ', ',
+                      )})`,
+                      lineWidth: 0,
+                    },
+                  },
+                }}
+              >
+                <Button
+                  key="submit"
+                  type="primary"
+                  loading={loading}
+                  onClick={() => onOpenFormHandler(id)}
+                >
+                  transfer payments
+                </Button>
+              </ConfigProvider>
+            </>
           )}
         </div>
       }
@@ -184,6 +284,7 @@ export function ManageCheckOutCreate() {
           </Row>
         </>
       )}
+      {showInfo && <QRCodeComponent packageId={clickOne} onClose={closeAndRefetchHandler} />}
     </Card>
   );
 }

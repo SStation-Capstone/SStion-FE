@@ -1,9 +1,21 @@
-import { Button, Card, Col, Form, Input, Pagination, Typography, Popconfirm, Row, Tag } from 'antd';
+import {
+  Button,
+  Card,
+  Col,
+  Form,
+  Input,
+  Pagination,
+  Typography,
+  Popconfirm,
+  Row,
+  Tag,
+  Avatar,
+} from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { useDeleteStaff, useListStaff } from '@/api/services/stationService';
+import { useDeleteStaff, useListStaffUser } from '@/api/services/stationService';
 import { IconButton, Iconify } from '@/components/icon';
 import { CircleLoading } from '@/components/loading';
 
@@ -20,7 +32,7 @@ export default function StaffManagerList() {
   const [listRelateParams, setListRelateParams] = useState<InputType>();
   const [clickOne, setClickOne] = useState<Staff>();
   const [showInfo, setShowInfo] = useState(false);
-  const { data, isLoading } = useListStaff(id);
+  const { data, isLoading } = useListStaffUser();
   const { mutateAsync: deleteMutate } = useDeleteStaff(id);
   if (isLoading) return <CircleLoading />;
   console.log('data', data);
@@ -44,11 +56,15 @@ export default function StaffManagerList() {
       render: (_text, _data, index) => <Title level={5}>{++index}</Title>,
       width: '5%',
     },
-    // {
-    //   title: 'AvatarUrl',
-    //   dataIndex: 'avatarUrl',
-    //   render: (text) => <Image style={{ width: 100, height: 'auto' }} src={text} />,
-    // },
+    {
+      title: 'avatarUrl',
+      dataIndex: 'avatarUrl',
+      render: (_, record: any) => (
+        <Avatar.Group>
+          <Avatar className="shape-avatar" shape="square" size={40} src={record.avatarUrl} />
+        </Avatar.Group>
+      ),
+    },
     {
       title: 'Full Name',
       dataIndex: 'fullName',
@@ -56,6 +72,10 @@ export default function StaffManagerList() {
     {
       title: 'username',
       dataIndex: 'userName',
+    },
+    {
+      title: 'email',
+      dataIndex: 'email',
     },
     {
       title: 'Role',
@@ -84,33 +104,6 @@ export default function StaffManagerList() {
       sorter: (a, b) => a.roles[0].name.localeCompare(b.roles[0].name),
       sortDirections: ['descend'],
     },
-
-    {
-      title: 'Action',
-      key: 'operation',
-      align: 'center',
-      width: 100,
-      render: (_, record) => (
-        <div className="text-gray flex w-full justify-center">
-          <IconButton onClick={() => onOpenFormHandler(record)}>
-            <Iconify icon="solar:pen-bold-duotone" size={18} />
-          </IconButton>
-          <Popconfirm
-            title="Delete the staff"
-            okText="Yes"
-            cancelText="No"
-            placement="left"
-            onConfirm={() => {
-              deleteMutate(record.id.toString());
-            }}
-          >
-            <IconButton>
-              <Iconify icon="mingcute:delete-2-fill" size={18} className="text-error" />
-            </IconButton>
-          </Popconfirm>
-        </div>
-      ),
-    },
   ];
 
   const resetHandler = () => {
@@ -127,39 +120,7 @@ export default function StaffManagerList() {
   };
 
   return (
-    <Card
-      title="List Staff"
-      extra={
-        <Button type="primary" onClick={() => onOpenFormHandler()}>
-          New
-        </Button>
-      }
-    >
-      <Form form={form} onFinish={onFinishHandler}>
-        <Row gutter={24} justify="space-between">
-          <Col span={8}>
-            <Form.Item name="Search">
-              <Input placeholder="Search by name" allowClear />
-            </Form.Item>
-          </Col>
-          <Col span={4}>
-            <Row>
-              <Col span={12}>
-                <Form.Item name="search">
-                  <Button type="primary" htmlType="submit">
-                    Search
-                  </Button>
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Button type="primary" onClick={resetHandler}>
-                  Reset
-                </Button>
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-      </Form>
+    <Card title="List Staff">
       <Table
         rowKey="id"
         size="small"
