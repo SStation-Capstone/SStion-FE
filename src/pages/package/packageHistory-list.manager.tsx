@@ -19,9 +19,10 @@ const { Title } = Typography;
 
 export default function PackageHistoryStationManagerList() {
   const id = getItem(StorageEnum.User).stationManager as string;
+  const idStaff = getItem(StorageEnum.User).stationId as number;
   const [listRelateParams, setListRelateParams] = useState<InputType>();
   const { data, isLoading } = useListPackageHistoryStation({
-    stationIds: id,
+    stationIds: id || `?StationIds=${idStaff}`,
     values: listRelateParams,
   });
   // const { mutateAsync: deleteMutate } = useDeleteStation();
@@ -58,6 +59,10 @@ export default function PackageHistoryStationManagerList() {
     {
       title: 'Description',
       dataIndex: 'description',
+    },
+    {
+      title: 'packageName',
+      dataIndex: 'packageName',
     },
     // { title: 'Location', dataIndex: 'location' },
     {

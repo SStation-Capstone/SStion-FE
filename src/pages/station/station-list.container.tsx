@@ -19,6 +19,7 @@ import { useListStation } from '@/api/services/stationService';
 import { CircleLoading } from '@/components/loading';
 
 import { PackageList } from './package-list.container';
+import { PaymentStationList } from './payment-list.container';
 import { ManageStationEdit } from './station.edit';
 
 import { InputType } from '#/api';
@@ -44,6 +45,7 @@ export default function ManageStationManagerList() {
   const [clickOne, setClickOne] = useState<Station>();
   const [clickTwo, setClickTwo] = useState();
   const [showInfo, setShowInfo] = useState(false);
+  const [showPayment, setShowPayment] = useState<any>(false);
   const [showPackageDetail, setShowPackageDetail] = useState(false);
   const { data, isLoading } = useListStation(listRelateParams);
   // const { mutateAsync: deleteMutate } = useDeleteStation();
@@ -73,6 +75,9 @@ export default function ManageStationManagerList() {
 
   const closeAndRefetchHandler = async () => {
     setShowInfo(false);
+  };
+  const closePayment = async () => {
+    setShowPayment(false);
   };
   const closePackageDetail = async () => {
     setShowPackageDetail(false);
@@ -187,7 +192,12 @@ export default function ManageStationManagerList() {
                 },
               }}
             >
-              <Button type="primary" size="large" style={{ padding: '0 10px', height: '35px' }}>
+              <Button
+                type="primary"
+                size="large"
+                style={{ padding: '0 10px', height: '35px' }}
+                onClick={() => setShowPayment(record.id)}
+              >
                 Payment
               </Button>
             </ConfigProvider>
@@ -288,6 +298,7 @@ export default function ManageStationManagerList() {
         style={{ marginTop: '1rem' }}
       />
       {/* <ManageStationEdit {...roleModalPros} /> */}
+      {showPayment && <PaymentStationList clickOne={showPayment} onClose={closePayment} />}
       {showPackageDetail && <PackageList clickOne={clickTwo} onClose={closePackageDetail} />}
       {showInfo && <ManageStationEdit clickOne={clickOne} onClose={closeAndRefetchHandler} />}
     </Card>

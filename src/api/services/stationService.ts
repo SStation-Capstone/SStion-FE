@@ -381,10 +381,18 @@ export const useListStaffPackage = (values?: any) => {
     }),
   );
 };
-export const useListStaffUser = () => {
+export const useListStationPayment = (values?: any) => {
+  return useQuery(['listStationPayment', values], () =>
+    apiClient.get<StationGetRes>({
+      url: `/payments?StationId=${values.id}&PageSize=10`,
+      params: values.listRelateParams,
+    }),
+  );
+};
+export const useListStaffUser = (values?: any) => {
   return useQuery(['listStaffUser'], () =>
     apiClient.get<StationGetRes>({
-      url: `/staffs/users`,
+      url: `/stations/${values}/staffs`,
       // params: values,
     }),
   );
@@ -393,7 +401,7 @@ export const useListStaffUser = () => {
 export const useListStaff = (values?: any) => {
   return useQuery(['listStaff', values], () =>
     apiClient.get<StationGetRes>({
-      url: `${StationApi.GetStation}/${values}/staffs`,
+      url: `${StationApi.GetStation}/${values}/stations`,
       // params: values,
     }),
   );
@@ -618,7 +626,6 @@ export const useCreateCheckOutConfirm = () => {
     async (payload: any) =>
       apiClient.post<StationCreateResponse>({
         url: `${StationApi.Packages}/${payload.id}/${payload.status}`,
-        data: {},
       }),
     {
       onSuccess: () => {
@@ -638,8 +645,8 @@ export const useCreateCheckOutPayment = () => {
   return useMutation(
     async (payload: any) =>
       apiClient.post<StationCreateResponse>({
-        url: `${StationApi.Packages}/${payload}/payment`,
-        data: {},
+        url: `${StationApi.Packages}/${payload.id}/payment`,
+        data: { totalPrice: payload.totalPrice },
       }),
     {
       onSuccess: () => {
@@ -773,6 +780,38 @@ export const useDeleteSlot = () => {
         // globalSuccess();
         message.success('Delete slot sucessfully');
         queryClient.invalidateQueries(['listShelf']);
+      },
+    },
+  );
+};
+export const useCreateExpire = () => {
+  return useMutation(
+    async (payload: any) =>
+      apiClient.post<StationCreateResponse>({
+        url: `${StationApi.Packages}/expire`,
+        data: {
+          ids: [payload],
+        },
+      }),
+    {
+      onSuccess: () => {
+        message.success('Create Expire sucessfully');
+      },
+    },
+  );
+};
+export const useCreatePushNotification = () => {
+  return useMutation(
+    async (payload: any) =>
+      apiClient.post<StationCreateResponse>({
+        url: `${StationApi.Packages}/push-notication/receive`,
+        data: {
+          ids: [payload],
+        },
+      }),
+    {
+      onSuccess: () => {
+        message.success('Create Push Notification sucessfully');
       },
     },
   );

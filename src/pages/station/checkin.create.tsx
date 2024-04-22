@@ -48,6 +48,8 @@ export function ManageCheckInCreate({
   const [dataForce, setDataForce] = useState<any>({});
   const [senderInfo, setSenderInfo] = useState<any>([]);
   const [receiverInfo, setReceiverInfo] = useState<any>([]);
+  const [checkIsCod, setCheckIsCod] = useState<boolean>(false);
+  console.log("🚀 ~ checkIsCod:", checkIsCod)
   const getUserInfoByPhoneNumber = async (phoneNumber: string, setState: Function) => {
     try {
       const accessToken = getItem(StorageEnum.Token) as unknown as UserToken;
@@ -77,7 +79,6 @@ export function ManageCheckInCreate({
     try {
       setLoading(true);
       const values = await form.validateFields();
-      console.log('🚀 ~ submitHandle ~ values:', values.isCod);
       const createData: CheckInPayload = {
         name: values.name,
         description: values.description,
@@ -159,14 +160,14 @@ export function ManageCheckInCreate({
       setLoading(false);
     }
   };
-  // const validateNumber = (_: any, value: any, callback: (error?: Error) => void) => {
-  //   // eslint-disable-next-line no-restricted-globals
-  //   if (isNaN(value)) {
-  //     callback(new Error('Please input a number'));
-  //   } else {
-  //     callback();
-  //   }
-  // };
+  const validateNumber = (_: any, value: any, callback: (error?: Error) => void) => {
+    // eslint-disable-next-line no-restricted-globals
+    if (isNaN(value)) {
+      callback(new Error('Please input a number'));
+    } else {
+      callback();
+    }
+  };
   const validateIsPrice = (_: any, value: any, callback: (error?: Error) => void) => {
     if (value) {
       // eslint-disable-next-line no-restricted-globals
@@ -229,14 +230,16 @@ export function ManageCheckInCreate({
           </Form.Item>
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <Form.Item
-              label="Price"
+              label="Price Cod"
               name="priceCod"
-              rules={[{ validator: validateIsPrice as any }]}
+              rules={[
+                { validator: checkIsCod ? (validateNumber as any) : (validateIsPrice as any) },
+              ]}
             >
               <Input />
             </Form.Item>
             <Form.Item label="is cod" name="isCod" valuePropName="checked">
-              <Checkbox />
+              <Checkbox onChange={(e) => setCheckIsCod(e.target.checked)} />
             </Form.Item>
           </div>
         </div>

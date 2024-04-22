@@ -16,6 +16,7 @@ import {
   List,
   Tag,
   ConfigProvider,
+  Popconfirm,
 } from 'antd';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -76,7 +77,7 @@ export function ManageCheckOutCreate() {
   const submitHandle = async () => {
     setLoading(true);
     try {
-      createPayment(id);
+      createPayment({ totalPrice: data.totalPrice, id });
       createMutate({ id, status: 'confirm' });
       setLoading(false);
     } catch (error) {
@@ -112,31 +113,19 @@ export function ManageCheckOutCreate() {
           )} */}
           {data.status !== 'Completed' && (
             <>
-              <ConfigProvider
-                theme={{
-                  components: {
-                    Button: {
-                      colorPrimary: `linear-gradient(135deg, ${colors1.join(', ')})`,
-                      colorPrimaryHover: `linear-gradient(135deg, ${getHoverColors(colors1).join(
-                        ', ',
-                      )})`,
-                      colorPrimaryActive: `linear-gradient(135deg, ${getActiveColors(colors1).join(
-                        ', ',
-                      )})`,
-                      lineWidth: 0,
-                    },
-                  },
+              <Popconfirm
+                title="are you sure cash payment ?"
+                okText="Yes"
+                cancelText="No"
+                placement="left"
+                onConfirm={() => {
+                  submitHandle();
                 }}
               >
-                <Button
-                  key="submit"
-                  type="primary"
-                  loading={loading}
-                  onClick={() => submitHandle()}
-                >
+                <Button key="submit" type="primary" loading={loading}>
                   cash payment
                 </Button>
-              </ConfigProvider>
+              </Popconfirm>
               <ConfigProvider
                 theme={{
                   components: {
@@ -173,10 +162,9 @@ export function ManageCheckOutCreate() {
             bodyStyle={{ display: 'none' }}
             title={
               <Row justify="space-between" align="middle" gutter={[24, 0]} className="p-4">
-                <Col span={20} md={20} className="col-info">
+                <Col span={24} md={8} className="col-info">
                   <Avatar.Group>
-                    <Avatar size={74} shape="square" src={data.packageImages[0].imageUrl} />
-
+                    <Avatar size={74} shape="square" src={data.packageImages[0]?.imageUrl} />
                     <div className="flex items-center pl-4">
                       <div>
                         <h4 className="m-0 font-semibold">{data.name}</h4>
@@ -186,27 +174,58 @@ export function ManageCheckOutCreate() {
                     </div>
                   </Avatar.Group>
                 </Col>
-                <Col span={4} md={4}>
-                  {data.status === 'Paid' && (
-                    <Tag icon={<MinusCircleOutlined />} color="default">
-                      {data.status}
-                    </Tag>
-                  )}
-                  {data.status === 'Returned' && (
-                    <Tag icon={<CloseCircleOutlined />} color="error">
-                      {data.status}
-                    </Tag>
-                  )}
-                  {data.status === 'Canceled' && (
-                    <Tag icon={<ExclamationCircleOutlined />} color="warning">
-                      {data.status}
-                    </Tag>
-                  )}
-                  {data.status === 'Completed' && (
-                    <Tag icon={<CheckCircleOutlined />} color="success">
-                      {data.status}
-                    </Tag>
-                  )}
+                <Col span={24} md={8} className="col-info">
+                  <div>
+                    <div className="flex items-center">
+                      <p className="pl-4">width: {data.width}</p>
+                      <p className="pl-4">height: {data.height}</p>
+                      <p className="pl-4">length: {data.length}</p>
+                    </div>
+                    <div className="flex items-center">
+                      <p className="pl-4">volume: {data.volume}</p>
+                      <p className="pl-4">weight: {data.weight}</p>
+                      <p className="pl-4">status: {data.status}</p>
+                    </div>
+                    <div className="flex items-center">
+                      <p className="pl-4">priceCod: {data.priceCod} đ</p>
+                      <p className="pl-4">isCod: {data.isCod ? 'true' : 'false'}</p>
+                      <p className="pl-4">totalHours: {data.totalHours}</p>
+                    </div>
+                    <div className="flex items-center">
+                      <p className="pl-4">checkinDays: {data.checkinDays}</p>
+                      <p className="pl-4">serviceFee: {data.serviceFee}</p>
+                    </div>
+                  </div>
+                </Col>
+                <Col span={24} md={8} className="col-info">
+                  <div className="flex items-center justify-end">
+                    {data.status === 'Paid' && (
+                      <Tag icon={<MinusCircleOutlined />} color="default">
+                        {data.status}
+                      </Tag>
+                    )}
+                    {data.status === 'Returned' && (
+                      <Tag icon={<CloseCircleOutlined />} color="error">
+                        {data.status}
+                      </Tag>
+                    )}
+                    {data.status === 'Canceled' && (
+                      <Tag icon={<ExclamationCircleOutlined />} color="warning">
+                        {data.status}
+                      </Tag>
+                    )}
+                    {data.status === 'Initialized' && (
+                      <Tag icon={<ExclamationCircleOutlined />} color="warning">
+                        {data.status}
+                      </Tag>
+                    )}
+                    {data.status === 'Completed' && (
+                      <Tag icon={<CheckCircleOutlined />} color="success">
+                        {data.status}
+                      </Tag>
+                    )}
+                    <p className="pl-4 text-xl">totalPrice: {data.totalPrice} đ</p>
+                  </div>
                 </Col>
               </Row>
             }

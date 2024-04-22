@@ -1,38 +1,28 @@
-import {
-  Button,
-  Card,
-  Col,
-  Form,
-  Input,
-  Pagination,
-  Typography,
-  Popconfirm,
-  Row,
-  Tag,
-  Avatar,
-} from 'antd';
+import { Card, Form, Pagination, Typography, Tag, Avatar } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { useDeleteStaff, useListStaffUser } from '@/api/services/stationService';
-import { IconButton, Iconify } from '@/components/icon';
 import { CircleLoading } from '@/components/loading';
+import { getItem } from '@/utils/storage';
 
 import { StaffCreate } from './staff.create';
 
 import { InputType } from '#/api';
 import { Staff } from '#/entity';
+import { StorageEnum } from '#/enum';
 
 const { Title } = Typography;
 
 export default function StaffManagerList() {
   const [form] = Form.useForm();
   const { id } = useParams();
+  const idStaff = getItem(StorageEnum.User).stationId as number;
   const [listRelateParams, setListRelateParams] = useState<InputType>();
   const [clickOne, setClickOne] = useState<Staff>();
   const [showInfo, setShowInfo] = useState(false);
-  const { data, isLoading } = useListStaffUser();
+  const { data, isLoading } = useListStaffUser(idStaff);
   const { mutateAsync: deleteMutate } = useDeleteStaff(id);
   if (isLoading) return <CircleLoading />;
   console.log('data', data);
@@ -127,7 +117,8 @@ export default function StaffManagerList() {
         scroll={{ x: 'max-content' }}
         pagination={false}
         columns={columns}
-        dataSource={data?.contends.filter((e) => e.roles[0].name !== 'StationManager')}
+        // dataSource={data?.contends.filter((e) => e.roles[0].name !== 'StationManager')}
+        dataSource={data?.contends}
         loading={isLoading}
       />
       <Pagination

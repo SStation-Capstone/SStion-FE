@@ -1,3 +1,4 @@
+import { TinyColor } from '@ctrl/tinycolor';
 import {
   Button,
   message,
@@ -9,14 +10,22 @@ import {
   Pagination,
   Typography,
   Popconfirm,
+  ConfigProvider,
 } from 'antd';
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 
-import { useDeletePackage, useGetPackageBySlot } from '@/api/services/stationService';
+import {
+  useCreateExpire,
+  useCreatePushNotification,
+  useDeletePackage,
+  useGetPackageBySlot,
+} from '@/api/services/stationService';
 import { IconButton, Iconify } from '@/components/icon';
 import { CircleLoading } from '@/components/loading';
 
 import { ManageCheckInCreate } from './checkin.create';
+import { ManageExpireCreate } from './expire.create';
 import { PackageDetail } from './packages.detail';
 
 const { Title } = Typography;
@@ -26,14 +35,27 @@ export type PackagesFormProps = {
   onClose: () => void;
 };
 export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
+  const { id } = useParams();
   const { mutateAsync: deleteMutate } = useDeletePackage();
+  const { mutateAsync: createExpire } = useCreateExpire();
+  const { mutateAsync: createPushNotification } = useCreatePushNotification();
+  const colors1 = ['#6253E1', '#04BEFE'];
+  const colors2 = ['#40e495', '#30dd8a', '#2bb673'];
+  const colors3 = ['#fc6076', '#ff9a44', '#ef9d43', '#e75516'];
   const [listRelateParams, setListRelateParams] = useState<any>();
+  const [showExpire, setShowExpire] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [showFormCheckIn, setShowFormCheckIn] = useState(false);
   const { data, isLoading } = useGetPackageBySlot({ id: clickOne.id, payload: listRelateParams });
   const [showInfo, setShowInfo] = useState(false);
   const [clickTwo, setClickTwo] = useState();
+  const [clickExpire, setClickExpire] = useState();
   if (isLoading) return <CircleLoading />;
+  const getHoverColors = (colors: string[]) =>
+    colors.map((color) => new TinyColor(color).lighten(5).toString());
+  const getActiveColors = (colors: string[]) =>
+    colors.map((color) => new TinyColor(color).darken(5).toString());
+
   const onPageChange = (page: number, pageSize: number) => {
     const values = { PageIndex: page, PageSize: pageSize };
     setListRelateParams(values);
@@ -42,8 +64,16 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
     setClickTwo(record);
     setShowInfo(true);
   };
+  const onOpenFormExpire = (record?: any) => {
+    setClickExpire(record);
+    setShowExpire(true);
+  };
   const closeAndRefetchHandler = async () => {
     setShowInfo(false);
+  };
+  const closeExpire = async () => {
+    setShowExpire(false);
+    onClose();
   };
   const columns = [
     {
@@ -113,27 +143,116 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
       align: 'center',
       width: 100,
       render: (_: any, record: any) => (
-        <>
-          {/* <IconButton onClick={() => onOpenFormHandler(record)}>
-            <Iconify icon="solar:pen-bold-duotone" size={18} />
-          </IconButton> */}
-          {clickOne.isActive && (
-            <Popconfirm
-              title="Delete the package"
-              okText="Yes"
-              cancelText="No"
-              placement="right"
-              onConfirm={() => {
-                deleteMutate(record.id.toString());
-                onClose();
+        <div className="text-gray flex w-full items-center justify-center">
+          <div className="flex gap-2">
+            <ConfigProvider
+              theme={{
+                components: {
+                  Button: {
+                    colorPrimary: `linear-gradient(135deg, ${colors1.join(', ')})`,
+                    colorPrimaryHover: `linear-gradient(135deg, ${getHoverColors(colors1).join(
+                      ', ',
+                    )})`,
+                    colorPrimaryActive: `linear-gradient(135deg, ${getActiveColors(colors1).join(
+                      ', ',
+                    )})`,
+                    lineWidth: 0,
+                  },
+                },
               }}
             >
-              <IconButton>
-                <Iconify icon="mingcute:delete-2-fill" size={18} className="text-error" />
-              </IconButton>
-            </Popconfirm>
-          )}
-        </>
+              <Button
+                type="primary"
+                size="large"
+                style={{ padding: '0 10px', height: '35px' }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOpenFormExpire(record.id.toString());
+                }}
+              >
+                change-location
+              </Button>
+            </ConfigProvider>
+            <ConfigProvider
+              theme={{
+                components: {
+                  Button: {
+                    colorPrimary: `linear-gradient(135deg, ${colors3.join(', ')})`,
+                    colorPrimaryHover: `linear-gradient(135deg, ${getHoverColors(colors3).join(
+                      ', ',
+                    )})`,
+                    colorPrimaryActive: `linear-gradient(135deg, ${getActiveColors(colors3).join(
+                      ', ',
+                    )})`,
+                    lineWidth: 0,
+                  },
+                },
+              }}
+            >
+              <Button
+                type="primary"
+                size="large"
+                style={{ padding: '0 10px', height: '35px' }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  createExpire(record.id.toString());
+                  onClose();
+                }}
+              >
+                expire
+              </Button>
+            </ConfigProvider>
+            <ConfigProvider
+              theme={{
+                components: {
+                  Button: {
+                    colorPrimary: `linear-gradient(135deg, ${colors2.join(', ')})`,
+                    colorPrimaryHover: `linear-gradient(135deg, ${getHoverColors(colors2).join(
+                      ', ',
+                    )})`,
+                    colorPrimaryActive: `linear-gradient(135deg, ${getActiveColors(colors2).join(
+                      ', ',
+                    )})`,
+                    lineWidth: 0,
+                  },
+                },
+              }}
+            >
+              <Button
+                type="primary"
+                size="large"
+                style={{ padding: '0 10px', height: '35px' }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  createPushNotification(record.id.toString());
+                  onClose();
+                }}
+              >
+                push-noti
+              </Button>
+            </ConfigProvider>
+            {clickOne.isActive && (
+              <Popconfirm
+                title="Delete the package"
+                okText="Yes"
+                cancelText="No"
+                placement="right"
+                onConfirm={() => {
+                  deleteMutate(record.id.toString());
+                  onClose();
+                }}
+              >
+                <IconButton
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  <Iconify icon="mingcute:delete-2-fill" size={18} className="text-error" />
+                </IconButton>
+              </Popconfirm>
+            )}
+          </div>
+        </div>
       ),
     },
   ];
@@ -206,6 +325,14 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
           check
           slotId={clickOne.id}
           onClose={closeAndRefetchHandler}
+        />
+      )}
+      {showExpire && (
+        <ManageExpireCreate
+          zoneId={id}
+          slotId={clickOne.id}
+          packageId={clickExpire}
+          onClose={closeExpire}
         />
       )}
     </Modal>
