@@ -41,7 +41,7 @@ export default function NoticeButton() {
         .then(() => {
           connection.on('ReceiveNotification', (message) => {
             console.log('mess', message);
-            notification.open({
+            notification.success({
               placement: 'topRight',
               message: message.content,
               description: message.title,
