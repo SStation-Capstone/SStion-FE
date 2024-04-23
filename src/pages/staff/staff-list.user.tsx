@@ -54,7 +54,7 @@ export default function StaffManagerList() {
       dataIndex: 'fullName',
     },
     {
-      title: 'username',
+      title: 'User Name',
       dataIndex: 'userName',
     },
     {
