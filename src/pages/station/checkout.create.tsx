@@ -34,7 +34,7 @@ export function ManageCheckOutCreate() {
   const { id } = useParams();
   const colors1 = ['#6253E1', '#04BEFE'];
   const colors2 = ['#40e495', '#30dd8a', '#2bb673'];
-  const { data, isLoading } = useGetCheckOut(id);
+  const { data, isLoading, refetch } = useGetCheckOut(id);
   const [clickOne, setClickOne] = useState();
   const [showInfo, setShowInfo] = useState(false);
   const { mutateAsync: createPayment } = useCreateCheckOutPayment();
@@ -79,6 +79,7 @@ export function ManageCheckOutCreate() {
     try {
       await createPayment({ totalPrice: data.totalPrice, id });
       await createMutate({ id, status: 'confirm' });
+      await refetch();
       setLoading(false);
     } catch (error) {
       message.error(error.message || error);
