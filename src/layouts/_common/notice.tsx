@@ -1,19 +1,69 @@
 import { faker } from '@faker-js/faker';
-import { Badge, Button, Drawer, Space, Tabs, TabsProps } from 'antd';
+import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
+import { App, Badge, Button, Drawer, Space, Tabs, TabsProps } from 'antd';
 import Color from 'color';
-import { CSSProperties, ReactNode, useState } from 'react';
+import { CSSProperties, ReactNode, useEffect, useState } from 'react';
 
+import { useCreateCheckOutConfirm } from '@/api/services/stationService';
 import CyanBlur from '@/assets/images/background/cyan-blur.png';
 import RedBlur from '@/assets/images/background/red-blur.png';
 import { IconButton, Iconify, SvgIcon } from '@/components/icon';
 import ProTag from '@/theme/antd/components/tag';
 import { useThemeToken } from '@/theme/hooks';
+import { getItem } from '@/utils/storage';
+
+import { StorageEnum } from '#/enum';
 
 export default function NoticeButton() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const themeToken = useThemeToken();
   const [count, setCount] = useState(4);
+  console.log(typeof getItem(StorageEnum.Token).accessToken);
+  const [connection, setConnection] = useState<null | HubConnection>(null);
+  const { mutateAsync } = useCreateCheckOutConfirm();
+  const { notification } = App.useApp();
+  useEffect(() => {
+    const connect = new HubConnectionBuilder()
+      .withUrl('https://shipperstation.runasp.net/notification-hub', {
+        accessTokenFactory: () => getItem(StorageEnum.Token).accessToken,
+      })
+      .withAutomaticReconnect()
+      .build();
 
+    setConnection(connect);
+  }, []);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (connection) {
+      connection
+        .start()
+        .then(() => {
+          connection.on('ReceiveNotification', (message) => {
+            console.log('mess', message);
+            notification.open({
+              placement: 'topRight',
+              message: message.content,
+              description: message.title,
+            });
+            setTimeout(
+              () =>
+                mutateAsync({
+                  id: JSON.parse(message.data).Id,
+                  status: 'confirm',
+                }),
+              3000,
+            );
+            // mutateAsync({
+            //   id: JSON.parse(message.data).Id,
+            //   status: 'confirm',
+            // });
+          });
+        })
+        .catch((error) => console.log(error));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [connection, mutateAsync]);
   const style: CSSProperties = {
     backdropFilter: 'blur(20px)',
     backgroundImage: `url("${CyanBlur}"), url("${RedBlur}")`,
