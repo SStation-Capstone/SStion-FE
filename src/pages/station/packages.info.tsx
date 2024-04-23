@@ -1,4 +1,3 @@
-import { TinyColor } from '@ctrl/tinycolor';
 import {
   Button,
   message,
@@ -10,8 +9,8 @@ import {
   Pagination,
   Typography,
   Popconfirm,
-  ConfigProvider,
 } from 'antd';
+import moment from 'moment';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -39,9 +38,6 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
   const { mutateAsync: deleteMutate } = useDeletePackage();
   const { mutateAsync: createExpire } = useCreateExpire();
   const { mutateAsync: createPushNotification } = useCreatePushNotification();
-  const colors1 = ['#6253E1', '#04BEFE'];
-  const colors2 = ['#40e495', '#30dd8a', '#2bb673'];
-  const colors3 = ['#fc6076', '#ff9a44', '#ef9d43', '#e75516'];
   const [listRelateParams, setListRelateParams] = useState<any>();
   const [showExpire, setShowExpire] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -51,11 +47,6 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
   const [clickTwo, setClickTwo] = useState();
   const [clickExpire, setClickExpire] = useState();
   if (isLoading) return <CircleLoading />;
-  const getHoverColors = (colors: string[]) =>
-    colors.map((color) => new TinyColor(color).lighten(5).toString());
-  const getActiveColors = (colors: string[]) =>
-    colors.map((color) => new TinyColor(color).darken(5).toString());
-
   const onPageChange = (page: number, pageSize: number) => {
     const values = { PageIndex: page, PageSize: pageSize };
     setListRelateParams(values);
@@ -110,6 +101,13 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
     },
     { title: 'Location', dataIndex: 'location' },
     {
+      title: 'Modified At',
+      dataIndex: 'modifiedAt',
+      render: (_: any, record: any) => (
+        <div>{moment(record.modifiedAt).format('DD/MM/YYYY HH:mm:ss')}</div>
+      ),
+    },
+    {
       title: 'Sender',
       dataIndex: 'sender',
       render: (_: any, record: any) => (
@@ -145,92 +143,44 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
       render: (_: any, record: any) => (
         <div className="text-gray flex w-full items-center justify-center">
           <div className="flex gap-2">
-            <ConfigProvider
-              theme={{
-                components: {
-                  Button: {
-                    colorPrimary: `linear-gradient(135deg, ${colors1.join(', ')})`,
-                    colorPrimaryHover: `linear-gradient(135deg, ${getHoverColors(colors1).join(
-                      ', ',
-                    )})`,
-                    colorPrimaryActive: `linear-gradient(135deg, ${getActiveColors(colors1).join(
-                      ', ',
-                    )})`,
-                    lineWidth: 0,
-                  },
-                },
+            <Button
+              type="primary"
+              size="large"
+              style={{ padding: '0 10px', height: '35px' }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onOpenFormExpire(record.id.toString());
               }}
             >
-              <Button
-                type="primary"
-                size="large"
-                style={{ padding: '0 10px', height: '35px' }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onOpenFormExpire(record.id.toString());
-                }}
-              >
-                change-location
-              </Button>
-            </ConfigProvider>
-            <ConfigProvider
-              theme={{
-                components: {
-                  Button: {
-                    colorPrimary: `linear-gradient(135deg, ${colors3.join(', ')})`,
-                    colorPrimaryHover: `linear-gradient(135deg, ${getHoverColors(colors3).join(
-                      ', ',
-                    )})`,
-                    colorPrimaryActive: `linear-gradient(135deg, ${getActiveColors(colors3).join(
-                      ', ',
-                    )})`,
-                    lineWidth: 0,
-                  },
-                },
+              <Iconify icon="mdi:folder-location" size={18} />
+              change-location
+            </Button>
+            <Button
+              type="primary"
+              size="large"
+              style={{ padding: '0 10px', height: '35px', backgroundColor: '#13c2c2' }}
+              onClick={(e) => {
+                e.stopPropagation();
+                createExpire(record.id.toString());
+                onClose();
               }}
             >
-              <Button
-                type="primary"
-                size="large"
-                style={{ padding: '0 10px', height: '35px' }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  createExpire(record.id.toString());
-                  onClose();
-                }}
-              >
-                expire
-              </Button>
-            </ConfigProvider>
-            <ConfigProvider
-              theme={{
-                components: {
-                  Button: {
-                    colorPrimary: `linear-gradient(135deg, ${colors2.join(', ')})`,
-                    colorPrimaryHover: `linear-gradient(135deg, ${getHoverColors(colors2).join(
-                      ', ',
-                    )})`,
-                    colorPrimaryActive: `linear-gradient(135deg, ${getActiveColors(colors2).join(
-                      ', ',
-                    )})`,
-                    lineWidth: 0,
-                  },
-                },
+              <Iconify icon="pajamas:expire" size={18} />
+              expire
+            </Button>
+            <Button
+              type="primary"
+              size="large"
+              style={{ padding: '0 10px', height: '35px', backgroundColor: '#faad14' }}
+              onClick={(e) => {
+                e.stopPropagation();
+                createPushNotification(record.id.toString());
+                onClose();
               }}
             >
-              <Button
-                type="primary"
-                size="large"
-                style={{ padding: '0 10px', height: '35px' }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  createPushNotification(record.id.toString());
-                  onClose();
-                }}
-              >
-                push-noti
-              </Button>
-            </ConfigProvider>
+              <Iconify icon="iconamoon:notification-fill" size={18} />
+              push-noti
+            </Button>
             {clickOne.isActive && (
               <Popconfirm
                 title="Delete the package"
@@ -294,7 +244,7 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
         scroll={{ x: 'max-content' }}
         pagination={false}
         columns={columns as any}
-        dataSource={data?.contends}
+        dataSource={data?.contends.filter((c: any) => c.status !== 'Completed')}
         loading={isLoading}
         onRow={(record, rowIndex) => {
           return {

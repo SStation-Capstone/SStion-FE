@@ -1,6 +1,18 @@
-import { TinyColor } from '@ctrl/tinycolor';
-import { Card, Avatar, Pagination, Typography, Image, List, Button, ConfigProvider } from 'antd';
+import {
+  Card,
+  Avatar,
+  Pagination,
+  Typography,
+  Image,
+  List,
+  Button,
+  Form,
+  Row,
+  Col,
+  DatePicker,
+} from 'antd';
 import Table from 'antd/es/table';
+import moment from 'moment';
 import { useState } from 'react';
 
 import {
@@ -8,10 +20,12 @@ import {
   useCreatePushNotification,
   useListPackageStation,
 } from '@/api/services/stationService';
+import { Iconify } from '@/components/icon';
 import { CircleLoading } from '@/components/loading';
 import { getItem } from '@/utils/storage';
 
 import { ManageExpireCreate } from '../station/expire.create';
+import { PackageDetail } from '../station/packages.detail';
 
 import { InputType } from '#/api';
 import { StorageEnum } from '#/enum';
@@ -19,15 +33,16 @@ import { StorageEnum } from '#/enum';
 const { Title } = Typography;
 
 export default function PackageStationManagerList() {
+  const [form] = Form.useForm();
+  const { RangePicker } = DatePicker;
   const id = getItem(StorageEnum.User).stationManager as string;
   const idStaff = getItem(StorageEnum.User).stationId as number;
   const { mutateAsync: createExpire } = useCreateExpire();
   const { mutateAsync: createPushNotification } = useCreatePushNotification();
-  const colors1 = ['#6253E1', '#04BEFE'];
-  const colors2 = ['#40e495', '#30dd8a', '#2bb673'];
-  const colors3 = ['#fc6076', '#ff9a44', '#ef9d43', '#e75516'];
   const [listRelateParams, setListRelateParams] = useState<InputType>();
   const [showExpire, setShowExpire] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
+  const [clickTwo, setClickTwo] = useState();
   const [zoneId, setZoneId] = useState();
   const [slotId, setSlotId] = useState();
   const [packageId, setPackageId] = useState();
@@ -37,18 +52,37 @@ export default function PackageStationManagerList() {
   });
   // const { mutateAsync: deleteMutate } = useDeleteStation();
   if (isLoading) return <CircleLoading />;
-  const getHoverColors = (colors: string[]) =>
-    colors.map((color) => new TinyColor(color).lighten(5).toString());
-  const getActiveColors = (colors: string[]) =>
-    colors.map((color) => new TinyColor(color).darken(5).toString());
   const onOpenFormExpire = (record?: any) => {
     setZoneId(record.zone.id);
     setSlotId(record.slot.id);
     setPackageId(record.id);
     setShowExpire(true);
   };
+  const onOpenFormHandler = (record?: any) => {
+    setClickTwo(record);
+    setShowInfo(true);
+  };
   const closeExpire = async () => {
     setShowExpire(false);
+  };
+  const closeAndRefetchHandler = async () => {
+    setShowInfo(false);
+  };
+  const resetHandler = () => {
+    form.resetFields();
+  };
+  const onFinishHandler = (values: any) => {
+    if (form.getFieldValue('date') !== undefined) {
+      const formDate = {
+        ...values,
+        From: values.date[0].format('YYYY-MM-DD'),
+        To: values.date[1].format('YYYY-MM-DD'),
+      };
+      delete formDate?.date;
+      setListRelateParams(formDate);
+    } else {
+      setListRelateParams(values);
+    }
   };
   const columns = [
     {
@@ -85,6 +119,13 @@ export default function PackageStationManagerList() {
     },
     { title: 'Location', dataIndex: 'location' },
     {
+      title: 'Modified At',
+      dataIndex: 'modifiedAt',
+      render: (_: any, record: any) => (
+        <div>{moment(record.modifiedAt).format('DD/MM/YYYY HH:mm:ss')}</div>
+      ),
+    },
+    {
       title: 'Sender',
       dataIndex: 'sender',
       render: (_: any, record: any) => (
@@ -120,87 +161,42 @@ export default function PackageStationManagerList() {
       render: (_: any, record: any) => (
         <div className="text-gray flex w-full items-center justify-center">
           <div className="flex gap-2">
-            <ConfigProvider
-              theme={{
-                components: {
-                  Button: {
-                    colorPrimary: `linear-gradient(135deg, ${colors1.join(', ')})`,
-                    colorPrimaryHover: `linear-gradient(135deg, ${getHoverColors(colors1).join(
-                      ', ',
-                    )})`,
-                    colorPrimaryActive: `linear-gradient(135deg, ${getActiveColors(colors1).join(
-                      ', ',
-                    )})`,
-                    lineWidth: 0,
-                  },
-                },
+            <Button
+              type="primary"
+              size="large"
+              style={{ padding: '0 10px', height: '35px' }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onOpenFormExpire(record);
               }}
             >
-              <Button
-                type="primary"
-                size="large"
-                style={{ padding: '0 10px', height: '35px' }}
-                onClick={() => {
-                  onOpenFormExpire(record);
-                }}
-              >
-                change-location
-              </Button>
-            </ConfigProvider>
-            <ConfigProvider
-              theme={{
-                components: {
-                  Button: {
-                    colorPrimary: `linear-gradient(135deg, ${colors3.join(', ')})`,
-                    colorPrimaryHover: `linear-gradient(135deg, ${getHoverColors(colors3).join(
-                      ', ',
-                    )})`,
-                    colorPrimaryActive: `linear-gradient(135deg, ${getActiveColors(colors3).join(
-                      ', ',
-                    )})`,
-                    lineWidth: 0,
-                  },
-                },
+              <Iconify icon="mdi:folder-location" size={18} />
+              change-location
+            </Button>
+            <Button
+              type="primary"
+              size="large"
+              style={{ padding: '0 10px', height: '35px', backgroundColor: '#13c2c2' }}
+              onClick={(e) => {
+                e.stopPropagation();
+                createExpire(record.id.toString());
               }}
             >
-              <Button
-                type="primary"
-                size="large"
-                style={{ padding: '0 10px', height: '35px' }}
-                onClick={() => {
-                  createExpire(record.id.toString());
-                }}
-              >
-                expire
-              </Button>
-            </ConfigProvider>
-            <ConfigProvider
-              theme={{
-                components: {
-                  Button: {
-                    colorPrimary: `linear-gradient(135deg, ${colors2.join(', ')})`,
-                    colorPrimaryHover: `linear-gradient(135deg, ${getHoverColors(colors2).join(
-                      ', ',
-                    )})`,
-                    colorPrimaryActive: `linear-gradient(135deg, ${getActiveColors(colors2).join(
-                      ', ',
-                    )})`,
-                    lineWidth: 0,
-                  },
-                },
+              <Iconify icon="pajamas:expire" size={18} />
+              expire
+            </Button>
+            <Button
+              type="primary"
+              size="large"
+              style={{ padding: '0 10px', height: '35px', backgroundColor: '#faad14' }}
+              onClick={(e) => {
+                e.stopPropagation();
+                createPushNotification(record.id.toString());
               }}
             >
-              <Button
-                type="primary"
-                size="large"
-                style={{ padding: '0 10px', height: '35px' }}
-                onClick={() => {
-                  createPushNotification(record.id.toString());
-                }}
-              >
-                push-noti
-              </Button>
-            </ConfigProvider>
+              <Iconify icon="iconamoon:notification-fill" size={18} />
+              push-noti
+            </Button>
           </div>
         </div>
       ),
@@ -214,6 +210,35 @@ export default function PackageStationManagerList() {
 
   return (
     <Card title="List package station">
+      <Form form={form} onFinish={onFinishHandler}>
+        <Row gutter={24} justify="space-between">
+          <Col span={20}>
+            <Row wrap={false} gutter={24}>
+              <Col span={8}>
+                <Form.Item label="From - To" name="date">
+                  <RangePicker allowClear />
+                </Form.Item>
+              </Col>
+            </Row>
+          </Col>
+          <Col span={4}>
+            <Row>
+              <Col span={12}>
+                <Form.Item name="search">
+                  <Button type="primary" htmlType="submit">
+                    Search
+                  </Button>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Button type="primary" onClick={resetHandler}>
+                  Reset
+                </Button>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      </Form>
       <Table
         rowKey="id"
         size="small"
@@ -222,15 +247,31 @@ export default function PackageStationManagerList() {
         columns={columns as any}
         dataSource={data?.contends}
         loading={isLoading}
+        onRow={(record, rowIndex) => {
+          return {
+            onClick: (event) => {
+              onOpenFormHandler(record);
+            },
+          };
+        }}
       />
       <Pagination
         showSizeChanger
         onChange={onPageChange}
+        // eslint-disable-next-line no-unsafe-optional-chaining
         total={data?.totalPages * 10}
         // showTotal={(total) => `共 ${total} 条`}
         current={data?.page}
         style={{ marginTop: '1rem' }}
       />
+      {showInfo && (
+        <PackageDetail
+          clickOne={clickTwo}
+          check
+          slotId={clickTwo}
+          onClose={closeAndRefetchHandler}
+        />
+      )}
       {showExpire && (
         <ManageExpireCreate
           zoneId={zoneId}
