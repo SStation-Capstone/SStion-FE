@@ -77,8 +77,8 @@ export function ManageCheckOutCreate() {
   const submitHandle = async () => {
     setLoading(true);
     try {
-      createPayment({ totalPrice: data.totalPrice, id });
-      createMutate({ id, status: 'confirm' });
+      await createPayment({ totalPrice: data.totalPrice, id });
+      await createMutate({ id, status: 'confirm' });
       setLoading(false);
     } catch (error) {
       message.error(error.message || error);
@@ -114,7 +114,7 @@ export function ManageCheckOutCreate() {
           {data.status !== 'Completed' && (
             <>
               <Popconfirm
-                title="are you sure cash payment ?"
+                title="Do yout want to pay by cash?"
                 okText="Yes"
                 cancelText="No"
                 placement="left"
