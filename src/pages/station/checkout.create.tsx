@@ -25,21 +25,24 @@ import {
   useGetCheckOut,
   useCreateCheckOutConfirm,
   useCreateCheckOutPayment,
+  useCreateCheckOutCancel,
 } from '@/api/services/stationService';
+import { Iconify } from '@/components/icon';
 import { CircleLoading } from '@/components/loading';
+import { numberWithCommas } from '@/utils/string';
 
 import { QRCodeComponent } from './qr-code';
 
 export function ManageCheckOutCreate() {
   const { id } = useParams();
-  const colors1 = ['#6253E1', '#04BEFE'];
+  // const colors1 = ['#6253E1', '#04BEFE'];
   const colors2 = ['#40e495', '#30dd8a', '#2bb673'];
   const { data, isLoading, refetch } = useGetCheckOut(id);
   const [clickOne, setClickOne] = useState();
   const [showInfo, setShowInfo] = useState(false);
   const { mutateAsync: createPayment } = useCreateCheckOutPayment();
   const { mutateAsync: createMutate } = useCreateCheckOutConfirm();
-  // const { mutateAsync: createCancelMutate } = useCreateCheckOutCancel();
+  const { mutateAsync: createCancelMutate } = useCreateCheckOutCancel();
   const [loading, setLoading] = useState<boolean>(false);
   if (isLoading) return <CircleLoading />;
   const getHoverColors = (colors: string[]) =>
@@ -57,22 +60,22 @@ export function ManageCheckOutCreate() {
   const closeAndRefetchHandler = async () => {
     setShowInfo(false);
   };
-  // const submitHandle = async (status: string) => {
-  //   setLoading(true);
-  //   try {
-  //     if (status === 'confirm') {
-  //       createMutate({ id, status: 'confirm' });
-  //       setLoading(false);
-  //     } else {
-  //       createCancelMutate({ id, status: 'return' });
-  //       setLoading(false);
-  //     }
-  //   } catch (error) {
-  //     message.error(error.message || error);
-  //     console.log(error);
-  //     setLoading(false);
-  //   }
-  // };
+  const submitHandleReturn = async (status: string) => {
+    setLoading(true);
+    try {
+      if (status === 'confirm') {
+        createMutate({ id, status: 'confirm' });
+        setLoading(false);
+      } else {
+        createCancelMutate({ id, status: 'return' });
+        setLoading(false);
+      }
+    } catch (error) {
+      message.error(error.message || error);
+      console.log(error);
+      setLoading(false);
+    }
+  };
 
   const submitHandle = async () => {
     setLoading(true);
@@ -92,17 +95,18 @@ export function ManageCheckOutCreate() {
       title="Check Out"
       extra={
         <div className="flex gap-2">
-          {/* {data.status === 'Canceled' && (
+          {data.status === 'Canceled' && (
             <Button
               key="submit"
               type="primary"
               loading={loading}
-              onClick={() => submitHandle('return')}
+              onClick={() => submitHandleReturn('return')}
             >
+              <Iconify icon="ic:twotone-assignment-return" size={18} />
               Return
             </Button>
           )}
-          {data.status === 'Paid' && (
+          {/* {data.status === 'Paid' && (
             <Button
               key="submit"
               type="primary"
@@ -124,6 +128,7 @@ export function ManageCheckOutCreate() {
                 }}
               >
                 <Button key="submit" type="primary" loading={loading}>
+                  <Iconify icon="streamline:payment-cash-out-3-solid" size={18} />
                   cash payment
                 </Button>
               </Popconfirm>
@@ -149,6 +154,7 @@ export function ManageCheckOutCreate() {
                   loading={loading}
                   onClick={() => onOpenFormHandler(id)}
                 >
+                  <Iconify icon="material-symbols:payments-outline" size={18} />
                   transfer payments
                 </Button>
               </ConfigProvider>
@@ -175,7 +181,7 @@ export function ManageCheckOutCreate() {
                     </div>
                   </Avatar.Group>
                 </Col>
-                <Col span={24} md={8} className="col-info">
+                {/* <Col span={24} md={8} className="col-info">
                   <div>
                     <div className="flex items-center">
                       <p className="pl-4">width: {data.width}</p>
@@ -197,7 +203,7 @@ export function ManageCheckOutCreate() {
                       <p className="pl-4">serviceFee: {data.serviceFee}</p>
                     </div>
                   </div>
-                </Col>
+                </Col> */}
                 <Col span={24} md={8} className="col-info">
                   <div className="flex items-center justify-end">
                     {data.status === 'Paid' && (
@@ -216,7 +222,7 @@ export function ManageCheckOutCreate() {
                       </Tag>
                     )}
                     {data.status === 'Initialized' && (
-                      <Tag icon={<ExclamationCircleOutlined />} color="warning">
+                      <Tag icon={<ExclamationCircleOutlined />} color="cyan">
                         {data.status}
                       </Tag>
                     )}
@@ -233,11 +239,77 @@ export function ManageCheckOutCreate() {
           />
 
           <Row gutter={[24, 0]} className="mt-4">
-            <Col span={24} md={8} className="mb-2">
+            <Col span={24} md={12} className="mb-2">
+              <Card
+                bordered={false}
+                title={<h6 className="m-0 font-semibold">Information</h6>}
+                className="header-solid card-profile-information h-full"
+                bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
+              >
+                <Descriptions bordered>
+                  <Descriptions.Item label="width" span={3}>
+                    {data.width} cm
+                  </Descriptions.Item>
+                  <Descriptions.Item label="height" span={3}>
+                    {data.height} cm
+                  </Descriptions.Item>
+                  <Descriptions.Item label="length" span={3}>
+                    {data.length} cm
+                  </Descriptions.Item>
+                  <Descriptions.Item label="volume" span={3}>
+                    {data.volume}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="weight" span={3}>
+                    {data.weight} kg
+                  </Descriptions.Item>
+                  <Descriptions.Item label="status" span={3}>
+                    {data.status}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Price Cod" span={3}>
+                    {numberWithCommas(data.priceCod)} đ
+                  </Descriptions.Item>
+                  <Descriptions.Item label="isCod" span={3}>
+                    {data.isCod ? 'true' : 'false'}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Total Hours" span={3}>
+                    {data.totalHours}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Checkin Days" span={3}>
+                    {data.checkinDays}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="service Fee" span={3}>
+                    {data.serviceFee}
+                  </Descriptions.Item>
+                </Descriptions>
+              </Card>
+            </Col>
+            <Col span={24} md={12} className="mb-2">
+              <Card
+                bordered={false}
+                title={<h6 className="m-0 font-semibold">Sender - Receiver</h6>}
+                className="mb-2"
+                bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
+              >
+                <List
+                  itemLayout="horizontal"
+                  dataSource={[data.sender, data.receiver]}
+                  split={false}
+                  className="conversations-list"
+                  renderItem={(item) => (
+                    <List.Item>
+                      <List.Item.Meta
+                        avatar={<Avatar shape="square" size={48} src={item.avatarUrl} />}
+                        title={item.fullName}
+                        description={item.phoneNumber}
+                      />
+                    </List.Item>
+                  )}
+                />
+              </Card>
               <Card
                 bordered={false}
                 title={<h6 className="m-0 font-semibold">Station</h6>}
-                className="header-solid card-profile-information h-full"
+                className="mb-2"
                 bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
               >
                 <p className="text-dark">{data.station.description}</p>
@@ -257,12 +329,9 @@ export function ManageCheckOutCreate() {
                   </Descriptions.Item>
                 </Descriptions>
               </Card>
-            </Col>
-            <Col span={24} md={8} className="mb-2">
               <Card
                 bordered={false}
                 title={<h6 className="m-0 font-semibold">Zone</h6>}
-                className="header-solid card-profile-information h-full"
                 bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
               >
                 <p className="text-dark">{data.zone.description}</p>
@@ -275,30 +344,6 @@ export function ManageCheckOutCreate() {
                     {data.slot.name}
                   </Descriptions.Item>
                 </Descriptions>
-              </Card>
-            </Col>
-            <Col span={24} md={8} className="mb-2">
-              <Card
-                bordered={false}
-                title={<h6 className="m-0 font-semibold">Sender - Receiver</h6>}
-                className="header-solid card-profile-information h-full"
-                bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
-              >
-                <List
-                  itemLayout="horizontal"
-                  dataSource={[data.sender, data.receiver]}
-                  split={false}
-                  className="conversations-list"
-                  renderItem={(item) => (
-                    <List.Item>
-                      <List.Item.Meta
-                        avatar={<Avatar shape="square" size={48} src={item.avatarUrl} />}
-                        title={item.fullName}
-                        description={item.phoneNumber}
-                      />
-                    </List.Item>
-                  )}
-                />
               </Card>
             </Col>
           </Row>

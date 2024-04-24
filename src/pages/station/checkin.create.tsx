@@ -49,7 +49,6 @@ export function ManageCheckInCreate({
   const [senderInfo, setSenderInfo] = useState<any>([]);
   const [receiverInfo, setReceiverInfo] = useState<any>([]);
   const [checkIsCod, setCheckIsCod] = useState<boolean>(false);
-  console.log("🚀 ~ checkIsCod:", checkIsCod)
   const getUserInfoByPhoneNumber = async (phoneNumber: string, setState: Function) => {
     try {
       const accessToken = getItem(StorageEnum.Token) as unknown as UserToken;
@@ -228,7 +227,10 @@ export function ManageCheckInCreate({
           >
             <Input />
           </Form.Item>
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+          <div className="flex">
+            <Form.Item label="isCod" name="isCod" valuePropName="checked" style={{ width: '20%' }}>
+              <Checkbox onChange={(e) => setCheckIsCod(e.target.checked)} />
+            </Form.Item>
             <Form.Item
               label="Price Cod"
               name="priceCod"
@@ -236,10 +238,7 @@ export function ManageCheckInCreate({
                 { validator: checkIsCod ? (validateNumber as any) : (validateIsPrice as any) },
               ]}
             >
-              <Input />
-            </Form.Item>
-            <Form.Item label="is cod" name="isCod" valuePropName="checked">
-              <Checkbox onChange={(e) => setCheckIsCod(e.target.checked)} />
+              <Input disabled={!checkIsCod} />
             </Form.Item>
           </div>
         </div>
@@ -253,7 +252,7 @@ export function ManageCheckInCreate({
         </Form.Item>
         <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-4">
           <Form.Item
-            label="Weight"
+            label="Weight (kg)"
             name="weight"
             required
             rules={[
@@ -264,7 +263,7 @@ export function ManageCheckInCreate({
             <Input />
           </Form.Item>
           <Form.Item
-            label="Width"
+            label="Width (cm)"
             name="width"
             required
             rules={[
@@ -275,7 +274,7 @@ export function ManageCheckInCreate({
             <Input />
           </Form.Item>
           <Form.Item
-            label="Height"
+            label="Height (cm)"
             name="height"
             required
             rules={[
@@ -286,7 +285,7 @@ export function ManageCheckInCreate({
             <Input />
           </Form.Item>
           <Form.Item
-            label="Length"
+            label="Length (cm)"
             name="length"
             required
             rules={[

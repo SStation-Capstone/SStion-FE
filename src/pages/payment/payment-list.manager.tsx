@@ -1,10 +1,12 @@
-import { Card, Avatar, Pagination, Typography, Image, List } from 'antd';
+import { CheckCircleOutlined } from '@ant-design/icons';
+import { Card, Pagination, Typography, Tag } from 'antd';
 import Table from 'antd/es/table';
 import { useState } from 'react';
 
 import { useListPaymentStation } from '@/api/services/stationService';
 import { CircleLoading } from '@/components/loading';
 import { getItem } from '@/utils/storage';
+import { numberWithCommas } from '@/utils/string';
 
 import { InputType } from '#/api';
 import { StorageEnum } from '#/enum';
@@ -47,24 +49,47 @@ export default function PaymentStationManagerList() {
     //   ),
     // },
     {
-      title: 'stationName',
+      title: 'Station Name',
       dataIndex: 'stationName',
+      render: (_: any, record: any) => <div>{record.station.name}</div>,
     },
     {
-      title: 'packageName',
+      title: 'Package Name',
       dataIndex: 'packageName',
+      render: (_: any, record: any) => <div>{record.package.name}</div>,
     },
     {
-      title: 'createdBy',
+      title: 'Created By',
       dataIndex: 'createdBy',
     },
     {
-      title: 'modifiedBy',
+      title: 'Modified By',
       dataIndex: 'modifiedBy',
     },
-    { title: 'priceCod', dataIndex: 'priceCod' },
-    { title: 'totalPrice', dataIndex: 'totalPrice' },
-    { title: 'status', dataIndex: 'status' },
+    {
+      title: 'Price Cod',
+      dataIndex: 'priceCod',
+      render: (_: any, record: any) => <div>{numberWithCommas(record.priceCod)} đ</div>,
+    },
+    {
+      title: 'Service Fee',
+      dataIndex: 'serviceFee',
+      render: (_: any, record: any) => <div>{numberWithCommas(record.serviceFee)} đ</div>,
+    },
+    {
+      title: 'Total Price',
+      dataIndex: 'totalPrice',
+      render: (_: any, record: any) => <div>{numberWithCommas(record.totalPrice)} đ</div>,
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      render: (_: any, record: any) => (
+        <Tag icon={<CheckCircleOutlined />} color="success">
+          {record.status}
+        </Tag>
+      ),
+    },
   ];
 
   const onPageChange = (page: number, pageSize: number) => {
@@ -86,6 +111,7 @@ export default function PaymentStationManagerList() {
       <Pagination
         showSizeChanger
         onChange={onPageChange}
+        // eslint-disable-next-line no-unsafe-optional-chaining
         total={data?.totalPages * 10}
         // showTotal={(total) => `共 ${total} 条`}
         current={data?.page}

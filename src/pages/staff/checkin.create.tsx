@@ -9,6 +9,7 @@ import {
   message,
   Select,
   Alert,
+  Checkbox,
 } from 'antd';
 import { useState } from 'react';
 
@@ -47,6 +48,7 @@ export function ManageCheckInCreate({
   const [dataForce, setDataForce] = useState<any>({});
   const [senderInfo, setSenderInfo] = useState<any>([]);
   const [receiverInfo, setReceiverInfo] = useState<any>([]);
+  const [checkIsCod, setCheckIsCod] = useState<boolean>(false);
   const getUserInfoByPhoneNumber = async (phoneNumber: string, setState: Function) => {
     try {
       const accessToken = getItem(StorageEnum.Token) as unknown as UserToken;
@@ -79,8 +81,8 @@ export function ManageCheckInCreate({
       const createData: CheckInPayload = {
         name: values.name,
         description: values.description,
-        priceCod: values.priceCod,
-        isCod: values.priceCod > 0,
+        priceCod: values.isCod ? values.priceCod || 0 : 0,
+        isCod: values.isCod,
         weight: values.weight,
         height: values.height,
         width: values.width,
@@ -165,6 +167,18 @@ export function ManageCheckInCreate({
       callback();
     }
   };
+  const validateIsPrice = (_: any, value: any, callback: (error?: Error) => void) => {
+    if (value) {
+      // eslint-disable-next-line no-restricted-globals
+      if (isNaN(value)) {
+        callback(new Error('Please input a number'));
+      } else {
+        callback();
+      }
+    } else {
+      callback();
+    }
+  };
   const validateNumberThan = (_: any, value: any, callback: (error?: Error) => void) => {
     // eslint-disable-next-line no-restricted-globals
     if (isNaN(value)) {
@@ -213,9 +227,20 @@ export function ManageCheckInCreate({
           >
             <Input />
           </Form.Item>
-          <Form.Item label="Price" name="priceCod" rules={[{ validator: validateNumber as any }]}>
-            <Input />
-          </Form.Item>
+          <div className="flex">
+            <Form.Item label="isCod" name="isCod" valuePropName="checked" style={{ width: '20%' }}>
+              <Checkbox onChange={(e) => setCheckIsCod(e.target.checked)} />
+            </Form.Item>
+            <Form.Item
+              label="Price Cod"
+              name="priceCod"
+              rules={[
+                { validator: checkIsCod ? (validateNumber as any) : (validateIsPrice as any) },
+              ]}
+            >
+              <Input disabled={!checkIsCod} />
+            </Form.Item>
+          </div>
         </div>
         <Form.Item
           label="Description"
@@ -227,7 +252,7 @@ export function ManageCheckInCreate({
         </Form.Item>
         <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-4">
           <Form.Item
-            label="Weight"
+            label="Weight (kg)"
             name="weight"
             required
             rules={[
@@ -238,7 +263,7 @@ export function ManageCheckInCreate({
             <Input />
           </Form.Item>
           <Form.Item
-            label="Width"
+            label="Width (cm)"
             name="width"
             required
             rules={[
@@ -249,7 +274,7 @@ export function ManageCheckInCreate({
             <Input />
           </Form.Item>
           <Form.Item
-            label="Height"
+            label="Height (cm)"
             name="height"
             required
             rules={[
@@ -260,7 +285,7 @@ export function ManageCheckInCreate({
             <Input />
           </Form.Item>
           <Form.Item
-            label="Length"
+            label="Length (cm)"
             name="length"
             required
             rules={[

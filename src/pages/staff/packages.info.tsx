@@ -10,6 +10,7 @@ import {
   Typography,
   Popconfirm,
 } from 'antd';
+import moment from 'moment';
 import { useState } from 'react';
 
 import { useDeletePackage, useGetPackageBySlot } from '@/api/services/stationService';
@@ -69,6 +70,13 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
       dataIndex: 'description',
     },
     { title: 'Location', dataIndex: 'location' },
+    {
+      title: 'Modified At',
+      dataIndex: 'modifiedAt',
+      render: (_: any, record: any) => (
+        <div>{moment(record.modifiedAt).format('DD/MM/YYYY HH:mm:ss')}</div>
+      ),
+    },
     {
       title: 'Sender',
       dataIndex: 'sender',
@@ -165,7 +173,7 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
         scroll={{ x: 'max-content' }}
         pagination={false}
         columns={columns as any}
-        dataSource={data?.contends}
+        dataSource={data?.contends.filter((c: any) => c.status !== 'Completed')}
         loading={isLoading}
       />
       <Pagination

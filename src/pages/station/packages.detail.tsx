@@ -1,8 +1,27 @@
-import { Button, Descriptions, Col, Card, Row, Avatar, List, Modal, Table, Typography } from 'antd';
+import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  ExclamationCircleOutlined,
+  MinusCircleOutlined,
+} from '@ant-design/icons';
+import {
+  Button,
+  Descriptions,
+  Col,
+  Card,
+  Row,
+  Avatar,
+  List,
+  Modal,
+  Table,
+  Typography,
+  Tag,
+} from 'antd';
 import { useState } from 'react';
 
 import { useGetPackageDetail } from '@/api/services/stationService';
 import { CircleLoading } from '@/components/loading';
+import { numberWithCommas } from '@/utils/string';
 
 import { ManageExpireCreate } from './expire.create';
 
@@ -74,7 +93,7 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
                     </div>
                   </Avatar.Group>
                 </Col>
-                <Col span={24} md={8} className="col-info">
+                {/* <Col span={24} md={8} className="col-info">
                   <div>
                     <div className="flex items-center">
                       <p className="pl-4">width: {data.width}</p>
@@ -94,9 +113,34 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
                       <p className="pl-4">totalHours: {data.totalHours}</p>
                     </div>
                   </div>
-                </Col>
+                </Col> */}
                 <Col span={24} md={8} className="col-info">
                   <div className="flex items-center justify-end">
+                    {data.status === 'Paid' && (
+                      <Tag icon={<MinusCircleOutlined />} color="default">
+                        {data.status}
+                      </Tag>
+                    )}
+                    {data.status === 'Returned' && (
+                      <Tag icon={<CloseCircleOutlined />} color="error">
+                        {data.status}
+                      </Tag>
+                    )}
+                    {data.status === 'Canceled' && (
+                      <Tag icon={<ExclamationCircleOutlined />} color="warning">
+                        {data.status}
+                      </Tag>
+                    )}
+                    {data.status === 'Initialized' && (
+                      <Tag icon={<ExclamationCircleOutlined />} color="cyan">
+                        {data.status}
+                      </Tag>
+                    )}
+                    {data.status === 'Completed' && (
+                      <Tag icon={<CheckCircleOutlined />} color="success">
+                        {data.status}
+                      </Tag>
+                    )}
                     <p className="pl-4 text-xl">totalPrice: {data.totalPrice} đ</p>
                   </div>
                 </Col>
@@ -104,49 +148,55 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
             }
           />
           <Row gutter={[24, 0]} className="mt-4">
-            <Col span={24} md={8} className="mb-2">
+            <Col span={24} md={12} className="mb-2">
               <Card
                 bordered={false}
-                title={<h6 className="m-0 font-semibold">Station</h6>}
+                title={<h6 className="m-0 font-semibold">Information</h6>}
                 className="header-solid card-profile-information h-full"
                 bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
               >
-                <p className="text-dark">{data.station.description}</p>
-                <hr className="my-25" />
-                <Descriptions title="Information">
-                  <Descriptions.Item label="name" span={3}>
-                    {data.station.name}
+                <Descriptions bordered>
+                  <Descriptions.Item label="width" span={3}>
+                    {data.width} cm
                   </Descriptions.Item>
-                  <Descriptions.Item label="address" span={3}>
-                    {data.station.address}
+                  <Descriptions.Item label="height" span={3}>
+                    {data.height} cm
                   </Descriptions.Item>
-                  <Descriptions.Item label="contact Phone" span={3}>
-                    {data.station.contactPhone}
+                  <Descriptions.Item label="length" span={3}>
+                    {data.length} cm
+                  </Descriptions.Item>
+                  <Descriptions.Item label="volume" span={3}>
+                    {data.volume}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="weight" span={3}>
+                    {data.weight} kg
+                  </Descriptions.Item>
+                  <Descriptions.Item label="status" span={3}>
+                    {data.status}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Price Cod" span={3}>
+                    {numberWithCommas(data.priceCod)} đ
+                  </Descriptions.Item>
+                  <Descriptions.Item label="isCod" span={3}>
+                    {data.isCod ? 'true' : 'false'}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Total Hours" span={3}>
+                    {data.totalHours}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Checkin Days" span={3}>
+                    {data.checkinDays}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="service Fee" span={3}>
+                    {data.serviceFee}
                   </Descriptions.Item>
                 </Descriptions>
               </Card>
             </Col>
-            <Col span={24} md={8} className="mb-2">
+            <Col span={24} md={12} className="mb-2">
               <Card
                 bordered={false}
-                title={<h6 className="m-0 font-semibold">Zone</h6>}
-                className="header-solid card-profile-information h-full"
-                bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
-              >
-                <p className="text-dark">{data.zone.description}</p>
-                <hr className="my-25" />
-                <Descriptions title="Information">
-                  <Descriptions.Item label="name" span={3}>
-                    {data.zone.name}
-                  </Descriptions.Item>
-                </Descriptions>
-              </Card>
-            </Col>
-            <Col span={24} md={8} className="mb-2">
-              <Card
-                bordered={false}
-                title={<h6 className="m-0 font-semibold">sender - receiver</h6>}
-                className="header-solid card-profile-information h-full"
+                title={<h6 className="m-0 font-semibold">Sender - Receiver</h6>}
+                className="mb-2"
                 bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
               >
                 <List
@@ -164,6 +214,45 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
                     </List.Item>
                   )}
                 />
+              </Card>
+              <Card
+                bordered={false}
+                title={<h6 className="m-0 font-semibold">Station</h6>}
+                className="mb-2"
+                bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
+              >
+                <p className="text-dark">{data.station.description}</p>
+                <hr className="my-25" />
+                <Descriptions title="Information">
+                  <Descriptions.Item label="Name" span={3}>
+                    {data.station.name}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Address" span={3}>
+                    {data.station.address}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Contact Phone" span={3}>
+                    {data.station.contactPhone}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Total Price" span={3}>
+                    {data.totalPrice} đ
+                  </Descriptions.Item>
+                </Descriptions>
+              </Card>
+              <Card
+                bordered={false}
+                title={<h6 className="m-0 font-semibold">Zone</h6>}
+                bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
+              >
+                <p className="text-dark">{data.zone.description}</p>
+                <hr className="my-25" />
+                <Descriptions title="Information">
+                  <Descriptions.Item label="Name" span={3}>
+                    {data.zone.name}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Slot" span={3}>
+                    {data.slot.name}
+                  </Descriptions.Item>
+                </Descriptions>
               </Card>
             </Col>
           </Row>
