@@ -18,14 +18,13 @@ export default function NoticeButton() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const themeToken = useThemeToken();
   const [count, setCount] = useState(4);
-  console.log(typeof getItem(StorageEnum.Token).accessToken);
   const [connection, setConnection] = useState<null | HubConnection>(null);
   const { mutateAsync } = useCreateCheckOutConfirm();
   const { notification } = App.useApp();
   useEffect(() => {
     const connect = new HubConnectionBuilder()
       .withUrl('https://shipperstation.runasp.net/notification-hub', {
-        accessTokenFactory: () => getItem(StorageEnum.Token).accessToken,
+        accessTokenFactory: () => getItem(StorageEnum.Token)?.accessToken,
       })
       .withAutomaticReconnect()
       .build();
