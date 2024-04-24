@@ -23,7 +23,7 @@ export function ManageExpireCreate({ zoneId, packageId, slotId, onClose }: Expir
   const [zone, setZone] = useState<any>(false);
   const [shelf, setShelf] = useState<any>(false);
   const [rack, setRack] = useState<any>(false);
-  const { data: dataShelf, isLoading: isLoadingShelf } = useListShelf(zone);
+  const { data: dataShelf, isLoading: isLoadingShelf } = useListShelf(zone || 0);
   if (isLoading) return <CircleLoading />;
   const transformedData = (data: any) => {
     const value = data.map((item: { id: any; name: any }) => ({
