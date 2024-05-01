@@ -672,7 +672,7 @@ export const useCreateCheckOutPayment = () => {
     async (payload: any) =>
       apiClient.post<StationCreateResponse>({
         url: `${StationApi.Packages}/${payload.id}/payment`,
-        data: { totalPrice: payload.totalPrice },
+        data: { totalPrice: payload.totalPrice, isCash: true },
       }),
     {
       onSuccess: () => {
