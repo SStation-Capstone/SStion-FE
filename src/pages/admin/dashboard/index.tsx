@@ -3,14 +3,17 @@ import { Card, Col, Row, Typography, Button, Timeline, Radio } from 'antd';
 import Paragraph from 'antd/lib/typography/Paragraph';
 import { useState } from 'react';
 
+import { useListDashboards } from '@/api/services/stationService';
 import EChart from '@/components/chart/EChart';
 import LineChart from '@/components/chart/LineChart';
+import { numberWithCommas } from '@/utils/string';
 
 export default function MenuLevel() {
   const { Title, Text } = Typography;
 
   const [listRelateParams, setListRelateParams] = useState<string>('checkIn');
   const [reverse, setReverse] = useState(false);
+  const { data: DataDashboards } = useListDashboards();
   // const { data, isLoading } = useListPackages(listRelateParams);
   // if (isLoading) return <CircleLoading />;
   const dollor = [
@@ -96,36 +99,38 @@ export default function MenuLevel() {
       />
     </svg>,
   ];
-  const count = [
-    {
-      today: 'Today’s Sales',
-      title: '$53,000',
-      persent: '+30%',
-      icon: dollor,
-      bnb: 'bnb2',
-    },
-    {
-      today: 'Today’s Users',
-      title: '3,200',
-      persent: '+20%',
-      icon: profile,
-      bnb: 'bnb2',
-    },
-    {
-      today: 'New Clients',
-      title: '+1,200',
-      persent: '-20%',
-      icon: heart,
-      bnb: 'redtext',
-    },
-    {
-      today: 'New Orders',
-      title: '$13,200',
-      persent: '10%',
-      icon: cart,
-      bnb: 'bnb2',
-    },
-  ];
+  const count = DataDashboards
+    ? [
+        {
+          today: 'Today’s Sales',
+          title: `${numberWithCommas(DataDashboards[0].value)} đ`,
+          persent: `${DataDashboards[0].percent}%`,
+          icon: dollor,
+          bnb: DataDashboards[0].percent > 0 ? 'bnb2' : 'redtext',
+        },
+        {
+          today: 'Today’s Users',
+          title: DataDashboards[1].value,
+          persent: `${DataDashboards[1].percent}%`,
+          icon: profile,
+          bnb: DataDashboards[1].percent > 0 ? 'bnb2' : 'redtext',
+        },
+        {
+          today: 'New Clients',
+          title: DataDashboards[2].value,
+          persent: `${DataDashboards[2].percent}%`,
+          icon: heart,
+          bnb: DataDashboards[2].percent > 0 ? 'bnb2' : 'redtext',
+        },
+        {
+          today: 'New Orders',
+          title: `${numberWithCommas(DataDashboards[3].value)} đ`,
+          persent: `${DataDashboards[3].percent}%`,
+          icon: cart,
+          bnb: DataDashboards[3].percent > 0 ? 'bnb2' : 'redtext',
+        },
+      ]
+    : [];
 
   const timelineList = [
     {
