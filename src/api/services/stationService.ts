@@ -99,12 +99,35 @@ export interface CheckInForcePayload {
   receiverId: string;
   packageImages: any[];
 }
+
+interface StaticalQuery {
+  stationId?: string;
+  year?: string;
+}
 export interface StationCreateResponse {
   message: string;
 }
 // & { user: UserInfo };
 type StationGetRes = PaginationRes & { contends: StationPayload[] };
 type PackageGetRes = PaginationRes & { contends: PackagePayload[] };
+
+export interface DashboardRes {
+  dashBoardType: string;
+  value: number;
+  percent: number;
+}
+
+export interface StaticalRevenueRes {
+  revenue: number;
+  year: number;
+  month: number;
+}
+
+export interface StaticalPackageRes {
+  packageCount: number;
+  year: number;
+  month: number;
+}
 export enum StationApi {
   CreateStation = '/admin/stations',
   GetListStation = '/managers/stations',
@@ -116,6 +139,9 @@ export enum StationApi {
   Slots = '/slots',
   Payments = '/payments',
   GetListStationByStaff = 'staffs/stations',
+  GetDashboardData = '/dashboards',
+  GetStatisticalPackage = '/dashboards/statistical-package',
+  GetStatisticalRevenue = '/dashboards/statistical-revenue',
 }
 
 const createStation = (data: StationPayload) =>
@@ -814,5 +840,32 @@ export const useCreatePushNotification = () => {
         message.success('Create Push Notification sucessfully');
       },
     },
+  );
+};
+
+export const useGetDashboardInfo = (values?: string) => {
+  return useQuery(['getDashboardData', values], () =>
+    apiClient.get<DashboardRes[]>({
+      url: StationApi.GetDashboardData,
+      params: { StationId: values },
+    }),
+  );
+};
+
+export const useGetStatisticalRevenue = (values?: StaticalQuery) => {
+  return useQuery(['getStatisticalRevenue', values], () =>
+    apiClient.get<StaticalRevenueRes[]>({
+      url: StationApi.GetStatisticalRevenue,
+      params: values,
+    }),
+  );
+};
+
+export const useGetStatisticalPackage = (values?: StaticalQuery) => {
+  return useQuery(['getStatisticalPackage', values], () =>
+    apiClient.get<StaticalPackageRes[]>({
+      url: StationApi.GetStatisticalPackage,
+      params: values,
+    }),
   );
 };

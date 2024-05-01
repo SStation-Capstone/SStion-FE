@@ -91,8 +91,11 @@ export const useSignIn = () => {
         user.permissions = STATION_MANAGER_LIST_PERMISSION;
         setUserInfo(user);
         const station = await userService.getStationManager();
+        console.log('station', station);
         const stationIds = station.contends.map((s: { id: any }) => `StationIds=${s.id}`).join('&');
+        const stationId = station.contends[0].id;
         user.stationManager = stationIds;
+        user.stationId = stationId;
       } else {
         user.permissions = STAFF_LIST_PERRMISSION;
         setUserInfo(user);
