@@ -238,7 +238,7 @@ export default function ManageShelfManagerList({ id }: StationEditFormProps) {
                     >
                       <div className="flex cursor-pointer flex-wrap justify-center gap-2 p-3">
                         <h5 className="text-blue-gray-900 block font-sans text-base font-semibold leading-snug tracking-normal antialiased">
-                          + create rack
+                          + Create rack
                         </h5>
                       </div>
                     </div>

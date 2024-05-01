@@ -38,6 +38,8 @@ export enum DashboardApi {
   Packages = '/packages',
   Payments = '/payments',
   UserCountByMonth = '/admin/user-count-by-month',
+  GetTotalPackage = '/dashboards/total-package',
+  GetTotalRevenue = '/dashboards/total-revenue',
 }
 
 interface PackagesQuery {
@@ -76,3 +78,21 @@ export const useListUserCountByMonth = (values?: UserCountByMonthQuery) => {
     apiClient.get<UserCountData[]>({ url: DashboardApi.UserCountByMonth, params: values }),
   );
 };
+
+// export const useGetTotalRevenue = (values?: string) => {
+//   return useQuery(['getTotalDashboardRevenue', values], () =>
+//     apiClient.get<number>({
+//       url: DashboardApi.GetTotalRevenue,
+//       params: { stationId: values },
+//     }),
+//   );
+// };
+
+// export const useGetTotalPackage = (values?: string) => {
+//   return useQuery(['getTotalDashboardPackage', values], () =>
+//     apiClient.get<number>({
+//       url: DashboardApi.GetTotalPackage,
+//       params: { stationId: values },
+//     }),
+//   );
+// };

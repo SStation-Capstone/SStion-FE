@@ -201,7 +201,7 @@ export const useListZoneStaff = (values?: any) => {
   );
 };
 export const useListZone = (values?: any) => {
-  return useQuery(['listZone', values], () =>
+  return useQuery(['listZoneStationManager', values], () =>
     apiClient.get<StationGetRes>({
       url: `${StationApi.GetStation}/${values}/zones`,
       // params: values,
@@ -750,7 +750,7 @@ export const useDeleteRack = () => {
     {
       onSuccess: () => {
         // globalSuccess();
-        message.success('Delete rack sucessfully');
+        message.success('Delete rack sucessfully!');
         queryClient.invalidateQueries(['listShelf']);
       },
     },
@@ -766,7 +766,7 @@ export const useCreateSlot = () => {
     {
       onSuccess: () => {
         // globalSuccess();
-        message.success('Create slot sucessfully');
+        message.success('Create slot sucessfully!');
         queryClient.invalidateQueries(['listShelf']);
       },
     },
@@ -789,7 +789,7 @@ export const useUpdateSlot = () => {
     {
       onSuccess: () => {
         // globalSuccess();
-        message.success('update slot sucessfully');
+        message.success('Update slot sucessfully!');
         queryClient.invalidateQueries(['listShelf']);
       },
     },
@@ -804,7 +804,7 @@ export const useDeleteSlot = () => {
     {
       onSuccess: () => {
         // globalSuccess();
-        message.success('Delete slot sucessfully');
+        message.success('Delete slot sucessfully!');
         queryClient.invalidateQueries(['listShelf']);
       },
     },
@@ -821,7 +821,7 @@ export const useCreateExpire = () => {
       }),
     {
       onSuccess: () => {
-        message.success('Create Expire sucessfully');
+        message.success('Expiried package sucessfully!');
       },
     },
   );
@@ -837,7 +837,7 @@ export const useCreatePushNotification = () => {
       }),
     {
       onSuccess: () => {
-        message.success('Create Push Notification sucessfully');
+        message.success('Push Notification sucessfully!');
       },
     },
   );

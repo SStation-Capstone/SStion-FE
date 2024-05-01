@@ -153,7 +153,7 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
               }}
             >
               <Iconify icon="mdi:folder-location" size={18} />
-              change-location
+              Change location
             </Button>
             <Button
               type="primary"
@@ -166,7 +166,7 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
               }}
             >
               <Iconify icon="pajamas:expire" size={18} />
-              expire
+              Expire
             </Button>
             <Button
               type="primary"
@@ -179,7 +179,7 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
               }}
             >
               <Iconify icon="iconamoon:notification-fill" size={18} />
-              push-noti
+              Push noti
             </Button>
             {clickOne.isActive && (
               <Popconfirm

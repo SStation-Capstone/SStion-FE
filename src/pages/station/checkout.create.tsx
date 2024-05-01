@@ -247,28 +247,28 @@ export function ManageCheckOutCreate() {
                 bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
               >
                 <Descriptions bordered>
-                  <Descriptions.Item label="width" span={3}>
+                  <Descriptions.Item label="Width" span={3}>
                     {data.width} cm
                   </Descriptions.Item>
-                  <Descriptions.Item label="height" span={3}>
+                  <Descriptions.Item label="Height" span={3}>
                     {data.height} cm
                   </Descriptions.Item>
-                  <Descriptions.Item label="length" span={3}>
+                  <Descriptions.Item label="Length" span={3}>
                     {data.length} cm
                   </Descriptions.Item>
-                  <Descriptions.Item label="volume" span={3}>
+                  <Descriptions.Item label="Volume" span={3}>
                     {data.volume}
                   </Descriptions.Item>
-                  <Descriptions.Item label="weight" span={3}>
+                  <Descriptions.Item label="Weight" span={3}>
                     {data.weight} kg
                   </Descriptions.Item>
-                  <Descriptions.Item label="status" span={3}>
+                  <Descriptions.Item label="Status" span={3}>
                     {data.status}
                   </Descriptions.Item>
-                  <Descriptions.Item label="Price Cod" span={3}>
+                  <Descriptions.Item label="Price cod" span={3}>
                     {numberWithCommas(data.priceCod)} đ
                   </Descriptions.Item>
-                  <Descriptions.Item label="isCod" span={3}>
+                  <Descriptions.Item label="Is cod" span={3}>
                     {data.isCod ? 'true' : 'false'}
                   </Descriptions.Item>
                   <Descriptions.Item label="Total Hours" span={3}>
@@ -277,7 +277,7 @@ export function ManageCheckOutCreate() {
                   <Descriptions.Item label="Checkin Days" span={3}>
                     {data.checkinDays}
                   </Descriptions.Item>
-                  <Descriptions.Item label="service Fee" span={3}>
+                  <Descriptions.Item label="Service fee" span={3}>
                     {data.serviceFee}
                   </Descriptions.Item>
                 </Descriptions>
