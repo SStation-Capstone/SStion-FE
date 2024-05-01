@@ -427,7 +427,7 @@ export const useListStaffUser = (values?: any) => {
 export const useListStaff = (values?: any) => {
   return useQuery(['listStaff', values], () =>
     apiClient.get<StationGetRes>({
-      url: `${StationApi.GetStation}/${values}/stations`,
+      url: `${StationApi.GetStation}/${values}/staffs`,
       // params: values,
     }),
   );
