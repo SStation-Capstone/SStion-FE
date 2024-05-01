@@ -115,6 +115,7 @@ export enum StationApi {
   Racks = '/racks',
   Slots = '/slots',
   Payments = '/payments',
+  Dashboards = '/dashboards',
   GetListStationByStaff = 'staffs/stations',
 }
 
@@ -125,6 +126,11 @@ const getStation = () => apiClient.get<StationGetRes>({ url: StationApi.GetStati
 export const useListOrdersHistory = (values?: InputType) => {
   return useQuery(['listOrdersHistory', values], () =>
     apiClient.get<StationGetRes>({ url: StationApi.Payments, params: values }),
+  );
+};
+export const useListDashboards = () => {
+  return useQuery(['listDashboards'], () =>
+    apiClient.get<StationGetRes>({ url: StationApi.Dashboards }),
   );
 };
 export const useListStationManagers = (values?: any) => {
