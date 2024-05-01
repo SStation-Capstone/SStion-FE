@@ -1,5 +1,10 @@
-import { Row, Col, Typography } from 'antd';
+import { Typography, Select } from 'antd';
+import { useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
+
+import { useGetStatisticalPackage } from '@/api/services/stationService';
+
+import { CircleLoading } from '../loading';
 
 import eChart from './configs/eChart';
 
@@ -7,9 +12,19 @@ interface Item {
   Title: string;
   user: string;
 }
-
-export default function EChart() {
+export type DashboardEChartProps = {
+  stationId: string;
+};
+export default function EChart({ stationId }: DashboardEChartProps) {
   const { Title, Paragraph } = Typography;
+  const [year, setYear] = useState<string | undefined>('2024');
+  const { data, isLoading } = useGetStatisticalPackage({ year, stationId });
+  const transformData = data?.map((e) => e.packageCount);
+
+  const handleYearSelection = (values: string) => {
+    setYear(values);
+  };
+  if (isLoading) return <CircleLoading />;
 
   const items: Item[] = [
     {
@@ -32,16 +47,45 @@ export default function EChart() {
 
   return (
     <>
+      <div className="linechart mb-6">
+        <div>
+          <Title level={5}>Statistical Package</Title>
+          {/* <Paragraph className="lastweek">
+            than last week <span className="bnb2">+30%</span>
+          </Paragraph> */}
+        </div>
+        {/* <div className="sales">
+          <ul>
+            <li>
+              <MinusOutlined /> Check In
+            </li>
+            <li>
+              <MinusOutlined /> Check Out
+            </li>
+          </ul>
+        </div> */}
+        <Select
+          style={{ minWidth: '10rem' }}
+          options={[
+            { value: '2023', label: '2023' },
+            { value: '2024', label: '2024' },
+          ]}
+          onSelect={handleYearSelection}
+          placeholder="Select year"
+          value={year}
+        />
+      </div>
+
       <div id="chart">
         <ReactApexChart
           className="bar-chart"
           options={eChart.options}
-          series={eChart.series}
+          series={[{ name: 'Package', data: transformData }]}
           type="bar"
-          height={220}
+          height={350}
         />
       </div>
-      <div className="chart-vistior">
+      {/* <div className="chart-vistior">
         <Title level={5}>Active Users</Title>
         <Paragraph className="lastweek">
           than last week <span className="bnb2">+30%</span>
@@ -60,7 +104,7 @@ export default function EChart() {
             </Col>
           ))}
         </Row>
-      </div>
+      </div> */}
     </>
   );
 }

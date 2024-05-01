@@ -64,7 +64,7 @@ const eChart = {
     tooltip: {
       y: {
         formatter(val: any) {
-          return `$ ${val} thousands`;
+          return `${val}`;
         },
       },
     },

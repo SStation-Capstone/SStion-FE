@@ -1,18 +1,37 @@
-import { MenuUnfoldOutlined } from '@ant-design/icons';
-import { Card, Col, Row, Typography, Button, Timeline, Radio } from 'antd';
-import Paragraph from 'antd/lib/typography/Paragraph';
+import { Card, Col, Row, Typography, Timeline, Radio, Select, Progress, Empty, Form } from 'antd';
 import { useState } from 'react';
 
-import EChart from '@/components/chart/EChart';
-import LineChart from '@/components/chart/LineChart';
+import {
+  useListOrdersHistoryDashboard,
+  useListPackagesDashboard,
+} from '@/api/services/admin/dashboardService';
+import { useListStation } from '@/api/services/admin/stationService';
+import { useGetDashboardInfo } from '@/api/services/stationService';
+import AdminLineChart from '@/components/chart/AdminLineChart';
+import { CircleLoading } from '@/components/loading';
+import { numberWithCommas } from '@/utils/string';
 
 export default function MenuLevel() {
   const { Title, Text } = Typography;
 
   const [listRelateParams, setListRelateParams] = useState<string>('checkIn');
-  const [reverse, setReverse] = useState(false);
-  // const { data, isLoading } = useListPackages(listRelateParams);
-  // if (isLoading) return <CircleLoading />;
+  const [stationId, setStationId] = useState<string | null>('');
+
+  const { data: listStation } = useListStation();
+  const { data: dashboardData } = useGetDashboardInfo(stationId);
+  const { data: packageList, isLoading: isPackageLoading } = useListPackagesDashboard({
+    checkIn: listRelateParams,
+    StationId: stationId,
+  });
+  const { data: OrdersHistoryData, isLoading } = useListOrdersHistoryDashboard({
+    StationId: stationId,
+  });
+  if (isLoading) return <CircleLoading />;
+  if (isPackageLoading) return <CircleLoading />;
+
+  const handleSelectChange = (value: string) => {
+    setStationId(value);
+  };
   const dollor = [
     <svg
       width="22"
@@ -127,43 +146,113 @@ export default function MenuLevel() {
     },
   ];
 
-  const timelineList = [
-    {
-      title: '$2,400 - Redesign store',
-      time: '09 JUN 7:20 PM',
-      color: 'green',
-    },
-    {
-      title: 'New order #3654323',
-      time: '08 JUN 12:20 PM',
-      color: 'green',
-    },
-    {
-      title: 'Company server payments',
-      time: '04 JUN 3:10 PM',
-    },
-    {
-      title: 'New card added for order #4826321',
-      time: '02 JUN 2:45 PM',
-    },
-    {
-      title: 'Unlock folders for development',
-      time: '18 MAY 1:30 PM',
-    },
-    {
-      title: 'New order #46282344',
-      time: '14 MAY 3:30 PM',
-      color: 'gray',
-    },
-  ];
+  const count1 = dashboardData?.map((item) => {
+    let today: string;
+    let title: number | string;
+    let persent: number | string;
+    let icon: JSX.Element[];
+    let bnb: string;
+
+    switch (item.dashBoardType) {
+      case 'TodaySales':
+        today = 'Today’s Sales';
+        title = `đ ${numberWithCommas(item.value)}`;
+        persent = `${item.percent}%`;
+        icon = dollor;
+        bnb = item.percent >= 0 ? 'bnb2' : 'redtext';
+        break;
+      case 'TodayUsers':
+        today = 'Today’s Users';
+        title = `${numberWithCommas(item.value)}`;
+        persent = `${item.percent}%`;
+        icon = profile;
+        bnb = item.percent >= 0 ? 'bnb2' : 'redtext';
+        break;
+      case 'NewClient':
+        today = 'New Clients';
+        title = `${numberWithCommas(item.value)}`;
+        persent = `${item.percent}%`;
+        icon = heart;
+        bnb = item.percent >= 0 ? 'bnb2' : 'redtext';
+        break;
+      case 'NewOrders':
+        today = 'New Orders';
+        title = `${numberWithCommas(item.value)}`;
+        persent = `${item.percent}%`;
+        icon = cart;
+        bnb = item.percent >= 0 ? 'bnb2' : 'redtext';
+        break;
+      default:
+        today = '';
+        title = '';
+        persent = '';
+        icon = cart;
+        bnb = '';
+    }
+
+    return { today, title, persent, icon, bnb };
+  });
+  // const timelineList = [
+  //   {
+  //     title: '$2,400 - Redesign store',
+  //     time: '09 JUN 7:20 PM',
+  //     color: 'green',
+  //   },
+  //   {
+  //     title: 'New order #3654323',
+  //     time: '08 JUN 12:20 PM',
+  //     color: 'green',
+  //   },
+  //   {
+  //     title: 'Company server payments',
+  //     time: '04 JUN 3:10 PM',
+  //   },
+  //   {
+  //     title: 'New card added for order #4826321',
+  //     time: '02 JUN 2:45 PM',
+  //   },
+  //   {
+  //     title: 'Unlock folders for development',
+  //     time: '18 MAY 1:30 PM',
+  //   },
+  //   {
+  //     title: 'New order #46282344',
+  //     time: '14 MAY 3:30 PM',
+  //     color: 'gray',
+  //   },
+  // ];
   const onStatusChange = (e: any) => {
     const values = e.target.value;
     setListRelateParams(values.toString());
   };
+
   return (
     <div className="layout-content">
+      <Row className="rowgap-vbox mb-6" justify="end" gutter={[24, 0]}>
+        <Form.Item label="Station">
+          <Select
+            showSearch
+            placeholder="Select Station"
+            // optionFilterProp="label"
+            // onChange={onChange}
+            // onSearch={onSearch}
+            filterOption={(input, option) =>
+              (option?.name ?? '').toLowerCase().includes(input.toLowerCase())
+            }
+            fieldNames={{ value: 'id', label: 'name' }}
+            options={listStation?.contends}
+            style={{ minWidth: '13rem' }}
+            value={stationId}
+            onSelect={handleSelectChange}
+            allowClear
+            onClear={() => {
+              setStationId('');
+            }}
+          />
+        </Form.Item>
+      </Row>
       <Row className="rowgap-vbox" gutter={[24, 0]}>
-        {count.map((c, index) => (
+        {count1?.map((c, index) => (
           <Col key={index} xs={24} sm={24} md={12} lg={6} xl={6} className="mb-6">
             <Card bordered={false} className="criclebox ">
               <div className="number">
@@ -185,14 +274,14 @@ export default function MenuLevel() {
       </Row>
 
       <Row gutter={[24, 0]}>
-        <Col xs={24} sm={24} md={12} lg={12} xl={10} className="mb-6">
+        {/* <Col xs={24} sm={24} md={12} lg={12} xl={10} className="mb-6">
           <Card bordered={false} className="criclebox h-full">
             <EChart />
           </Card>
-        </Col>
-        <Col xs={24} sm={24} md={12} lg={12} xl={14} className="mb-6">
+        </Col> */}
+        <Col xs={24} sm={24} md={24} lg={24} xl={24} className="mb-6">
           <Card bordered={false} className="criclebox h-full">
-            <LineChart />
+            <AdminLineChart />
           </Card>
         </Col>
       </Row>
@@ -203,9 +292,9 @@ export default function MenuLevel() {
             <div className="project-ant">
               <div>
                 <Title level={5}>Package</Title>
-                <Paragraph className="lastweek">
+                {/* <Paragraph className="lastweek">
                   done this month<span className="blue">40%</span>
-                </Paragraph>
+                </Paragraph> */}
               </div>
               <div className="ant-filtertabs">
                 <div className="antd-pro-pages-dashboard-analysis-style-salesExtra">
@@ -226,14 +315,14 @@ export default function MenuLevel() {
                     <th>COMPLETION</th>
                   </tr>
                 </thead>
-                {/* <tbody>
-                  {data &&
-                    data.contends.map((d, index) => (
+                <tbody>
+                  {packageList &&
+                    packageList.contends.map((d, index) => (
                       <tr key={index}>
                         <td>
                           <h6 className="package-avatar-title">
                             <img
-                              src={d.packageImages[0].imageUrl}
+                              src={d?.packageImages[0]?.imageUrl}
                               alt=""
                               className="avatar-sm mr-2"
                             />
@@ -251,8 +340,11 @@ export default function MenuLevel() {
                         </td>
                       </tr>
                     ))}
-                </tbody> */}
+                </tbody>
               </table>
+              {packageList?.contends.length === 0 && (
+                <Empty className="w-full" imageStyle={{ width: '100%' }} />
+              )}
             </div>
           </Card>
         </Col>
@@ -260,21 +352,21 @@ export default function MenuLevel() {
           <Card bordered={false} className="criclebox h-full">
             <div className="timeline-box">
               <Title level={5}>Orders History</Title>
-              <Paragraph className="lastweek" style={{ marginBottom: 24 }}>
+              {/* <Paragraph className="lastweek" style={{ marginBottom: 24 }}>
                 this month <span className="bnb2">20%</span>
-              </Paragraph>
-
-              <Timeline pending="Recording..." className="timelinelist" reverse={reverse}>
-                {timelineList.map((t, index) => (
-                  <Timeline.Item color={t.color} key={index}>
-                    <Title level={5}>{t.title}</Title>
-                    <Text>{t.time}</Text>
-                  </Timeline.Item>
-                ))}
+              </Paragraph> */}
+              {OrdersHistoryData?.contends.length === 0 && <Empty />}
+              <Timeline className="timelinelist">
+                {OrdersHistoryData?.contends &&
+                  OrdersHistoryData?.contends.map((t, index) => (
+                    <Timeline.Item color="green" key={index}>
+                      <Title level={5}>
+                        {numberWithCommas(t.status)} + {numberWithCommas(t.priceCod)} đ
+                      </Title>
+                      <Text>Total price : {numberWithCommas(t.totalPrice)} đ</Text>
+                    </Timeline.Item>
+                  ))}
               </Timeline>
-              <Button type="primary" className="width-100" onClick={() => setReverse(!reverse)}>
-                <MenuUnfoldOutlined /> REVERSE
-              </Button>
             </div>
           </Card>
         </Col>
