@@ -130,28 +130,28 @@ export default function MenuLevel() {
       case 'TodaySales':
         today = 'Today’s Sales';
         title = `đ ${numberWithCommas(item.value)}`;
-        persent = item.percent;
+        persent = `${item.percent}%`;
         icon = dollor;
         bnb = item.percent >= 0 ? 'bnb2' : 'redtext';
         break;
       case 'TodayUsers':
         today = 'Today’s Users';
         title = `${numberWithCommas(item.value)}`;
-        persent = item.percent;
+        persent = `${item.percent}%`;
         icon = profile;
         bnb = item.percent >= 0 ? 'bnb2' : 'redtext';
         break;
       case 'NewClient':
         today = 'New Clients';
         title = `${numberWithCommas(item.value)}`;
-        persent = item.percent;
+        persent = `${item.percent}%`;
         icon = heart;
         bnb = item.percent >= 0 ? 'bnb2' : 'redtext';
         break;
       case 'NewOrders':
         today = 'New Orders';
         title = `${numberWithCommas(item.value)}`;
-        persent = item.percent;
+        persent = `${item.percent}%`;
         icon = cart;
         bnb = item.percent >= 0 ? 'bnb2' : 'redtext';
         break;

@@ -226,7 +226,7 @@ export default function ManageStationManagerList() {
       <Pagination
         showSizeChanger
         onChange={onPageChange}
-        total={data?.totalPages}
+        total={data?.totalItems}
         // showTotal={(total) => `共 ${total} 条`}
         current={data?.page}
         style={{ marginTop: '1rem' }}

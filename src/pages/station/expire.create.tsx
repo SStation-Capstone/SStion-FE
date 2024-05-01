@@ -26,7 +26,7 @@ export function ManageExpireCreate({ zoneId, packageId, slotId, onClose }: Expir
   const { data: dataShelf, isLoading: isLoadingShelf } = useListShelf(zone || 0);
   if (isLoading) return <CircleLoading />;
   const transformedData = (data: any) => {
-    const value = data.map((item: { id: any; name: any }) => ({
+    const value = data?.map((item: { id: any; name: any }) => ({
       value: item.id,
       label: `${item.name}`,
     }));
@@ -56,7 +56,7 @@ export function ManageExpireCreate({ zoneId, packageId, slotId, onClose }: Expir
         },
       );
       if (response.status === 200) {
-        message.success('Create Expire sucessfully');
+        message.success('Change location sucessfully!');
         await queryClient.invalidateQueries(['listShelf']);
         setLoading(false);
         return onClose();
@@ -68,7 +68,7 @@ export function ManageExpireCreate({ zoneId, packageId, slotId, onClose }: Expir
           setLoading(false);
         }
       } else {
-        message.error('Create Expire fail');
+        message.error('Change location fail!');
       }
       setLoading(false);
       onClose();
@@ -94,7 +94,7 @@ export function ManageExpireCreate({ zoneId, packageId, slotId, onClose }: Expir
         body: JSON.stringify(createData),
       });
       await queryClient.invalidateQueries(['listShelf']);
-      message.success('Create Expire sucessfully');
+      message.success('Change location sucessfully!');
       setVisible(false);
       setLoading(false);
       onClose();
@@ -121,7 +121,7 @@ export function ManageExpireCreate({ zoneId, packageId, slotId, onClose }: Expir
     (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
   return (
     <Modal
-      title="Create Expire"
+      title="Change Location"
       open
       onOk={submitHandle}
       onCancel={() => onClose()}

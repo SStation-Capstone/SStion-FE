@@ -53,10 +53,10 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
       dataIndex: 'name',
     },
     {
-      title: 'status',
+      title: 'Status',
       dataIndex: 'status',
     },
-    { title: 'description', dataIndex: 'description' },
+    { title: 'Description', dataIndex: 'description' },
   ];
   return (
     <Modal
@@ -141,7 +141,9 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
                         {data.status}
                       </Tag>
                     )}
-                    <p className="pl-4 text-xl">totalPrice: {data.totalPrice} đ</p>
+                    <p className="pl-4 text-xl">
+                      Total Price: {numberWithCommas(data.totalPrice)} đ
+                    </p>
                   </div>
                 </Col>
               </Row>
@@ -156,28 +158,28 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
                 bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
               >
                 <Descriptions bordered>
-                  <Descriptions.Item label="width" span={3}>
+                  <Descriptions.Item label="Width" span={3}>
                     {data.width} cm
                   </Descriptions.Item>
-                  <Descriptions.Item label="height" span={3}>
+                  <Descriptions.Item label="Height" span={3}>
                     {data.height} cm
                   </Descriptions.Item>
-                  <Descriptions.Item label="length" span={3}>
+                  <Descriptions.Item label="Length" span={3}>
                     {data.length} cm
                   </Descriptions.Item>
-                  <Descriptions.Item label="volume" span={3}>
+                  <Descriptions.Item label="Volume" span={3}>
                     {data.volume}
                   </Descriptions.Item>
-                  <Descriptions.Item label="weight" span={3}>
+                  <Descriptions.Item label="Weight" span={3}>
                     {data.weight} kg
                   </Descriptions.Item>
-                  <Descriptions.Item label="status" span={3}>
+                  <Descriptions.Item label="Status" span={3}>
                     {data.status}
                   </Descriptions.Item>
-                  <Descriptions.Item label="Price Cod" span={3}>
+                  <Descriptions.Item label="Price cod" span={3}>
                     {numberWithCommas(data.priceCod)} đ
                   </Descriptions.Item>
-                  <Descriptions.Item label="isCod" span={3}>
+                  <Descriptions.Item label="Is cod" span={3}>
                     {data.isCod ? 'true' : 'false'}
                   </Descriptions.Item>
                   <Descriptions.Item label="Total Hours" span={3}>
@@ -186,8 +188,8 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
                   <Descriptions.Item label="Checkin Days" span={3}>
                     {data.checkinDays}
                   </Descriptions.Item>
-                  <Descriptions.Item label="service Fee" span={3}>
-                    {data.serviceFee}
+                  <Descriptions.Item label="Service fee" span={3}>
+                    {numberWithCommas(data.serviceFee)} đ
                   </Descriptions.Item>
                 </Descriptions>
               </Card>
@@ -256,7 +258,7 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
               </Card>
             </Col>
           </Row>
-          <strong>packageStatusHistories</strong>
+          <strong>Package Histories</strong>
           <Table
             rowKey="id"
             size="small"

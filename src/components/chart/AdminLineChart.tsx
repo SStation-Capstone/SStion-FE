@@ -1,4 +1,4 @@
-import { Select } from 'antd';
+import { Select, Typography } from 'antd';
 import { useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
 
@@ -11,6 +11,7 @@ import adminLineChart from './configs/adminLineChart';
 export default function AdminLineChart() {
   const [year, setYear] = useState<string | undefined>('2024');
   const { data, isLoading } = useListUserCountByMonth({ Year: year });
+  const { Title } = Typography;
   const handleYearSelection = (values: string) => {
     setYear(values);
   };
@@ -21,12 +22,12 @@ export default function AdminLineChart() {
   return (
     <>
       <div className="linechart">
-        {/* <div>
-          <Title level={5}>Active Users</Title>
-          <Paragraph className="lastweek">
+        <div>
+          <Title level={5}>Users Active</Title>
+          {/* <Paragraph className="lastweek">
             than last week <span className="bnb2">+30%</span>
-          </Paragraph>
-        </div> */}
+          </Paragraph> */}
+        </div>
         <div className="sales">
           {/* <ul>
             <li>

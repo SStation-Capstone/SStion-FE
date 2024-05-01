@@ -53,7 +53,7 @@ export default function PackageStationManagerList() {
   // const { mutateAsync: deleteMutate } = useDeleteStation();
   if (isLoading) return <CircleLoading />;
   const onOpenFormExpire = (record?: any) => {
-    setZoneId(record.zone.id);
+    setZoneId(record.station.id);
     setSlotId(record.slot.id);
     setPackageId(record.id);
     setShowExpire(true);
@@ -117,6 +117,11 @@ export default function PackageStationManagerList() {
       title: 'Description',
       dataIndex: 'description',
     },
+    {
+      title: 'Station',
+      dataIndex: 'station',
+      render: (text: any) => <Typography.Text>{text.name}</Typography.Text>,
+    },
     { title: 'Location', dataIndex: 'location' },
     {
       title: 'Modified At',
@@ -167,11 +172,12 @@ export default function PackageStationManagerList() {
               style={{ padding: '0 10px', height: '35px' }}
               onClick={(e) => {
                 e.stopPropagation();
+                console.log('record1', record);
                 onOpenFormExpire(record);
               }}
             >
               <Iconify icon="mdi:folder-location" size={18} />
-              change-location
+              Change location
             </Button>
             <Button
               type="primary"
@@ -183,7 +189,7 @@ export default function PackageStationManagerList() {
               }}
             >
               <Iconify icon="pajamas:expire" size={18} />
-              expire
+              Expire
             </Button>
             <Button
               type="primary"
@@ -195,7 +201,7 @@ export default function PackageStationManagerList() {
               }}
             >
               <Iconify icon="iconamoon:notification-fill" size={18} />
-              push-noti
+              Push noti
             </Button>
           </div>
         </div>

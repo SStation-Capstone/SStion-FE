@@ -15,7 +15,7 @@ export default function MenuLevel() {
   const { Title, Text } = Typography;
 
   const [listRelateParams, setListRelateParams] = useState<string>('checkIn');
-  const [stationId, setStationId] = useState<string | null>('');
+  const [stationId, setStationId] = useState<string>('');
 
   const { data: listStation } = useListStation();
   const { data: dashboardData } = useGetDashboardInfo(stationId);
@@ -26,12 +26,35 @@ export default function MenuLevel() {
   const { data: OrdersHistoryData, isLoading } = useListOrdersHistoryDashboard({
     StationId: stationId,
   });
+
   if (isLoading) return <CircleLoading />;
   if (isPackageLoading) return <CircleLoading />;
+  // if (totaLoading) return <CircleLoading />;
+  // if (totalPackageLoading) return <CircleLoading />;
 
   const handleSelectChange = (value: string) => {
     setStationId(value);
   };
+  const doubleDollor = [
+    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 8 8">
+      <path
+        fill="currentColor"
+        d="M3 0v1h-.75C1.57 1 1 1.57 1 2.25v.5c0 .68.44 1.24 1.09 1.41l2.56.66c.14.04.34.29.34.44v.5c0 .14-.11.25-.25.25h-2.5a.56.56 0 0 1-.25-.06v-.94h-1v1c0 .34.2.63.44.78c.23.16.52.22.81.22h.75v1h1v-1h.75c.69 0 1.25-.56 1.25-1.25v-.5c0-.68-.44-1.24-1.09-1.41l-2.56-.66C2.2 3.15 2 2.9 2 2.75v-.5c0-.14.11-.25.25-.25h2.5c.11 0 .21.04.25.06V3h1V2c0-.34-.2-.63-.44-.78c-.23-.16-.52-.22-.81-.22H4V0z"
+      />
+    </svg>,
+  ];
+
+  const packageLogo = [
+    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+      <g fill="none" fillRule="evenodd">
+        <path d="M24 0v24H0V0zM12.594 23.258l-.012.002l-.071.035l-.02.004l-.014-.004l-.071-.036c-.01-.003-.019 0-.024.006l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427c-.002-.01-.009-.017-.016-.018m.264-.113l-.014.002l-.184.093l-.01.01l-.003.011l.018.43l.005.012l.008.008l.201.092c.012.004.023 0 .029-.008l.004-.014l-.034-.614c-.003-.012-.01-.02-.02-.022m-.715.002a.023.023 0 0 0-.027.006l-.006.014l-.034.614c0 .012.007.02.017.024l.015-.002l.201-.093l.01-.008l.003-.011l.018-.43l-.003-.012l-.01-.01z" />
+        <path
+          fill="currentColor"
+          d="M12.25 4.299a.5.5 0 0 0-.5 0L6.206 7.5l1.813 1.047l5.798-3.343zm3.568 2.06L10.02 9.702l1.73.999a.5.5 0 0 0 .5 0L17.794 7.5l-1.976-1.14Zm2.976 2.873l-5.544 3.201a2.25 2.25 0 0 1-.25.126v6.709l5.544-3.201a.5.5 0 0 0 .25-.433zM11 19.268v-6.709a2.5 2.5 0 0 1-.25-.126L5.206 9.232v6.402a.5.5 0 0 0 .25.433zm-.25-16.701a2.5 2.5 0 0 1 2.5 0l6.294 3.634a2.5 2.5 0 0 1 1.25 2.165v7.268a2.5 2.5 0 0 1-1.25 2.165l-6.294 3.634a2.5 2.5 0 0 1-2.5 0l-6.294-3.634a2.5 2.5 0 0 1-1.25-2.165V8.366a2.5 2.5 0 0 1 1.25-2.165z"
+        />
+      </g>
+    </svg>,
+  ];
   const dollor = [
     <svg
       width="22"
@@ -256,7 +279,7 @@ export default function MenuLevel() {
           <Col key={index} xs={24} sm={24} md={12} lg={6} xl={6} className="mb-6">
             <Card bordered={false} className="criclebox ">
               <div className="number">
-                <Row align="middle" gutter={[24, 0]}>
+                <Row align="middle" gutter={[0, 0]}>
                   <Col xs={18}>
                     <span>{c.today}</span>
                     <Title level={3}>
