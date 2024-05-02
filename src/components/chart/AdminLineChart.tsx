@@ -15,9 +15,7 @@ export default function AdminLineChart() {
   const handleYearSelection = (values: string) => {
     setYear(values);
   };
-  console.log('dataChart', data);
   const transformData = data?.map((e) => e.userCount);
-  console.log('lineData', transformData);
   if (isLoading) return <CircleLoading />;
   return (
     <>

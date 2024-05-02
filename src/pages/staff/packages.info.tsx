@@ -21,11 +21,21 @@ import {
 import moment from 'moment';
 import { useState } from 'react';
 
-import { useDeletePackage, useGetPackageBySlot } from '@/api/services/stationService';
+import {
+  useCreateExpireStaff,
+  useCreatePushNotification,
+  useDeletePackage,
+  useGetPackageBySlot,
+} from '@/api/services/stationService';
 import { IconButton, Iconify } from '@/components/icon';
 import { CircleLoading } from '@/components/loading';
+import { getItem } from '@/utils/storage';
 
 import { ManageCheckInCreate } from './checkin.create';
+import { ManageExpireCreate } from './expire.create';
+import { PackageDetail } from './packages.detail';
+
+import { StorageEnum } from '#/enum';
 
 const { Title } = Typography;
 export type PackagesFormProps = {
@@ -35,17 +45,40 @@ export type PackagesFormProps = {
 };
 export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
   const { mutateAsync: deleteMutate } = useDeletePackage();
-  console.log('clickone', clickOne);
+  const id = getItem(StorageEnum.User).stationId as string;
   const [listRelateParams, setListRelateParams] = useState<any>();
+  const { mutateAsync: createExpire } = useCreateExpireStaff();
+  const { mutateAsync: createPushNotification } = useCreatePushNotification();
   // eslint-disable-next-line unused-imports/no-unused-vars-ts
   const [loading, setLoading] = useState<boolean>(false);
   const [showFormCheckIn, setShowFormCheckIn] = useState(false);
   const { data, isLoading } = useGetPackageBySlot({ id: clickOne.id, payload: listRelateParams });
+  const [showInfo, setShowInfo] = useState(false);
+  const [clickTwo, setClickTwo] = useState();
+  const [clickExpire, setClickExpire] = useState();
+  const [showExpire, setShowExpire] = useState(false);
   if (isLoading) return <CircleLoading />;
   const onPageChange = (page: number, pageSize: number) => {
     const values = { PageIndex: page, PageSize: pageSize };
     setListRelateParams(values);
   };
+  console.log('data staff', data);
+  const onOpenFormHandler = (record?: any) => {
+    setClickTwo(record);
+    setShowInfo(true);
+  };
+  const onOpenFormExpire = (record?: any) => {
+    setClickExpire(record);
+    setShowExpire(true);
+  };
+  const closeAndRefetchHandler = async () => {
+    setShowInfo(false);
+  };
+  const closeExpire = async () => {
+    setShowExpire(false);
+    onClose();
+  };
+
   const columns = [
     {
       title: 'No',
@@ -159,27 +192,72 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
       align: 'center',
       width: 100,
       render: (_: any, record: any) => (
-        <>
-          {/* <IconButton onClick={() => onOpenFormHandler(record)}>
-            <Iconify icon="solar:pen-bold-duotone" size={18} />
-          </IconButton> */}
-          {clickOne.isActive && (
-            <Popconfirm
-              title="Delete the package"
-              okText="Yes"
-              cancelText="No"
-              placement="right"
-              onConfirm={() => {
-                deleteMutate(record.id.toString());
+        <div className="text-gray flex w-full items-center justify-center">
+          <div className="flex gap-2">
+            <Button
+              type="primary"
+              size="large"
+              style={{ padding: '0 10px', height: '35px' }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onOpenFormExpire(record.id.toString());
+              }}
+            >
+              <Iconify icon="mdi:folder-location" size={18} />
+              Change location
+            </Button>
+            <Button
+              type="primary"
+              size="large"
+              style={{ padding: '0 10px', height: '35px', backgroundColor: '#13c2c2' }}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (record.status === 'Expired') {
+                  message.error('Package have been expired!');
+                } else {
+                  createExpire(record.id.toString());
+                  onClose();
+                }
+              }}
+            >
+              <Iconify icon="pajamas:expire" size={18} />
+              Expire
+            </Button>
+            <Button
+              type="primary"
+              size="large"
+              style={{ padding: '0 10px', height: '35px', backgroundColor: '#faad14' }}
+              onClick={(e) => {
+                e.stopPropagation();
+                createPushNotification(record.id.toString());
                 onClose();
               }}
             >
-              <IconButton>
-                <Iconify icon="mingcute:delete-2-fill" size={18} className="text-error" />
-              </IconButton>
-            </Popconfirm>
-          )}
-        </>
+              <Iconify icon="iconamoon:notification-fill" size={18} />
+              Push noti
+            </Button>
+            {clickOne.isActive && (
+              <Popconfirm
+                title="Delete the package"
+                okText="Yes"
+                cancelText="No"
+                placement="right"
+                onConfirm={() => {
+                  deleteMutate(record.id.toString());
+                  onClose();
+                }}
+              >
+                <IconButton
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  <Iconify icon="mingcute:delete-2-fill" size={18} className="text-error" />
+                </IconButton>
+              </Popconfirm>
+            )}
+          </div>
+        </div>
       ),
     },
   ];
@@ -224,12 +302,22 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
         dataSource={data?.contends.filter(
           (c: any) => c.status !== 'Completed' && c.status !== 'Returned',
         )}
+        onRow={(record, rowIndex) => {
+          return {
+            onClick: (event) => {
+              onOpenFormHandler(record);
+            },
+          };
+        }}
         loading={isLoading}
       />
       <Pagination
         showSizeChanger
         onChange={onPageChange}
-        total={data?.totalPages}
+        total={
+          data?.contends.filter((c: any) => c.status !== 'Completed' && c.status !== 'Returned')
+            .length
+        }
         current={data?.page}
         style={{ marginTop: '1rem' }}
       />
@@ -239,6 +327,22 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
           slotId={clickOne.id}
           onClose={closeFormCheckIn}
           onCloseCheckIn={onClose}
+        />
+      )}
+      {showInfo && (
+        <PackageDetail
+          clickOne={clickTwo}
+          check
+          slotId={clickOne.id}
+          onClose={closeAndRefetchHandler}
+        />
+      )}
+      {showExpire && (
+        <ManageExpireCreate
+          zoneId={id}
+          slotId={clickOne.id}
+          packageId={clickExpire}
+          onClose={closeExpire}
         />
       )}
     </Modal>

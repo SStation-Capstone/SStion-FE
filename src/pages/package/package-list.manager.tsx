@@ -73,7 +73,6 @@ export default function PackageStationManagerList() {
     setClickTwo(record);
     setShowInfo(true);
   };
-  console.log('clickTwo', clickTwo);
   const closeExpire = async () => {
     setShowExpire(false);
   };
@@ -222,7 +221,6 @@ export default function PackageStationManagerList() {
               style={{ padding: '0 10px', height: '35px' }}
               onClick={(e) => {
                 e.stopPropagation();
-                console.log('record1', record);
                 onOpenFormExpire(record);
               }}
             >
@@ -327,7 +325,6 @@ export default function PackageStationManagerList() {
         onRow={(record, rowIndex) => {
           return {
             onClick: (event) => {
-              console.log('record table', record);
               onOpenFormHandler(record);
             },
           };
@@ -337,7 +334,7 @@ export default function PackageStationManagerList() {
         showSizeChanger
         onChange={onPageChange}
         // eslint-disable-next-line no-unsafe-optional-chaining
-        total={data?.totalPages * 10}
+        total={data?.totalItems}
         // showTotal={(total) => `共 ${total} 条`}
         current={data?.page}
         style={{ marginTop: '1rem' }}

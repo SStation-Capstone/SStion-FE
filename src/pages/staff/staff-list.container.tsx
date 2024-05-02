@@ -25,7 +25,6 @@ export default function StaffManagerList() {
   const { data, isLoading } = useListStaffUser(idStaff);
   const { mutateAsync: deleteMutate } = useDeleteStaff(id);
   if (isLoading) return <CircleLoading />;
-  console.log('data', data);
   const onOpenFormHandler = (record?: Staff) => {
     if (record) {
       setClickOne(record);
