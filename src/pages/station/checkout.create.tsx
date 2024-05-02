@@ -280,7 +280,7 @@ export function ManageCheckOutCreate() {
                     {data.checkinDays}
                   </Descriptions.Item>
                   <Descriptions.Item label="Service fee" span={3}>
-                    {data.serviceFee}
+                    {numberWithCommas(data.serviceFee)} đ
                   </Descriptions.Item>
                 </Descriptions>
               </Card>
