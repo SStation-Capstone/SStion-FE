@@ -231,7 +231,9 @@ export function ManageCheckOutCreate() {
                         {data.status}
                       </Tag>
                     )}
-                    <p className="pl-4 text-xl">totalPrice: {data.totalPrice} đ</p>
+                    <p className="pl-4 text-xl">
+                      Total Price: {numberWithCommas(data.totalPrice)} đ
+                    </p>
                   </div>
                 </Col>
               </Row>
@@ -278,7 +280,7 @@ export function ManageCheckOutCreate() {
                     {data.checkinDays}
                   </Descriptions.Item>
                   <Descriptions.Item label="Service fee" span={3}>
-                    {data.serviceFee}
+                    {numberWithCommas(data.serviceFee)} đ
                   </Descriptions.Item>
                 </Descriptions>
               </Card>
