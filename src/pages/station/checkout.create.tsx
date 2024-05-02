@@ -129,7 +129,7 @@ export function ManageCheckOutCreate() {
               >
                 <Button key="submit" type="primary" loading={loading}>
                   <Iconify icon="streamline:payment-cash-out-3-solid" size={18} />
-                  cash payment
+                  Pay by cash
                 </Button>
               </Popconfirm>
               <ConfigProvider
@@ -155,7 +155,7 @@ export function ManageCheckOutCreate() {
                   onClick={() => onOpenFormHandler(id)}
                 >
                   <Iconify icon="material-symbols:payments-outline" size={18} />
-                  transfer payments
+                  QR payment
                 </Button>
               </ConfigProvider>
             </>

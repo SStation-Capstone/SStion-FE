@@ -27,6 +27,7 @@ export type PackagesFormProps = {
 };
 export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
   const { mutateAsync: deleteMutate } = useDeletePackage();
+  console.log('clickone', clickOne);
   const [listRelateParams, setListRelateParams] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
   const [showFormCheckIn, setShowFormCheckIn] = useState(false);

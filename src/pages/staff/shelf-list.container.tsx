@@ -208,7 +208,10 @@ export default function ManageShelfManagerList({ id }: StationEditFormProps) {
                                 }
                               >
                                 <div
-                                  onClick={() => onOpenFormHandler(slot)}
+                                  onClick={() => {
+                                    console.log('slot', slot);
+                                    onOpenFormHandler(slot);
+                                  }}
                                   style={{ cursor: 'pointer' }}
                                 >
                                   <Progress
