@@ -202,7 +202,7 @@ export default function MenuLevel() {
   return (
     <div className="layout-content">
       <Row className="rowgap-vbox" gutter={[24, 0]}>
-        {count1?.map((c, index) => (
+        {/* {count1?.map((c, index) => (
           <Col key={index} xs={24} sm={24} md={12} lg={6} xl={6} className="mb-6">
             <Card bordered={false} className="criclebox ">
               <div className="number">
@@ -220,7 +220,7 @@ export default function MenuLevel() {
               </div>
             </Card>
           </Col>
-        ))}
+        ))} */}
       </Row>
       <Row gutter={[24, 0]}>
         <Col xs={24} sm={24} md={12} lg={12} xl={10} className="mb-6">
