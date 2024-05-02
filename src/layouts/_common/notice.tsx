@@ -25,9 +25,10 @@ export default function NoticeButton() {
   const { data } = useListNoti({ Level: selectedLevel });
   const { data: dataFetch } = useListNoti({ Level: '' });
   const { mutateAsync: readAllMutate } = useReadAllNoti();
+
   useEffect(() => {
     const connect = new HubConnectionBuilder()
-      .withUrl('https://shipperstation.runasp.net/notification-hub', {
+      .withUrl(`${import.meta.env.VITE_APP_SIGNALR_API}/notification-hub`, {
         accessTokenFactory: () => getItem(StorageEnum.Token)?.accessToken,
       })
       .withAutomaticReconnect()

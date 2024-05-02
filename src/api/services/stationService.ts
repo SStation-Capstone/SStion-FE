@@ -640,7 +640,7 @@ export const useGetPackageDetail = (data?: any) => {
   );
 };
 export const useGetPackageBySlot = (data?: any) => {
-  return useQuery(['package'], () =>
+  return useQuery(['package', data], () =>
     apiClient.get({
       url: `${StationApi.Packages}?SlotId=${data.id}`,
       params: data.payload,
@@ -656,6 +656,7 @@ export const useCreateCheckOutConfirm = () => {
     {
       onSuccess: () => {
         message.success('Confirm checkout sucessfully');
+        queryClient.invalidateQueries(['checkOut']);
       },
     },
   );
@@ -691,6 +692,7 @@ export const useCreateCheckOutCancel = () => {
     {
       onSuccess: () => {
         message.success('Check out sucessfully !!!');
+        queryClient.invalidateQueries(['checkOut']);
       },
     },
   );

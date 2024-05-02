@@ -5,6 +5,7 @@ import { useDeleteZone, useGetStationByStaff, useListZone } from '@/api/services
 import { IconButton, Iconify } from '@/components/icon';
 import { CircleLoading } from '@/components/loading';
 import { getItem } from '@/utils/storage';
+import { numberWithCommas } from '@/utils/string';
 
 import { ManageCheckInCreate } from './checkin.create';
 // eslint-disable-next-line import/named
@@ -61,6 +62,8 @@ export default function ManageZoneManagerList() {
   const closeFormCheckIn = async () => {
     setShowFormCheckIn(false);
   };
+
+  console.log('stafData', stationData);
   // const resetHandler = () => {
   //   form.resetFields();
   //   // 清空时间组件，无参请求API
@@ -77,7 +80,7 @@ export default function ManageZoneManagerList() {
 
   return (
     <Card
-      title={`Package Management - balance : ${stationData?.contends?.balance || 0}`}
+      title={`Package Management - balance : ${numberWithCommas(stationData?.balance) || 0} đ`}
       extra={
         <>
           <Button type="primary" onClick={() => onOpenFormHandler()}>
