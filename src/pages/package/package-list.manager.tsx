@@ -1,4 +1,11 @@
 import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  DisconnectOutlined,
+  ExclamationCircleOutlined,
+  MinusCircleOutlined,
+} from '@ant-design/icons';
+import {
   Card,
   Avatar,
   Pagination,
@@ -10,6 +17,10 @@ import {
   Row,
   Col,
   DatePicker,
+  Tag,
+  Select,
+  Input,
+  message,
 } from 'antd';
 import Table from 'antd/es/table';
 import moment from 'moment';
@@ -62,6 +73,7 @@ export default function PackageStationManagerList() {
     setClickTwo(record);
     setShowInfo(true);
   };
+  console.log('clickTwo', clickTwo);
   const closeExpire = async () => {
     setShowExpire(false);
   };
@@ -131,6 +143,44 @@ export default function PackageStationManagerList() {
       ),
     },
     {
+      title: 'Status',
+      dataIndex: 'status',
+      render: (_: any, record: any) => (
+        <>
+          {record.status === 'Paid' && (
+            <Tag icon={<MinusCircleOutlined />} color="default">
+              {record.status}
+            </Tag>
+          )}
+          {record.status === 'Returned' && (
+            <Tag icon={<CloseCircleOutlined />} color="error">
+              {record.status}
+            </Tag>
+          )}
+          {record.status === 'Canceled' && (
+            <Tag icon={<ExclamationCircleOutlined />} color="warning">
+              {record.status}
+            </Tag>
+          )}
+          {record.status === 'Completed' && (
+            <Tag icon={<CheckCircleOutlined />} color="success">
+              {record.status}
+            </Tag>
+          )}
+          {record.status === 'Initialized' && (
+            <Tag icon={<ExclamationCircleOutlined />} color="cyan">
+              {record.status}
+            </Tag>
+          )}
+          {record.status === 'Expired' && (
+            <Tag icon={<DisconnectOutlined />} color="volcano">
+              {record.status}
+            </Tag>
+          )}
+        </>
+      ),
+    },
+    {
       title: 'Sender',
       dataIndex: 'sender',
       render: (_: any, record: any) => (
@@ -185,7 +235,11 @@ export default function PackageStationManagerList() {
               style={{ padding: '0 10px', height: '35px', backgroundColor: '#13c2c2' }}
               onClick={(e) => {
                 e.stopPropagation();
-                createExpire(record.id.toString());
+                if (record.status === 'Expired') {
+                  message.error('Package have been expired!');
+                } else {
+                  createExpire(record.id.toString());
+                }
               }}
             >
               <Iconify icon="pajamas:expire" size={18} />
@@ -225,6 +279,23 @@ export default function PackageStationManagerList() {
                   <RangePicker allowClear />
                 </Form.Item>
               </Col>
+              <Col span={5}>
+                <Form.Item label="Status" name="status">
+                  <Select allowClear placeholder="Select status">
+                    <Select.Option value="Initialized">Receive</Select.Option>
+                    <Select.Option value="Paid">Paid</Select.Option>
+                    <Select.Option value="Completed">Receive</Select.Option>
+                    <Select.Option value="Returned">Returned</Select.Option>
+                    <Select.Option value="Canceled">Canceled</Select.Option>
+                    <Select.Option value="Expired">Expired</Select.Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={6}>
+                <Form.Item label="Check in day(s) above" name="CheckinFromDays">
+                  <Input />
+                </Form.Item>
+              </Col>
             </Row>
           </Col>
           <Col span={4}>
@@ -256,6 +327,7 @@ export default function PackageStationManagerList() {
         onRow={(record, rowIndex) => {
           return {
             onClick: (event) => {
+              console.log('record table', record);
               onOpenFormHandler(record);
             },
           };
