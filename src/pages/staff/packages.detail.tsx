@@ -176,7 +176,7 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
                     {clickOne.volume}
                   </Descriptions.Item>
                   <Descriptions.Item label="Weight" span={3}>
-                    {clickOne.weight} kg
+                    {clickOne.weight} g
                   </Descriptions.Item>
                   <Descriptions.Item label="Status" span={3}>
                     {clickOne.status}

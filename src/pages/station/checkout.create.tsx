@@ -262,7 +262,7 @@ export function ManageCheckOutCreate() {
                     {data.volume}
                   </Descriptions.Item>
                   <Descriptions.Item label="Weight" span={3}>
-                    {data.weight} kg
+                    {data.weight} g
                   </Descriptions.Item>
                   <Descriptions.Item label="Status" span={3}>
                     {data.status}
