@@ -1,4 +1,11 @@
 import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  DisconnectOutlined,
+  ExclamationCircleOutlined,
+  MinusCircleOutlined,
+} from '@ant-design/icons';
+import {
   Button,
   message,
   Avatar,
@@ -9,6 +16,7 @@ import {
   Pagination,
   Typography,
   Popconfirm,
+  Tag,
 } from 'antd';
 import moment from 'moment';
 import { useState } from 'react';
@@ -29,6 +37,7 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
   const { mutateAsync: deleteMutate } = useDeletePackage();
   console.log('clickone', clickOne);
   const [listRelateParams, setListRelateParams] = useState<any>();
+  // eslint-disable-next-line unused-imports/no-unused-vars-ts
   const [loading, setLoading] = useState<boolean>(false);
   const [showFormCheckIn, setShowFormCheckIn] = useState(false);
   const { data, isLoading } = useGetPackageBySlot({ id: clickOne.id, payload: listRelateParams });
@@ -69,6 +78,44 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
     {
       title: 'Description',
       dataIndex: 'description',
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      render: (_: any, record: any) => (
+        <>
+          {record.status === 'Paid' && (
+            <Tag icon={<MinusCircleOutlined />} color="default">
+              {record.status}
+            </Tag>
+          )}
+          {record.status === 'Returned' && (
+            <Tag icon={<CloseCircleOutlined />} color="error">
+              {record.status}
+            </Tag>
+          )}
+          {record.status === 'Canceled' && (
+            <Tag icon={<ExclamationCircleOutlined />} color="warning">
+              {record.status}
+            </Tag>
+          )}
+          {record.status === 'Completed' && (
+            <Tag icon={<CheckCircleOutlined />} color="success">
+              {record.status}
+            </Tag>
+          )}
+          {record.status === 'Initialized' && (
+            <Tag icon={<ExclamationCircleOutlined />} color="cyan">
+              {record.status}
+            </Tag>
+          )}
+          {record.status === 'Expired' && (
+            <Tag icon={<DisconnectOutlined />} color="volcano">
+              {record.status}
+            </Tag>
+          )}
+        </>
+      ),
     },
     { title: 'Location', dataIndex: 'location' },
     {
@@ -174,7 +221,9 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
         scroll={{ x: 'max-content' }}
         pagination={false}
         columns={columns as any}
-        dataSource={data?.contends.filter((c: any) => c.status !== 'Completed')}
+        dataSource={data?.contends.filter(
+          (c: any) => c.status !== 'Completed' && c.status !== 'Returned',
+        )}
         loading={isLoading}
       />
       <Pagination

@@ -1,6 +1,14 @@
-import { SearchOutlined } from '@ant-design/icons';
-import { Card, Pagination, Typography, Avatar, Image, List, Input, Space, Button } from 'antd';
+import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  DisconnectOutlined,
+  ExclamationCircleOutlined,
+  MinusCircleOutlined,
+  SearchOutlined,
+} from '@ant-design/icons';
+import { Card, Pagination, Typography, Avatar, Image, List, Input, Space, Button, Tag } from 'antd';
 import Table from 'antd/es/table';
+import moment from 'moment';
 import { useState, useRef } from 'react';
 import Highlighter from 'react-highlight-words';
 
@@ -165,6 +173,51 @@ export default function PackagesManagerList() {
     },
     { title: 'Location', dataIndex: 'location' },
     {
+      title: 'Modified At',
+      dataIndex: 'modifiedAt',
+      render: (_: any, record: any) => (
+        <div>{moment(record.modifiedAt).format('DD/MM/YYYY HH:mm:ss')}</div>
+      ),
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      render: (_: any, record: any) => (
+        <>
+          {record.status === 'Paid' && (
+            <Tag icon={<MinusCircleOutlined />} color="default">
+              {record.status}
+            </Tag>
+          )}
+          {record.status === 'Returned' && (
+            <Tag icon={<CloseCircleOutlined />} color="error">
+              {record.status}
+            </Tag>
+          )}
+          {record.status === 'Canceled' && (
+            <Tag icon={<ExclamationCircleOutlined />} color="warning">
+              {record.status}
+            </Tag>
+          )}
+          {record.status === 'Completed' && (
+            <Tag icon={<CheckCircleOutlined />} color="success">
+              {record.status}
+            </Tag>
+          )}
+          {record.status === 'Initialized' && (
+            <Tag icon={<ExclamationCircleOutlined />} color="cyan">
+              {record.status}
+            </Tag>
+          )}
+          {record.status === 'Expired' && (
+            <Tag icon={<DisconnectOutlined />} color="volcano">
+              {record.status}
+            </Tag>
+          )}
+        </>
+      ),
+    },
+    {
       title: 'Sender',
       dataIndex: 'sender',
       render: (_: any, record: any) => (
@@ -220,6 +273,7 @@ export default function PackagesManagerList() {
       <Pagination
         showSizeChanger
         onChange={onPageChange}
+        // eslint-disable-next-line no-unsafe-optional-chaining
         total={data?.totalPages * 10}
         // showTotal={(total) => `共 ${total} 条`}
         current={data?.page}

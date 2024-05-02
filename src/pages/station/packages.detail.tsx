@@ -1,6 +1,7 @@
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
+  DisconnectOutlined,
   ExclamationCircleOutlined,
   MinusCircleOutlined,
 } from '@ant-design/icons';
@@ -19,8 +20,6 @@ import {
 } from 'antd';
 import { useState } from 'react';
 
-import { useGetPackageDetail } from '@/api/services/stationService';
-import { CircleLoading } from '@/components/loading';
 import { numberWithCommas } from '@/utils/string';
 
 import { ManageExpireCreate } from './expire.create';
@@ -33,9 +32,10 @@ export type PackagesFormProps = {
   onClose: () => void;
 };
 export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesFormProps) {
-  const { data, isLoading } = useGetPackageDetail(clickOne.id);
+  // const { clickone, isLoading } = useGetPackageDetail(clickOne.id);
+  // console.log('clickone pacakge detail', clickone);
   const [showExpire, setShowExpire] = useState(false);
-  if (isLoading) return <CircleLoading />;
+  // if (isLoading) return <CircleLoading />;
   const closeExpire = async () => {
     setShowExpire(false);
     onClose();
@@ -75,7 +75,7 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
         // ),
       ]}
     >
-      {data && (
+      {clickOne && (
         <>
           <Card
             bodyStyle={{ display: 'none' }}
@@ -83,12 +83,12 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
               <Row justify="space-between" align="middle" gutter={[24, 0]} className="p-4">
                 <Col span={24} md={8} className="col-info">
                   <Avatar.Group>
-                    <Avatar size={74} shape="square" src={data.packageImages[0]?.imageUrl} />
+                    <Avatar size={74} shape="square" src={clickOne.packageImages[0]?.imageUrl} />
                     <div className="flex items-center pl-4">
                       <div>
-                        <h4 className="m-0 font-semibold">{data.name}</h4>
-                        <p>{data.location}</p>
-                        <p>{data.description}</p>
+                        <h4 className="m-0 font-semibold">{clickOne.name}</h4>
+                        <p>{clickOne.location}</p>
+                        <p>{clickOne.description}</p>
                       </div>
                     </div>
                   </Avatar.Group>
@@ -96,53 +96,58 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
                 {/* <Col span={24} md={8} className="col-info">
                   <div>
                     <div className="flex items-center">
-                      <p className="pl-4">width: {data.width}</p>
-                      <p className="pl-4">height: {data.height}</p>
-                      <p className="pl-4">length: {data.length}</p>
-                      <p className="pl-4">checkinDays: {data.checkinDays}</p>
+                      <p className="pl-4">width: {clickOne.width}</p>
+                      <p className="pl-4">height: {clickOne.height}</p>
+                      <p className="pl-4">length: {clickOne.length}</p>
+                      <p className="pl-4">checkinDays: {clickOne.checkinDays}</p>
                     </div>
                     <div className="flex items-center">
-                      <p className="pl-4">volume: {data.volume}</p>
-                      <p className="pl-4">weight: {data.weight}</p>
-                      <p className="pl-4">status: {data.status}</p>
-                      <p className="pl-4">serviceFee: {data.serviceFee}</p>
+                      <p className="pl-4">volume: {clickOne.volume}</p>
+                      <p className="pl-4">weight: {clickOne.weight}</p>
+                      <p className="pl-4">status: {clickOne.status}</p>
+                      <p className="pl-4">serviceFee: {clickOne.serviceFee}</p>
                     </div>
                     <div className="flex items-center">
-                      <p className="pl-4">priceCod: {data.priceCod} đ</p>
-                      <p className="pl-4">isCod: {data.isCod ? 'true' : 'false'}</p>
-                      <p className="pl-4">totalHours: {data.totalHours}</p>
+                      <p className="pl-4">priceCod: {clickOne.priceCod} đ</p>
+                      <p className="pl-4">isCod: {clickOne.isCod ? 'true' : 'false'}</p>
+                      <p className="pl-4">totalHours: {clickOne.totalHours}</p>
                     </div>
                   </div>
                 </Col> */}
                 <Col span={24} md={8} className="col-info">
                   <div className="flex items-center justify-end">
-                    {data.status === 'Paid' && (
+                    {clickOne.status === 'Paid' && (
                       <Tag icon={<MinusCircleOutlined />} color="default">
-                        {data.status}
+                        {clickOne.status}
                       </Tag>
                     )}
-                    {data.status === 'Returned' && (
+                    {clickOne.status === 'Returned' && (
                       <Tag icon={<CloseCircleOutlined />} color="error">
-                        {data.status}
+                        {clickOne.status}
                       </Tag>
                     )}
-                    {data.status === 'Canceled' && (
+                    {clickOne.status === 'Canceled' && (
                       <Tag icon={<ExclamationCircleOutlined />} color="warning">
-                        {data.status}
+                        {clickOne.status}
                       </Tag>
                     )}
-                    {data.status === 'Initialized' && (
+                    {clickOne.status === 'Initialized' && (
                       <Tag icon={<ExclamationCircleOutlined />} color="cyan">
-                        {data.status}
+                        {clickOne.status}
                       </Tag>
                     )}
-                    {data.status === 'Completed' && (
+                    {clickOne.status === 'Completed' && (
                       <Tag icon={<CheckCircleOutlined />} color="success">
-                        {data.status}
+                        {clickOne.status}
+                      </Tag>
+                    )}
+                    {clickOne.status === 'Expired' && (
+                      <Tag icon={<DisconnectOutlined />} color="volcano">
+                        {clickOne.status}
                       </Tag>
                     )}
                     <p className="pl-4 text-xl">
-                      Total Price: {numberWithCommas(data.totalPrice)} đ
+                      Total Price: {numberWithCommas(clickOne.totalPrice)} đ
                     </p>
                   </div>
                 </Col>
@@ -159,37 +164,37 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
               >
                 <Descriptions bordered>
                   <Descriptions.Item label="Width" span={3}>
-                    {data.width} cm
+                    {clickOne.width} cm
                   </Descriptions.Item>
                   <Descriptions.Item label="Height" span={3}>
-                    {data.height} cm
+                    {clickOne.height} cm
                   </Descriptions.Item>
                   <Descriptions.Item label="Length" span={3}>
-                    {data.length} cm
+                    {clickOne.length} cm
                   </Descriptions.Item>
                   <Descriptions.Item label="Volume" span={3}>
-                    {data.volume}
+                    {clickOne.volume}
                   </Descriptions.Item>
                   <Descriptions.Item label="Weight" span={3}>
-                    {data.weight} kg
+                    {clickOne.weight} kg
                   </Descriptions.Item>
                   <Descriptions.Item label="Status" span={3}>
-                    {data.status}
+                    {clickOne.status}
                   </Descriptions.Item>
                   <Descriptions.Item label="Price cod" span={3}>
-                    {numberWithCommas(data.priceCod)} đ
+                    {numberWithCommas(clickOne.priceCod)} đ
                   </Descriptions.Item>
                   <Descriptions.Item label="Is cod" span={3}>
-                    {data.isCod ? 'true' : 'false'}
+                    {clickOne.isCod ? 'true' : 'false'}
                   </Descriptions.Item>
                   <Descriptions.Item label="Total Hours" span={3}>
-                    {data.totalHours}
+                    {clickOne.totalHours}
                   </Descriptions.Item>
                   <Descriptions.Item label="Checkin Days" span={3}>
-                    {data.checkinDays}
+                    {clickOne.checkinDays}
                   </Descriptions.Item>
                   <Descriptions.Item label="Service fee" span={3}>
-                    {numberWithCommas(data.serviceFee)} đ
+                    {numberWithCommas(clickOne.serviceFee)} đ
                   </Descriptions.Item>
                 </Descriptions>
               </Card>
@@ -203,7 +208,7 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
               >
                 <List
                   itemLayout="horizontal"
-                  dataSource={[data.sender, data.receiver]}
+                  dataSource={[clickOne.sender, clickOne.receiver]}
                   split={false}
                   className="conversations-list"
                   renderItem={(item) => (
@@ -223,20 +228,20 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
                 className="mb-2"
                 bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
               >
-                <p className="text-dark">{data.station.description}</p>
+                <p className="text-dark">{clickOne.station.description}</p>
                 <hr className="my-25" />
                 <Descriptions title="Information">
                   <Descriptions.Item label="Name" span={3}>
-                    {data.station.name}
+                    {clickOne.station.name}
                   </Descriptions.Item>
                   <Descriptions.Item label="Address" span={3}>
-                    {data.station.address}
+                    {clickOne.station.address}
                   </Descriptions.Item>
                   <Descriptions.Item label="Contact Phone" span={3}>
-                    {data.station.contactPhone}
+                    {clickOne.station.contactPhone}
                   </Descriptions.Item>
                   <Descriptions.Item label="Total Price" span={3}>
-                    {data.totalPrice} đ
+                    {clickOne.totalPrice} đ
                   </Descriptions.Item>
                 </Descriptions>
               </Card>
@@ -245,14 +250,14 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
                 title={<h6 className="m-0 font-semibold">Zone</h6>}
                 bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
               >
-                <p className="text-dark">{data.zone.description}</p>
+                <p className="text-dark">{clickOne.zone.description}</p>
                 <hr className="my-25" />
                 <Descriptions title="Information">
                   <Descriptions.Item label="Name" span={3}>
-                    {data.zone.name}
+                    {clickOne.zone.name}
                   </Descriptions.Item>
                   <Descriptions.Item label="Slot" span={3}>
-                    {data.slot.name}
+                    {clickOne.slot.name}
                   </Descriptions.Item>
                 </Descriptions>
               </Card>
@@ -265,8 +270,8 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
             scroll={{ x: 'max-content' }}
             pagination={false}
             columns={columns}
-            dataSource={data?.packageStatusHistories}
-            loading={isLoading}
+            dataSource={clickOne?.packageStatusHistories}
+            // loading={isLoading}
           />
         </>
       )}
