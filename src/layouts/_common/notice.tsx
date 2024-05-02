@@ -81,6 +81,7 @@ export default function NoticeButton() {
   };
 
   const tabChildren: ReactNode = data?.contends.map((e) => {
+    console.log('createBy', e.createdBy);
     return (
       <div className="mb-3 cursor-pointer text-sm" key={e.id}>
         <div className="flex">
@@ -93,7 +94,9 @@ export default function NoticeButton() {
           {e.level === 'Critical' && <Tag color="red">Critical</Tag>}
           <div className="ml-2">
             <div>
-              <span className="font-medium">{e.createdBy} </span>
+              <span className="font-medium">
+                {`${e.createdBy === 'Anonymous' ? 'Server' : e.createdBy}`}{' '}
+              </span>
               <span className="text-xs font-light">{e.content}</span>
             </div>
             <span className="text-xs font-light opacity-60">
