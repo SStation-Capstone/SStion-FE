@@ -217,6 +217,14 @@ export const useListShelf = (values: String) => {
   );
 };
 
+export const useListShelfStaff = (values: String) => {
+  return useQuery(['listShelfStaff', values], () =>
+    apiClient.get<StationGetRes>({
+      url: StationApi.GetShelfs,
+      params: { zoneId: values },
+    }),
+  );
+};
 export const useCreateZone = (values?: any) => {
   return useMutation(
     async (payload: ZonePayload) =>
@@ -825,6 +833,24 @@ export const useCreateExpire = () => {
       onSuccess: () => {
         message.success('Expiried package sucessfully!');
         queryClient.invalidateQueries(['listPackageStation']);
+      },
+    },
+  );
+};
+
+export const useCreateExpireStaff = () => {
+  return useMutation(
+    async (payload: any) =>
+      apiClient.post<StationCreateResponse>({
+        url: `${StationApi.Packages}/expire`,
+        data: {
+          ids: [payload],
+        },
+      }),
+    {
+      onSuccess: () => {
+        message.success('Expiried package sucessfully!');
+        queryClient.invalidateQueries(['listShelfStaff']);
       },
     },
   );

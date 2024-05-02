@@ -1,8 +1,7 @@
-import { Button, Card, Col, Popconfirm, Row } from 'antd';
+import { Button, Card, Col, Row } from 'antd';
 import { useState } from 'react';
 
 import { useDeleteZone, useGetStationByStaff, useListZone } from '@/api/services/stationService';
-import { IconButton, Iconify } from '@/components/icon';
 import { CircleLoading } from '@/components/loading';
 import { getItem } from '@/utils/storage';
 import { numberWithCommas } from '@/utils/string';
@@ -83,9 +82,9 @@ export default function ManageZoneManagerList() {
       title={`Package Management - balance : ${numberWithCommas(stationData?.balance) || 0} đ`}
       extra={
         <>
-          <Button type="primary" onClick={() => onOpenFormHandler()}>
+          {/* <Button type="primary" onClick={() => onOpenFormHandler()}>
             New
-          </Button>
+          </Button> */}
           {/* <Button className="ml-2" type="primary" onClick={() => onOpenCheckInFormHandler(true)}>
             Check in
           </Button> */}
@@ -131,7 +130,7 @@ export default function ManageZoneManagerList() {
               <Card
                 bordered={false}
                 className="header-solid h-full"
-                title={<h6 className="m-0 font-semibold">Zone {index + 1}</h6>}
+                title={<h6 className="m-0 font-semibold">{item.name}</h6>}
                 extra={
                   <div className="text-gray flex w-full items-center justify-center gap-2">
                     <Button
@@ -141,12 +140,12 @@ export default function ManageZoneManagerList() {
                     >
                       Check in
                     </Button>
-                    <Button onClick={() => onOpenFormShelf(item)}>+ Shelf</Button>
-                    <IconButton onClick={() => onOpenFormHandler(item)}>
+                    {/* <Button onClick={() => onOpenFormShelf(item)}>+ Shelf</Button> */}
+                    {/* <IconButton onClick={() => onOpenFormHandler(item)}>
                       <Iconify icon="solar:pen-bold-duotone" size={18} />
                     </IconButton>
                     <Popconfirm
-                      title="Delete the station"
+                      title="Delete the zone"
                       okText="Yes"
                       cancelText="No"
                       placement="left"
@@ -157,7 +156,7 @@ export default function ManageZoneManagerList() {
                       <IconButton>
                         <Iconify icon="mingcute:delete-2-fill" size={18} className="text-error" />
                       </IconButton>
-                    </Popconfirm>
+                    </Popconfirm> */}
                   </div>
                 }
               >

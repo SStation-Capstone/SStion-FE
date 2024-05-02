@@ -81,7 +81,6 @@ export default function NoticeButton() {
   };
 
   const tabChildren: ReactNode = data?.contends.map((e) => {
-    console.log('createBy', e.createdBy);
     return (
       <div className="mb-3 cursor-pointer text-sm" key={e.id}>
         <div className="flex">

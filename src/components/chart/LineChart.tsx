@@ -16,7 +16,6 @@ export default function LineChart({ stationId }: DashboardLineChartProps) {
   const [year, setYear] = useState<string | undefined>('2024');
   const { data, isLoading } = useGetStatisticalRevenue({ year, stationId });
   const transformData = data?.map((e) => e.revenue);
-  console.log('vzxcv', transformData);
   const handleYearSelection = (values: string) => {
     setYear(values);
   };
