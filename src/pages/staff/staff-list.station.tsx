@@ -58,11 +58,11 @@ export default function ManageZoneManagerList() {
   return (
     <Card
       title="Package Management"
-      extra={
-        <Button type="primary" onClick={() => onOpenFormHandler()}>
-          New
-        </Button>
-      }
+      // extra={
+      //   <Button type="primary" onClick={() => onOpenFormHandler()}>
+      //     New
+      //   </Button>
+      // }
     >
       {data && (
         <Row gutter={[24, 0]}>
