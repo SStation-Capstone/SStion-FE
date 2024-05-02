@@ -58,6 +58,7 @@ export function ManageExpireCreate({ zoneId, packageId, slotId, onClose }: Expir
       if (response.status === 200) {
         message.success('Change location sucessfully!');
         await queryClient.invalidateQueries(['listShelf']);
+        await queryClient.invalidateQueries(['listZoneStaff']);
         setLoading(false);
         return onClose();
       }
