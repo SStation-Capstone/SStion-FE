@@ -1,4 +1,4 @@
-const lineChart = {
+const adminLineChart = {
   series: [
     {
       name: 'Mobile apps',
@@ -67,15 +67,11 @@ const lineChart = {
     tooltip: {
       y: {
         formatter(val: any) {
-          if (typeof val === 'number') {
-            // Convert the number to a string with thousand delimiter
-            return `${val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} đ`;
-          }
-          return `${val} đ`;
+          return val;
         },
       },
     },
   },
 };
 
-export default lineChart;
+export default adminLineChart;

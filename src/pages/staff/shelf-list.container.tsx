@@ -5,8 +5,8 @@ import {
   useDeleteShelf,
   useDeleteRack,
   useDeleteSlot,
-  useListShelf,
   useCreateRack,
+  useListShelfStaff,
 } from '@/api/services/stationService';
 import { IconButton, Iconify } from '@/components/icon';
 import { CircleLoading } from '@/components/loading';
@@ -24,7 +24,7 @@ export default function ManageShelfManagerList({ id }: StationEditFormProps) {
   const { mutateAsync: createMutate } = useCreateRack();
   const { mutateAsync: deleteRack } = useDeleteRack();
   const { mutateAsync: deleteSlot } = useDeleteSlot();
-  const { data, isLoading } = useListShelf(id);
+  const { data, isLoading } = useListShelfStaff(id);
   const [clickOne, setClickOne] = useState();
   const [clickTwo, setClickTwo] = useState();
   const [clickThree, setClickThree] = useState();
@@ -208,7 +208,9 @@ export default function ManageShelfManagerList({ id }: StationEditFormProps) {
                                 }
                               >
                                 <div
-                                  onClick={() => onOpenFormHandler(slot)}
+                                  onClick={() => {
+                                    onOpenFormHandler(slot);
+                                  }}
                                   style={{ cursor: 'pointer' }}
                                 >
                                   <Progress
@@ -238,7 +240,7 @@ export default function ManageShelfManagerList({ id }: StationEditFormProps) {
                     >
                       <div className="flex cursor-pointer flex-wrap justify-center gap-2 p-3">
                         <h5 className="text-blue-gray-900 block font-sans text-base font-semibold leading-snug tracking-normal antialiased">
-                          + create rack
+                          + Create rack
                         </h5>
                       </div>
                     </div>

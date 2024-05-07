@@ -99,12 +99,35 @@ export interface CheckInForcePayload {
   receiverId: string;
   packageImages: any[];
 }
+
+interface StaticalQuery {
+  stationId?: string;
+  year?: string;
+}
 export interface StationCreateResponse {
   message: string;
 }
 // & { user: UserInfo };
 type StationGetRes = PaginationRes & { contends: StationPayload[] };
 type PackageGetRes = PaginationRes & { contends: PackagePayload[] };
+
+export interface DashboardRes {
+  dashBoardType: string;
+  value: number;
+  percent: number;
+}
+
+export interface StaticalRevenueRes {
+  revenue: number;
+  year: number;
+  month: number;
+}
+
+export interface StaticalPackageRes {
+  packageCount: number;
+  year: number;
+  month: number;
+}
 export enum StationApi {
   CreateStation = '/admin/stations',
   GetListStation = '/managers/stations',
@@ -116,6 +139,9 @@ export enum StationApi {
   Slots = '/slots',
   Payments = '/payments',
   GetListStationByStaff = 'staffs/stations',
+  GetDashboardData = '/dashboards',
+  GetStatisticalPackage = '/dashboards/statistical-package',
+  GetStatisticalRevenue = '/dashboards/statistical-revenue',
 }
 
 const createStation = (data: StationPayload) =>
@@ -167,7 +193,7 @@ export const useGetStationByStaff = () => {
   );
 };
 export const useListZoneStaff = (values?: any) => {
-  return useQuery(['listZone', values], () =>
+  return useQuery(['listZoneStaff', values], () =>
     apiClient.get<StationGetRes>({
       url: `${StationApi.Staffs}${StationApi.GetStation}`,
       // params: values,
@@ -175,7 +201,7 @@ export const useListZoneStaff = (values?: any) => {
   );
 };
 export const useListZone = (values?: any) => {
-  return useQuery(['listZone', values], () =>
+  return useQuery(['listZoneStationManager', values], () =>
     apiClient.get<StationGetRes>({
       url: `${StationApi.GetStation}/${values}/zones`,
       // params: values,
@@ -191,6 +217,14 @@ export const useListShelf = (values: String) => {
   );
 };
 
+export const useListShelfStaff = (values: String) => {
+  return useQuery(['listShelfStaff', values], () =>
+    apiClient.get<StationGetRes>({
+      url: StationApi.GetShelfs,
+      params: { zoneId: values },
+    }),
+  );
+};
 export const useCreateZone = (values?: any) => {
   return useMutation(
     async (payload: ZonePayload) =>
@@ -401,7 +435,7 @@ export const useListStaffUser = (values?: any) => {
 export const useListStaff = (values?: any) => {
   return useQuery(['listStaff', values], () =>
     apiClient.get<StationGetRes>({
-      url: `${StationApi.GetStation}/${values}/stations`,
+      url: `${StationApi.GetStation}/${values}/staffs`,
       // params: values,
     }),
   );
@@ -614,7 +648,7 @@ export const useGetPackageDetail = (data?: any) => {
   );
 };
 export const useGetPackageBySlot = (data?: any) => {
-  return useQuery(['package'], () =>
+  return useQuery(['package', data], () =>
     apiClient.get({
       url: `${StationApi.Packages}?SlotId=${data.id}`,
       params: data.payload,
@@ -630,6 +664,7 @@ export const useCreateCheckOutConfirm = () => {
     {
       onSuccess: () => {
         message.success('Confirm checkout sucessfully');
+        queryClient.invalidateQueries(['checkOut']);
       },
     },
   );
@@ -646,7 +681,7 @@ export const useCreateCheckOutPayment = () => {
     async (payload: any) =>
       apiClient.post<StationCreateResponse>({
         url: `${StationApi.Packages}/${payload.id}/payment`,
-        data: { totalPrice: payload.totalPrice },
+        data: { totalPrice: payload.totalPrice, isCash: true },
       }),
     {
       onSuccess: () => {
@@ -665,6 +700,7 @@ export const useCreateCheckOutCancel = () => {
     {
       onSuccess: () => {
         message.success('Check out sucessfully !!!');
+        queryClient.invalidateQueries(['checkOut']);
       },
     },
   );
@@ -724,7 +760,7 @@ export const useDeleteRack = () => {
     {
       onSuccess: () => {
         // globalSuccess();
-        message.success('Delete rack sucessfully');
+        message.success('Delete rack sucessfully!');
         queryClient.invalidateQueries(['listShelf']);
       },
     },
@@ -740,7 +776,7 @@ export const useCreateSlot = () => {
     {
       onSuccess: () => {
         // globalSuccess();
-        message.success('Create slot sucessfully');
+        message.success('Create slot sucessfully!');
         queryClient.invalidateQueries(['listShelf']);
       },
     },
@@ -763,7 +799,7 @@ export const useUpdateSlot = () => {
     {
       onSuccess: () => {
         // globalSuccess();
-        message.success('update slot sucessfully');
+        message.success('Update slot sucessfully!');
         queryClient.invalidateQueries(['listShelf']);
       },
     },
@@ -778,7 +814,7 @@ export const useDeleteSlot = () => {
     {
       onSuccess: () => {
         // globalSuccess();
-        message.success('Delete slot sucessfully');
+        message.success('Delete slot sucessfully!');
         queryClient.invalidateQueries(['listShelf']);
       },
     },
@@ -795,7 +831,26 @@ export const useCreateExpire = () => {
       }),
     {
       onSuccess: () => {
-        message.success('Create Expire sucessfully');
+        message.success('Expiried package sucessfully!');
+        queryClient.invalidateQueries(['listPackageStation']);
+      },
+    },
+  );
+};
+
+export const useCreateExpireStaff = () => {
+  return useMutation(
+    async (payload: any) =>
+      apiClient.post<StationCreateResponse>({
+        url: `${StationApi.Packages}/expire`,
+        data: {
+          ids: [payload],
+        },
+      }),
+    {
+      onSuccess: () => {
+        message.success('Expiried package sucessfully!');
+        queryClient.invalidateQueries(['listShelfStaff']);
       },
     },
   );
@@ -811,8 +866,35 @@ export const useCreatePushNotification = () => {
       }),
     {
       onSuccess: () => {
-        message.success('Create Push Notification sucessfully');
+        message.success('Push Notification sucessfully!');
       },
     },
+  );
+};
+
+export const useGetDashboardInfo = (values?: string) => {
+  return useQuery(['getDashboardData', values], () =>
+    apiClient.get<DashboardRes[]>({
+      url: StationApi.GetDashboardData,
+      params: { StationId: values },
+    }),
+  );
+};
+
+export const useGetStatisticalRevenue = (values?: StaticalQuery) => {
+  return useQuery(['getStatisticalRevenue', values], () =>
+    apiClient.get<StaticalRevenueRes[]>({
+      url: StationApi.GetStatisticalRevenue,
+      params: values,
+    }),
+  );
+};
+
+export const useGetStatisticalPackage = (values?: StaticalQuery) => {
+  return useQuery(['getStatisticalPackage', values], () =>
+    apiClient.get<StaticalPackageRes[]>({
+      url: StationApi.GetStatisticalPackage,
+      params: values,
+    }),
   );
 };

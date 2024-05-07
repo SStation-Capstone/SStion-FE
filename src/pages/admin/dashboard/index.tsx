@@ -1,18 +1,60 @@
-import { MenuUnfoldOutlined } from '@ant-design/icons';
-import { Card, Col, Row, Typography, Button, Timeline, Radio } from 'antd';
-import Paragraph from 'antd/lib/typography/Paragraph';
+import { Card, Col, Row, Typography, Timeline, Radio, Select, Progress, Empty, Form } from 'antd';
 import { useState } from 'react';
 
-import EChart from '@/components/chart/EChart';
-import LineChart from '@/components/chart/LineChart';
+import {
+  useListOrdersHistoryDashboard,
+  useListPackagesDashboard,
+} from '@/api/services/admin/dashboardService';
+import { useListStation } from '@/api/services/admin/stationService';
+import { useGetDashboardInfo } from '@/api/services/stationService';
+import AdminLineChart from '@/components/chart/AdminLineChart';
+import { CircleLoading } from '@/components/loading';
+import { numberWithCommas } from '@/utils/string';
 
 export default function MenuLevel() {
   const { Title, Text } = Typography;
 
   const [listRelateParams, setListRelateParams] = useState<string>('checkIn');
-  const [reverse, setReverse] = useState(false);
-  // const { data, isLoading } = useListPackages(listRelateParams);
-  // if (isLoading) return <CircleLoading />;
+  const [stationId, setStationId] = useState<string>('');
+
+  const { data: listStation } = useListStation();
+  const { data: dashboardData } = useGetDashboardInfo(stationId);
+  const { data: packageList, isLoading: isPackageLoading } = useListPackagesDashboard({
+    checkIn: listRelateParams,
+    StationId: stationId,
+  });
+  const { data: OrdersHistoryData, isLoading } = useListOrdersHistoryDashboard({
+    StationId: stationId,
+  });
+
+  if (isLoading) return <CircleLoading />;
+  if (isPackageLoading) return <CircleLoading />;
+  // if (totaLoading) return <CircleLoading />;
+  // if (totalPackageLoading) return <CircleLoading />;
+
+  const handleSelectChange = (value: string) => {
+    setStationId(value);
+  };
+  const doubleDollor = [
+    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 8 8">
+      <path
+        fill="currentColor"
+        d="M3 0v1h-.75C1.57 1 1 1.57 1 2.25v.5c0 .68.44 1.24 1.09 1.41l2.56.66c.14.04.34.29.34.44v.5c0 .14-.11.25-.25.25h-2.5a.56.56 0 0 1-.25-.06v-.94h-1v1c0 .34.2.63.44.78c.23.16.52.22.81.22h.75v1h1v-1h.75c.69 0 1.25-.56 1.25-1.25v-.5c0-.68-.44-1.24-1.09-1.41l-2.56-.66C2.2 3.15 2 2.9 2 2.75v-.5c0-.14.11-.25.25-.25h2.5c.11 0 .21.04.25.06V3h1V2c0-.34-.2-.63-.44-.78c-.23-.16-.52-.22-.81-.22H4V0z"
+      />
+    </svg>,
+  ];
+
+  const packageLogo = [
+    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+      <g fill="none" fillRule="evenodd">
+        <path d="M24 0v24H0V0zM12.594 23.258l-.012.002l-.071.035l-.02.004l-.014-.004l-.071-.036c-.01-.003-.019 0-.024.006l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427c-.002-.01-.009-.017-.016-.018m.264-.113l-.014.002l-.184.093l-.01.01l-.003.011l.018.43l.005.012l.008.008l.201.092c.012.004.023 0 .029-.008l.004-.014l-.034-.614c-.003-.012-.01-.02-.02-.022m-.715.002a.023.023 0 0 0-.027.006l-.006.014l-.034.614c0 .012.007.02.017.024l.015-.002l.201-.093l.01-.008l.003-.011l.018-.43l-.003-.012l-.01-.01z" />
+        <path
+          fill="currentColor"
+          d="M12.25 4.299a.5.5 0 0 0-.5 0L6.206 7.5l1.813 1.047l5.798-3.343zm3.568 2.06L10.02 9.702l1.73.999a.5.5 0 0 0 .5 0L17.794 7.5l-1.976-1.14Zm2.976 2.873l-5.544 3.201a2.25 2.25 0 0 1-.25.126v6.709l5.544-3.201a.5.5 0 0 0 .25-.433zM11 19.268v-6.709a2.5 2.5 0 0 1-.25-.126L5.206 9.232v6.402a.5.5 0 0 0 .25.433zm-.25-16.701a2.5 2.5 0 0 1 2.5 0l6.294 3.634a2.5 2.5 0 0 1 1.25 2.165v7.268a2.5 2.5 0 0 1-1.25 2.165l-6.294 3.634a2.5 2.5 0 0 1-2.5 0l-6.294-3.634a2.5 2.5 0 0 1-1.25-2.165V8.366a2.5 2.5 0 0 1 1.25-2.165z"
+        />
+      </g>
+    </svg>,
+  ];
   const dollor = [
     <svg
       width="22"
@@ -127,47 +169,117 @@ export default function MenuLevel() {
     },
   ];
 
-  const timelineList = [
-    {
-      title: '$2,400 - Redesign store',
-      time: '09 JUN 7:20 PM',
-      color: 'green',
-    },
-    {
-      title: 'New order #3654323',
-      time: '08 JUN 12:20 PM',
-      color: 'green',
-    },
-    {
-      title: 'Company server payments',
-      time: '04 JUN 3:10 PM',
-    },
-    {
-      title: 'New card added for order #4826321',
-      time: '02 JUN 2:45 PM',
-    },
-    {
-      title: 'Unlock folders for development',
-      time: '18 MAY 1:30 PM',
-    },
-    {
-      title: 'New order #46282344',
-      time: '14 MAY 3:30 PM',
-      color: 'gray',
-    },
-  ];
+  const count1 = dashboardData?.map((item) => {
+    let today: string;
+    let title: number | string;
+    let persent: number | string;
+    let icon: JSX.Element[];
+    let bnb: string;
+
+    switch (item.dashBoardType) {
+      case 'TodaySales':
+        today = 'Today’s Sales';
+        title = `đ ${numberWithCommas(item.value)}`;
+        persent = `${item.percent}%`;
+        icon = dollor;
+        bnb = item.percent >= 0 ? 'bnb2' : 'redtext';
+        break;
+      case 'TodayUsers':
+        today = 'Today’s Users';
+        title = `${numberWithCommas(item.value)}`;
+        persent = `${item.percent}%`;
+        icon = profile;
+        bnb = item.percent >= 0 ? 'bnb2' : 'redtext';
+        break;
+      case 'NewClient':
+        today = 'New Clients';
+        title = `${numberWithCommas(item.value)}`;
+        persent = `${item.percent}%`;
+        icon = heart;
+        bnb = item.percent >= 0 ? 'bnb2' : 'redtext';
+        break;
+      case 'NewOrders':
+        today = 'New Orders';
+        title = `${numberWithCommas(item.value)}`;
+        persent = `${item.percent}%`;
+        icon = cart;
+        bnb = item.percent >= 0 ? 'bnb2' : 'redtext';
+        break;
+      default:
+        today = '';
+        title = '';
+        persent = '';
+        icon = cart;
+        bnb = '';
+    }
+
+    return { today, title, persent, icon, bnb };
+  });
+  // const timelineList = [
+  //   {
+  //     title: '$2,400 - Redesign store',
+  //     time: '09 JUN 7:20 PM',
+  //     color: 'green',
+  //   },
+  //   {
+  //     title: 'New order #3654323',
+  //     time: '08 JUN 12:20 PM',
+  //     color: 'green',
+  //   },
+  //   {
+  //     title: 'Company server payments',
+  //     time: '04 JUN 3:10 PM',
+  //   },
+  //   {
+  //     title: 'New card added for order #4826321',
+  //     time: '02 JUN 2:45 PM',
+  //   },
+  //   {
+  //     title: 'Unlock folders for development',
+  //     time: '18 MAY 1:30 PM',
+  //   },
+  //   {
+  //     title: 'New order #46282344',
+  //     time: '14 MAY 3:30 PM',
+  //     color: 'gray',
+  //   },
+  // ];
   const onStatusChange = (e: any) => {
     const values = e.target.value;
     setListRelateParams(values.toString());
   };
+
   return (
     <div className="layout-content">
+      <Row className="rowgap-vbox mb-6" justify="end" gutter={[24, 0]}>
+        <Form.Item label="Station">
+          <Select
+            showSearch
+            placeholder="Select Station"
+            // optionFilterProp="label"
+            // onChange={onChange}
+            // onSearch={onSearch}
+            filterOption={(input, option) =>
+              (option?.name ?? '').toLowerCase().includes(input.toLowerCase())
+            }
+            fieldNames={{ value: 'id', label: 'name' }}
+            options={listStation?.contends}
+            style={{ minWidth: '13rem' }}
+            value={stationId}
+            onSelect={handleSelectChange}
+            allowClear
+            onClear={() => {
+              setStationId('');
+            }}
+          />
+        </Form.Item>
+      </Row>
       <Row className="rowgap-vbox" gutter={[24, 0]}>
-        {count.map((c, index) => (
+        {count1?.map((c, index) => (
           <Col key={index} xs={24} sm={24} md={12} lg={6} xl={6} className="mb-6">
             <Card bordered={false} className="criclebox ">
               <div className="number">
-                <Row align="middle" gutter={[24, 0]}>
+                <Row align="middle" gutter={[0, 0]}>
                   <Col xs={18}>
                     <span>{c.today}</span>
                     <Title level={3}>
@@ -185,14 +297,14 @@ export default function MenuLevel() {
       </Row>
 
       <Row gutter={[24, 0]}>
-        <Col xs={24} sm={24} md={12} lg={12} xl={10} className="mb-6">
+        {/* <Col xs={24} sm={24} md={12} lg={12} xl={10} className="mb-6">
           <Card bordered={false} className="criclebox h-full">
             <EChart />
           </Card>
-        </Col>
-        <Col xs={24} sm={24} md={12} lg={12} xl={14} className="mb-6">
+        </Col> */}
+        <Col xs={24} sm={24} md={24} lg={24} xl={24} className="mb-6">
           <Card bordered={false} className="criclebox h-full">
-            <LineChart />
+            <AdminLineChart />
           </Card>
         </Col>
       </Row>
@@ -203,9 +315,9 @@ export default function MenuLevel() {
             <div className="project-ant">
               <div>
                 <Title level={5}>Package</Title>
-                <Paragraph className="lastweek">
+                {/* <Paragraph className="lastweek">
                   done this month<span className="blue">40%</span>
-                </Paragraph>
+                </Paragraph> */}
               </div>
               <div className="ant-filtertabs">
                 <div className="antd-pro-pages-dashboard-analysis-style-salesExtra">
@@ -226,14 +338,14 @@ export default function MenuLevel() {
                     <th>COMPLETION</th>
                   </tr>
                 </thead>
-                {/* <tbody>
-                  {data &&
-                    data.contends.map((d, index) => (
+                <tbody>
+                  {packageList &&
+                    packageList.contends.map((d, index) => (
                       <tr key={index}>
                         <td>
                           <h6 className="package-avatar-title">
                             <img
-                              src={d.packageImages[0].imageUrl}
+                              src={d?.packageImages[0]?.imageUrl}
                               alt=""
                               className="avatar-sm mr-2"
                             />
@@ -251,8 +363,11 @@ export default function MenuLevel() {
                         </td>
                       </tr>
                     ))}
-                </tbody> */}
+                </tbody>
               </table>
+              {packageList?.contends.length === 0 && (
+                <Empty className="w-full" imageStyle={{ width: '100%' }} />
+              )}
             </div>
           </Card>
         </Col>
@@ -260,21 +375,21 @@ export default function MenuLevel() {
           <Card bordered={false} className="criclebox h-full">
             <div className="timeline-box">
               <Title level={5}>Orders History</Title>
-              <Paragraph className="lastweek" style={{ marginBottom: 24 }}>
+              {/* <Paragraph className="lastweek" style={{ marginBottom: 24 }}>
                 this month <span className="bnb2">20%</span>
-              </Paragraph>
-
-              <Timeline pending="Recording..." className="timelinelist" reverse={reverse}>
-                {timelineList.map((t, index) => (
-                  <Timeline.Item color={t.color} key={index}>
-                    <Title level={5}>{t.title}</Title>
-                    <Text>{t.time}</Text>
-                  </Timeline.Item>
-                ))}
+              </Paragraph> */}
+              {OrdersHistoryData?.contends.length === 0 && <Empty />}
+              <Timeline className="timelinelist">
+                {OrdersHistoryData?.contends &&
+                  OrdersHistoryData?.contends.map((t, index) => (
+                    <Timeline.Item color="green" key={index}>
+                      <Title level={5}>
+                        {numberWithCommas(t.status)} + {numberWithCommas(t.priceCod)} đ
+                      </Title>
+                      <Text>Total price : {numberWithCommas(t.totalPrice)} đ</Text>
+                    </Timeline.Item>
+                  ))}
               </Timeline>
-              <Button type="primary" className="width-100" onClick={() => setReverse(!reverse)}>
-                <MenuUnfoldOutlined /> REVERSE
-              </Button>
             </div>
           </Card>
         </Col>

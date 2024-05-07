@@ -1,4 +1,11 @@
 import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  DisconnectOutlined,
+  ExclamationCircleOutlined,
+  MinusCircleOutlined,
+} from '@ant-design/icons';
+import {
   Card,
   Avatar,
   Pagination,
@@ -10,6 +17,10 @@ import {
   Row,
   Col,
   DatePicker,
+  Tag,
+  Select,
+  Input,
+  message,
 } from 'antd';
 import Table from 'antd/es/table';
 import moment from 'moment';
@@ -53,7 +64,7 @@ export default function PackageStationManagerList() {
   // const { mutateAsync: deleteMutate } = useDeleteStation();
   if (isLoading) return <CircleLoading />;
   const onOpenFormExpire = (record?: any) => {
-    setZoneId(record.zone.id);
+    setZoneId(record.station.id);
     setSlotId(record.slot.id);
     setPackageId(record.id);
     setShowExpire(true);
@@ -117,12 +128,55 @@ export default function PackageStationManagerList() {
       title: 'Description',
       dataIndex: 'description',
     },
+    {
+      title: 'Station',
+      dataIndex: 'station',
+      render: (text: any) => <Typography.Text>{text.name}</Typography.Text>,
+    },
     { title: 'Location', dataIndex: 'location' },
     {
       title: 'Modified At',
       dataIndex: 'modifiedAt',
       render: (_: any, record: any) => (
         <div>{moment(record.modifiedAt).format('DD/MM/YYYY HH:mm:ss')}</div>
+      ),
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      render: (_: any, record: any) => (
+        <>
+          {record.status === 'Paid' && (
+            <Tag icon={<MinusCircleOutlined />} color="default">
+              {record.status}
+            </Tag>
+          )}
+          {record.status === 'Returned' && (
+            <Tag icon={<CloseCircleOutlined />} color="error">
+              {record.status}
+            </Tag>
+          )}
+          {record.status === 'Canceled' && (
+            <Tag icon={<ExclamationCircleOutlined />} color="warning">
+              {record.status}
+            </Tag>
+          )}
+          {record.status === 'Completed' && (
+            <Tag icon={<CheckCircleOutlined />} color="success">
+              {record.status}
+            </Tag>
+          )}
+          {record.status === 'Initialized' && (
+            <Tag icon={<ExclamationCircleOutlined />} color="cyan">
+              {record.status}
+            </Tag>
+          )}
+          {record.status === 'Expired' && (
+            <Tag icon={<DisconnectOutlined />} color="volcano">
+              {record.status}
+            </Tag>
+          )}
+        </>
       ),
     },
     {
@@ -171,7 +225,7 @@ export default function PackageStationManagerList() {
               }}
             >
               <Iconify icon="mdi:folder-location" size={18} />
-              change-location
+              Change location
             </Button>
             <Button
               type="primary"
@@ -179,11 +233,15 @@ export default function PackageStationManagerList() {
               style={{ padding: '0 10px', height: '35px', backgroundColor: '#13c2c2' }}
               onClick={(e) => {
                 e.stopPropagation();
-                createExpire(record.id.toString());
+                if (record.status === 'Expired') {
+                  message.error('Package have been expired!');
+                } else {
+                  createExpire(record.id.toString());
+                }
               }}
             >
               <Iconify icon="pajamas:expire" size={18} />
-              expire
+              Expire
             </Button>
             <Button
               type="primary"
@@ -195,7 +253,7 @@ export default function PackageStationManagerList() {
               }}
             >
               <Iconify icon="iconamoon:notification-fill" size={18} />
-              push-noti
+              Push noti
             </Button>
           </div>
         </div>
@@ -217,6 +275,23 @@ export default function PackageStationManagerList() {
               <Col span={8}>
                 <Form.Item label="From - To" name="date">
                   <RangePicker allowClear />
+                </Form.Item>
+              </Col>
+              <Col span={5}>
+                <Form.Item label="Status" name="status">
+                  <Select allowClear placeholder="Select status">
+                    <Select.Option value="Initialized">Receive</Select.Option>
+                    <Select.Option value="Paid">Paid</Select.Option>
+                    <Select.Option value="Completed">Receive</Select.Option>
+                    <Select.Option value="Returned">Returned</Select.Option>
+                    <Select.Option value="Canceled">Canceled</Select.Option>
+                    <Select.Option value="Expired">Expired</Select.Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={6}>
+                <Form.Item label="Check in day(s) above" name="CheckinFromDays">
+                  <Input />
                 </Form.Item>
               </Col>
             </Row>
@@ -259,7 +334,7 @@ export default function PackageStationManagerList() {
         showSizeChanger
         onChange={onPageChange}
         // eslint-disable-next-line no-unsafe-optional-chaining
-        total={data?.totalPages * 10}
+        total={data?.totalItems}
         // showTotal={(total) => `共 ${total} 条`}
         current={data?.page}
         style={{ marginTop: '1rem' }}

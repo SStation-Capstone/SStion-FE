@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import { useDeleteZone, useListStationManagers, useListZone } from '@/api/services/stationService';
 import { IconButton, Iconify } from '@/components/icon';
 import { CircleLoading } from '@/components/loading';
+import { numberWithCommas } from '@/utils/string';
 
 import { ManageCheckInCreate } from './checkin.create';
 // eslint-disable-next-line import/named
@@ -75,7 +76,7 @@ export default function ManageZoneManagerList() {
 
   return (
     <Card
-      title={`Package Management`}
+      title="Package Management"
       extra={
         <>
           <Button type="primary" onClick={() => onOpenFormHandler()}>
@@ -124,7 +125,9 @@ export default function ManageZoneManagerList() {
           <Avatar size={74} shape="square" src={stationData.stationImages[0].imageUrl} />
           <div className="flex items-center pl-4">
             <div>
-              <h4 className="m-0 font-semibold">balance: {stationData?.balance || 0}</h4>
+              <h4 className="m-0 font-semibold">
+                balance: {numberWithCommas(stationData?.balance) || 0} đ
+              </h4>
             </div>
           </div>
         </Avatar.Group>

@@ -1,4 +1,11 @@
 import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  DisconnectOutlined,
+  ExclamationCircleOutlined,
+  MinusCircleOutlined,
+} from '@ant-design/icons';
+import {
   Button,
   message,
   Avatar,
@@ -9,6 +16,7 @@ import {
   Pagination,
   Typography,
   Popconfirm,
+  Tag,
 } from 'antd';
 import moment from 'moment';
 import { useState } from 'react';
@@ -108,6 +116,44 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
       ),
     },
     {
+      title: 'Status',
+      dataIndex: 'status',
+      render: (_: any, record: any) => (
+        <>
+          {record.status === 'Paid' && (
+            <Tag icon={<MinusCircleOutlined />} color="default">
+              {record.status}
+            </Tag>
+          )}
+          {record.status === 'Returned' && (
+            <Tag icon={<CloseCircleOutlined />} color="error">
+              {record.status}
+            </Tag>
+          )}
+          {record.status === 'Canceled' && (
+            <Tag icon={<ExclamationCircleOutlined />} color="warning">
+              {record.status}
+            </Tag>
+          )}
+          {record.status === 'Completed' && (
+            <Tag icon={<CheckCircleOutlined />} color="success">
+              {record.status}
+            </Tag>
+          )}
+          {record.status === 'Initialized' && (
+            <Tag icon={<ExclamationCircleOutlined />} color="cyan">
+              {record.status}
+            </Tag>
+          )}
+          {record.status === 'Expired' && (
+            <Tag icon={<DisconnectOutlined />} color="volcano">
+              {record.status}
+            </Tag>
+          )}
+        </>
+      ),
+    },
+    {
       title: 'Sender',
       dataIndex: 'sender',
       render: (_: any, record: any) => (
@@ -153,7 +199,7 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
               }}
             >
               <Iconify icon="mdi:folder-location" size={18} />
-              change-location
+              Change location
             </Button>
             <Button
               type="primary"
@@ -161,12 +207,16 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
               style={{ padding: '0 10px', height: '35px', backgroundColor: '#13c2c2' }}
               onClick={(e) => {
                 e.stopPropagation();
-                createExpire(record.id.toString());
-                onClose();
+                if (record.status === 'Expired') {
+                  message.error('Package have been expired!');
+                } else {
+                  createExpire(record.id.toString());
+                  onClose();
+                }
               }}
             >
               <Iconify icon="pajamas:expire" size={18} />
-              expire
+              Expire
             </Button>
             <Button
               type="primary"
@@ -179,7 +229,7 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
               }}
             >
               <Iconify icon="iconamoon:notification-fill" size={18} />
-              push-noti
+              Push noti
             </Button>
             {clickOne.isActive && (
               <Popconfirm
@@ -244,7 +294,9 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
         scroll={{ x: 'max-content' }}
         pagination={false}
         columns={columns as any}
-        dataSource={data?.contends.filter((c: any) => c.status !== 'Completed')}
+        dataSource={data?.contends.filter(
+          (c: any) => c.status !== 'Completed' && c.status !== 'Returned',
+        )}
         loading={isLoading}
         onRow={(record, rowIndex) => {
           return {

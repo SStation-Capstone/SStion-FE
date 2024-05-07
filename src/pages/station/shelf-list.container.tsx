@@ -11,11 +11,11 @@ import {
 import { IconButton, Iconify } from '@/components/icon';
 import { CircleLoading } from '@/components/loading';
 
+import { ManageCheckInCreate } from './checkin.create';
 import { PackagesInfo } from './packages.info';
 import { ManageRackCreate } from './rack.create';
 // eslint-disable-next-line import/named
 import { ManageSlotCreate } from './slot.create';
-import { ManageCheckInCreate } from './checkin.create';
 
 export type StationEditFormProps = {
   stationId: any;
@@ -258,7 +258,7 @@ export default function ManageShelfManagerList({ stationId, id }: StationEditFor
                     >
                       <div className="flex cursor-pointer flex-wrap justify-center gap-2 p-3">
                         <h5 className="text-blue-gray-900 block font-sans text-base font-semibold leading-snug tracking-normal antialiased">
-                          + create rack
+                          + Create rack
                         </h5>
                       </div>
                     </div>

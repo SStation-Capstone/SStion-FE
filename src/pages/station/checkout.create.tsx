@@ -129,7 +129,7 @@ export function ManageCheckOutCreate() {
               >
                 <Button key="submit" type="primary" loading={loading}>
                   <Iconify icon="streamline:payment-cash-out-3-solid" size={18} />
-                  cash payment
+                  Pay by cash
                 </Button>
               </Popconfirm>
               <ConfigProvider
@@ -155,7 +155,7 @@ export function ManageCheckOutCreate() {
                   onClick={() => onOpenFormHandler(id)}
                 >
                   <Iconify icon="material-symbols:payments-outline" size={18} />
-                  transfer payments
+                  QR payment
                 </Button>
               </ConfigProvider>
             </>
@@ -231,7 +231,9 @@ export function ManageCheckOutCreate() {
                         {data.status}
                       </Tag>
                     )}
-                    <p className="pl-4 text-xl">totalPrice: {data.totalPrice} đ</p>
+                    <p className="pl-4 text-xl">
+                      Total Price: {numberWithCommas(data.totalPrice)} đ
+                    </p>
                   </div>
                 </Col>
               </Row>
@@ -247,28 +249,28 @@ export function ManageCheckOutCreate() {
                 bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
               >
                 <Descriptions bordered>
-                  <Descriptions.Item label="width" span={3}>
+                  <Descriptions.Item label="Width" span={3}>
                     {data.width} cm
                   </Descriptions.Item>
-                  <Descriptions.Item label="height" span={3}>
+                  <Descriptions.Item label="Height" span={3}>
                     {data.height} cm
                   </Descriptions.Item>
-                  <Descriptions.Item label="length" span={3}>
+                  <Descriptions.Item label="Length" span={3}>
                     {data.length} cm
                   </Descriptions.Item>
-                  <Descriptions.Item label="volume" span={3}>
+                  <Descriptions.Item label="Volume" span={3}>
                     {data.volume}
                   </Descriptions.Item>
-                  <Descriptions.Item label="weight" span={3}>
-                    {data.weight} kg
+                  <Descriptions.Item label="Weight" span={3}>
+                    {data.weight} g
                   </Descriptions.Item>
-                  <Descriptions.Item label="status" span={3}>
+                  <Descriptions.Item label="Status" span={3}>
                     {data.status}
                   </Descriptions.Item>
-                  <Descriptions.Item label="Price Cod" span={3}>
+                  <Descriptions.Item label="Price cod" span={3}>
                     {numberWithCommas(data.priceCod)} đ
                   </Descriptions.Item>
-                  <Descriptions.Item label="isCod" span={3}>
+                  <Descriptions.Item label="Is cod" span={3}>
                     {data.isCod ? 'true' : 'false'}
                   </Descriptions.Item>
                   <Descriptions.Item label="Total Hours" span={3}>
@@ -277,8 +279,8 @@ export function ManageCheckOutCreate() {
                   <Descriptions.Item label="Checkin Days" span={3}>
                     {data.checkinDays}
                   </Descriptions.Item>
-                  <Descriptions.Item label="service Fee" span={3}>
-                    {data.serviceFee}
+                  <Descriptions.Item label="Service fee" span={3}>
+                    {numberWithCommas(data.serviceFee)} đ
                   </Descriptions.Item>
                 </Descriptions>
               </Card>

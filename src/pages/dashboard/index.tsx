@@ -1,18 +1,41 @@
-import { Card, Col, Row, Typography, Progress, Button, Timeline, Radio } from 'antd';
-import Paragraph from 'antd/lib/typography/Paragraph';
+import { Card, Col, Row, Typography, Progress, Timeline, Radio, Empty } from 'antd';
 import { useState } from 'react';
 
-import { useListOrdersHistory, useListPackages } from '@/api/services/stationService';
+import {
+  useListOrdersHistoryDashboard,
+  useListPackagesDashboard,
+} from '@/api/services/admin/dashboardService';
+import { useGetDashboardInfo } from '@/api/services/stationService';
 import EChart from '@/components/chart/EChart';
 import LineChart from '@/components/chart/LineChart';
+import { CircleLoading } from '@/components/loading';
+import { getItem } from '@/utils/storage';
+import { numberWithCommas } from '@/utils/string';
+
+import { StorageEnum } from '#/enum';
 
 export default function MenuLevel() {
   const { Title, Text } = Typography;
 
   const [listRelateParams, setListRelateParams] = useState<string>('checkIn');
-  const { data: OrdersHistoryData } = useListOrdersHistory();
-  const { data } = useListPackages(listRelateParams);
-  // if (isLoading) return <CircleLoading />;
+
+  const id = getItem(StorageEnum.User).stationId as string;
+  // const { data: OrdersHistoryData, isLoading } = ();
+  // const { data } = useListPackages(listRelateParams);
+  // const idStaff = getItem(StorageEnum.User).stationId as number;
+  // const stationId = id?.split('=').at(1);
+  const { data: dashboardData } = useGetDashboardInfo(id);
+  const { data, isLoading: isPackageLoading } = useListPackagesDashboard({
+    checkIn: listRelateParams,
+    StationId: id,
+  });
+  const { data: OrdersHistoryData, isLoading } = useListOrdersHistoryDashboard({
+    StationId: id,
+  });
+  if (isLoading) return <CircleLoading />;
+  if (isPackageLoading) return <CircleLoading />;
+
+  if (isLoading) return <CircleLoading />;
   const dollor = [
     <svg
       width="22"
@@ -96,6 +119,52 @@ export default function MenuLevel() {
       />
     </svg>,
   ];
+  const count1 = dashboardData?.map((item) => {
+    let today: string;
+    let title: number | string;
+    let persent: number | string;
+    let icon: JSX.Element[];
+    let bnb: string;
+
+    switch (item.dashBoardType) {
+      case 'TodaySales':
+        today = 'Today’s Sales';
+        title = `đ ${numberWithCommas(item.value)}`;
+        persent = `${item.percent}%`;
+        icon = dollor;
+        bnb = item.percent >= 0 ? 'bnb2' : 'redtext';
+        break;
+      case 'TodayUsers':
+        today = 'Today’s Users';
+        title = `${numberWithCommas(item.value)}`;
+        persent = `${item.percent}%`;
+        icon = profile;
+        bnb = item.percent >= 0 ? 'bnb2' : 'redtext';
+        break;
+      case 'NewClient':
+        today = 'New Clients';
+        title = `${numberWithCommas(item.value)}`;
+        persent = `${item.percent}%`;
+        icon = heart;
+        bnb = item.percent >= 0 ? 'bnb2' : 'redtext';
+        break;
+      case 'NewOrders':
+        today = 'New Orders';
+        title = `${numberWithCommas(item.value)}`;
+        persent = `${item.percent}%`;
+        icon = cart;
+        bnb = item.percent >= 0 ? 'bnb2' : 'redtext';
+        break;
+      default:
+        today = '';
+        title = '';
+        persent = '';
+        icon = cart;
+        bnb = '';
+    }
+
+    return { today, title, persent, icon, bnb };
+  });
   const count = [
     {
       today: 'Today’s Sales',
@@ -133,7 +202,7 @@ export default function MenuLevel() {
   return (
     <div className="layout-content">
       <Row className="rowgap-vbox" gutter={[24, 0]}>
-        {count.map((c, index) => (
+        {/* {count1?.map((c, index) => (
           <Col key={index} xs={24} sm={24} md={12} lg={6} xl={6} className="mb-6">
             <Card bordered={false} className="criclebox ">
               <div className="number">
@@ -151,18 +220,17 @@ export default function MenuLevel() {
               </div>
             </Card>
           </Col>
-        ))}
+        ))} */}
       </Row>
-
       <Row gutter={[24, 0]}>
         <Col xs={24} sm={24} md={12} lg={12} xl={10} className="mb-6">
           <Card bordered={false} className="criclebox h-full">
-            <EChart />
+            <EChart stationId={id} />
           </Card>
         </Col>
         <Col xs={24} sm={24} md={12} lg={12} xl={14} className="mb-6">
           <Card bordered={false} className="criclebox h-full">
-            <LineChart />
+            <LineChart stationId={id} />
           </Card>
         </Col>
       </Row>
@@ -173,9 +241,9 @@ export default function MenuLevel() {
             <div className="project-ant">
               <div>
                 <Title level={5}>Package</Title>
-                <Paragraph className="lastweek">
+                {/* <Paragraph className="lastweek">
                   done this month<span className="blue">40%</span>
-                </Paragraph>
+                </Paragraph> */}
               </div>
               <div className="ant-filtertabs">
                 <div className="antd-pro-pages-dashboard-analysis-style-salesExtra">
@@ -222,6 +290,9 @@ export default function MenuLevel() {
                       </tr>
                     ))}
                 </tbody>
+                {data?.contends.length === 0 && (
+                  <Empty className="w-full" imageStyle={{ width: '100%' }} />
+                )}
               </table>
             </div>
           </Card>
@@ -233,14 +304,14 @@ export default function MenuLevel() {
               {/* <Paragraph className="lastweek" style={{ marginBottom: 24 }}>
                 this month <span className="bnb2">20%</span>
               </Paragraph> */}
-
+              {OrdersHistoryData?.contends.length === 0 && <Empty />}
               <Timeline pending="Recording..." className="timelinelist">
                 {OrdersHistoryData?.contends.map((t, index) => (
                   <Timeline.Item color="green" key={index}>
                     <Title level={5}>
-                      {t.status} - {t.priceCod}
+                      {numberWithCommas(t.status)} + {numberWithCommas(t.priceCod)} đ
                     </Title>
-                    <Text>total price : {t.totalPrice}</Text>
+                    <Text>Total price : {numberWithCommas(t.totalPrice)} đ</Text>
                   </Timeline.Item>
                 ))}
               </Timeline>
