@@ -180,20 +180,6 @@ export default function PackageStationManagerList() {
       ),
     },
     {
-      title: 'Sender',
-      dataIndex: 'sender',
-      render: (_: any, record: any) => (
-        <List.Item>
-          <List.Item.Meta
-            className="flex gap-3"
-            avatar={<Avatar shape="square" size={48} src={record.sender.avatarUrl} />}
-            title={record.sender.fullName}
-            description={record.sender.phoneNumber}
-          />
-        </List.Item>
-      ),
-    },
-    {
       title: 'Receiver',
       dataIndex: 'receiver',
       render: (_: any, record: any) => (

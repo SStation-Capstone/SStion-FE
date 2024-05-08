@@ -66,11 +66,11 @@ export default function PaymentStationManagerList() {
       title: 'Modified By',
       dataIndex: 'modifiedBy',
     },
-    {
-      title: 'Price Cod',
-      dataIndex: 'priceCod',
-      render: (_: any, record: any) => <div>{numberWithCommas(record.priceCod)} đ</div>,
-    },
+    // {
+    //   title: 'Price Cod',
+    //   dataIndex: 'priceCod',
+    //   render: (_: any, record: any) => <div>{numberWithCommas(record.priceCod)} đ</div>,
+    // },
     {
       title: 'Service Fee',
       dataIndex: 'serviceFee',

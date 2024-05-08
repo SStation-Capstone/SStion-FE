@@ -12,10 +12,10 @@ import { IconButton, Iconify } from '@/components/icon';
 import { CircleLoading } from '@/components/loading';
 
 import { PricingCreate } from './pricing.create';
+import PricingDefaultModal from './pricingDefault.modal';
 
 import { InputType } from '#/api';
 import { Pricing } from '#/entity';
-import PricingDefaultModal from './pricingDefault.modal';
 
 const { Title } = Typography;
 
@@ -74,11 +74,7 @@ export default function StaffManagerList() {
     },
     {
       title: 'Price',
-      dataIndex: 'pricePerUnit',
-    },
-    {
-      title: 'Duration',
-      dataIndex: 'unitDuration',
+      dataIndex: 'formatPrice',
     },
     {
       title: 'Action',

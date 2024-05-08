@@ -181,18 +181,18 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
                   <Descriptions.Item label="Status" span={3}>
                     {clickOne.status}
                   </Descriptions.Item>
-                  <Descriptions.Item label="Price cod" span={3}>
+                  {/* <Descriptions.Item label="Price cod" span={3}>
                     {numberWithCommas(clickOne.priceCod)} đ
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Is cod" span={3}>
+                  </Descriptions.Item> */}
+                  {/* <Descriptions.Item label="Is cod" span={3}>
                     {clickOne.isCod ? 'true' : 'false'}
+                  </Descriptions.Item> */}
+                  <Descriptions.Item label="Total Days" span={3}>
+                    {clickOne.TotalDays}
                   </Descriptions.Item>
-                  <Descriptions.Item label="Total Hours" span={3}>
-                    {clickOne.totalHours}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Checkin Days" span={3}>
+                  {/* <Descriptions.Item label="Checkin Days" span={3}>
                     {clickOne.checkinDays}
-                  </Descriptions.Item>
+                  </Descriptions.Item> */}
                   <Descriptions.Item label="Service fee" span={3}>
                     {numberWithCommas(clickOne.serviceFee)} đ
                   </Descriptions.Item>
@@ -202,13 +202,13 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
             <Col span={24} md={12} className="mb-2">
               <Card
                 bordered={false}
-                title={<h6 className="m-0 font-semibold">Sender - Receiver</h6>}
+                title={<h6 className="m-0 font-semibold">Receiver</h6>}
                 className="mb-2"
                 bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
               >
                 <List
                   itemLayout="horizontal"
-                  dataSource={[clickOne.sender, clickOne.receiver]}
+                  dataSource={[clickOne.receiver]}
                   split={false}
                   className="conversations-list"
                   renderItem={(item) => (
@@ -252,14 +252,14 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
               >
                 <p className="text-dark">{clickOne.zone.description}</p>
                 <hr className="my-25" />
-                <Descriptions title="Information">
+                {/* <Descriptions title="Information">
                   <Descriptions.Item label="Name" span={3}>
                     {clickOne.zone.name}
                   </Descriptions.Item>
                   <Descriptions.Item label="Slot" span={3}>
                     {clickOne.slot.name}
                   </Descriptions.Item>
-                </Descriptions>
+                </Descriptions> */}
               </Card>
             </Col>
           </Row>

@@ -24,7 +24,6 @@ import {
   useUpdateUser,
 } from '@/api/services/admin/userService';
 import unnamedImage from '@/assets/images/unnamed.jpg';
-import { IconButton, Iconify } from '@/components/icon';
 import { CircleLoading } from '@/components/loading';
 
 import { UserEdit } from './user.edit';
@@ -72,10 +71,11 @@ export default function ManageStationUserList() {
   };
   const columns: TableProps<User>['columns'] = [
     {
-      title: 'Id',
-      dataIndex: 'id',
-      width: '200px',
-      // ellipsis: true,
+      title: 'No',
+      dataIndex: 'no',
+      // eslint-disable-next-line no-plusplus
+      render: (_text, _data, index) => <Typography>{++index}</Typography>,
+      width: '5%',
     },
     {
       title: 'User Name',
@@ -167,30 +167,30 @@ export default function ManageStationUserList() {
         </Popconfirm>
       ),
     },
-    {
-      title: 'Action',
-      key: 'operation',
-      align: 'center',
-      width: 100,
-      render: (_, record) => (
-        <div className="text-gray flex w-full justify-center">
-          {/* <IconButton onClick={() => onOpenFormHandler(record)}>
-            <Iconify icon="solar:pen-bold-duotone" size={18} />
-          </IconButton> */}
-          <Popconfirm
-            title="Delete this user ?"
-            okText="Yes"
-            cancelText="No"
-            placement="left"
-            onConfirm={() => submitHandle(record)}
-          >
-            <IconButton>
-              <Iconify icon="mingcute:delete-2-fill" size={18} className="text-error" />
-            </IconButton>
-          </Popconfirm>
-        </div>
-      ),
-    },
+    // {
+    //   title: 'Action',
+    //   key: 'operation',
+    //   align: 'center',
+    //   width: 100,
+    //   render: (_, record) => (
+    //     <div className="text-gray flex w-full justify-center">
+    //       {/* <IconButton onClick={() => onOpenFormHandler(record)}>
+    //         <Iconify icon="solar:pen-bold-duotone" size={18} />
+    //       </IconButton> */}
+    //       <Popconfirm
+    //         title="Delete this user ?"
+    //         okText="Yes"
+    //         cancelText="No"
+    //         placement="left"
+    //         onConfirm={() => submitHandle(record)}
+    //       >
+    //         <IconButton>
+    //           <Iconify icon="mingcute:delete-2-fill" size={18} className="text-error" />
+    //         </IconButton>
+    //       </Popconfirm>
+    //     </div>
+    //   ),
+    // },
   ];
   const resetHandler = () => {
     form.resetFields();
@@ -258,10 +258,10 @@ export default function ManageStationUserList() {
                 </Form.Item>
               </Col>
               <Col span={6}>
-                <Form.Item label="Active" name="IsActive">
+                <Form.Item label="Status" name="IsActive">
                   <Select allowClear>
-                    <Select.Option value="true">true</Select.Option>
-                    <Select.Option value="false">false</Select.Option>
+                    <Select.Option value="true">Active</Select.Option>
+                    <Select.Option value="false">De-Active</Select.Option>
                   </Select>
                 </Form.Item>
               </Col>

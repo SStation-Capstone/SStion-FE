@@ -89,9 +89,9 @@ export default function ManageShelfManagerList({ stationId, id }: StationEditFor
                           <div>
                             <div className="mb-2 grid">
                               <span className="font-semibold text-black">name - {item.name}</span>
-                              <span className="font-semibold text-black">
+                              {/* <span className="font-semibold text-black">
                                 volume - {item.volume}
-                              </span>
+                              </span> */}
                               <span className="font-semibold text-black">
                                 volumeUsed - {item.volumeUsed}
                               </span>
@@ -127,8 +127,18 @@ export default function ManageShelfManagerList({ stationId, id }: StationEditFor
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2 p-6 ">
+                    <div
+                      className="relative flex flex-col rounded-xl bg-gray-200 bg-clip-border text-gray-700 shadow-md"
+                      onClick={() => createMutate(item.id)}
+                    >
+                      <div className="flex cursor-pointer flex-wrap justify-center gap-2 p-3">
+                        <h5 className="text-blue-gray-900 block font-sans text-base font-semibold leading-snug tracking-normal antialiased">
+                          + Create rack
+                        </h5>
+                      </div>
+                    </div>
                     {item.rackSorts.length > 0 &&
-                      item.rackSorts.map((rack: any) => (
+                      item.rackSorts.reverse().map((rack: any) => (
                         <div className="flex h-full w-full gap-3" key={rack.id}>
                           <div className="flex cursor-pointer" onClick={() => onOpenFormRack(rack)}>
                             <Iconify icon="solar:pen-bold-duotone" size={18} />
@@ -150,7 +160,82 @@ export default function ManageShelfManagerList({ stationId, id }: StationEditFor
                               />
                             </div>
                           </Popconfirm>
-                          {rack.slotSorts.length > 0 &&
+                          <Tooltip
+                            placement="top"
+                            color="#fefefe"
+                            key={rack.id}
+                            title={
+                              <div>
+                                <div className="mb-2 grid">
+                                  <span className="font-semibold text-black">
+                                    name - {rack.name}
+                                  </span>
+                                  <span className="font-semibold text-black">
+                                    description - {rack.description}
+                                  </span>
+                                  <span className="font-semibold text-black">
+                                    numberOfPackages - {rack.numberOfPackages}
+                                  </span>
+                                  <span className="font-semibold text-black">
+                                    index - {rack.index}
+                                  </span>
+                                  <span className="font-semibold text-black">
+                                    volumeUsed - {rack.volumeUsed}
+                                  </span>
+                                </div>
+                                <div className="flex justify-center">
+                                  <span
+                                    className="mr-2 bg-blue-300 p-1.5 font-semibold text-black transition-all duration-200 hover:bg-blue-200"
+                                    style={{ borderRadius: '5px', cursor: 'pointer' }}
+                                    onClick={() => onOpenFormCheckInHandler(rack)}
+                                  >
+                                    Check In
+                                  </span>
+                                  {/* <span
+                                    className="mr-2 bg-green-300 p-1.5 font-semibold text-black transition-all duration-200 hover:bg-green-200"
+                                    style={{ borderRadius: '5px', cursor: 'pointer' }}
+                                    onClick={() => onOpenFormSlot(slot)}
+                                  >
+                                    Update
+                                  </span> */}
+                                  {/* <Popconfirm
+                                    title="Delete the slot"
+                                    okText="Yes"
+                                    cancelText="No"
+                                    placement="right"
+                                    onConfirm={() => {
+                                      deleteSlot(slot.id.toString());
+                                    }}
+                                  >
+                                    <span
+                                      className="bg-red-300 p-1.5 font-semibold text-black transition-all duration-200 hover:bg-red-200"
+                                      style={{ borderRadius: '5px', cursor: 'pointer' }}
+                                    >
+                                      Delete
+                                    </span>
+                                  </Popconfirm> */}
+                                </div>
+                              </div>
+                            }
+                          >
+                            <div
+                              onClick={() => onOpenFormHandler(rack)}
+                              style={{ cursor: 'pointer', width: '100%' }}
+                            >
+                              <Progress
+                                className="ant-progress-custom"
+                                percent={rack.volumeUsed}
+                                size="small"
+                                // showInfo={false}
+                                // style={{
+                                //   background: `${slot.isActive ? '#fff' : '#ffccc7'}`,
+                                //   borderRadius: '10px',
+                                // }}
+                              />
+                            </div>
+                          </Tooltip>
+
+                          {/* {rack.slotSorts.length > 0 &&
                             rack.slotSorts.map((slot: any) => (
                               <Tooltip
                                 placement="top"
@@ -243,25 +328,15 @@ export default function ManageShelfManagerList({ stationId, id }: StationEditFor
                                   />
                                 </div>
                               </Tooltip>
-                            ))}
-                          <div
+                            ))} */}
+                          {/* <div
                             className="text-blue-gray-900 block flex h-12 w-12 cursor-pointer items-center justify-center rounded-xl bg-blue-100 pb-2 font-sans text-2xl font-semibold"
                             onClick={() => onOpenFormSlot(rack.id)}
                           >
                             +
-                          </div>
+                          </div> */}
                         </div>
                       ))}
-                    <div
-                      className="relative flex flex-col rounded-xl bg-gray-200 bg-clip-border text-gray-700 shadow-md"
-                      onClick={() => createMutate(item.id)}
-                    >
-                      <div className="flex cursor-pointer flex-wrap justify-center gap-2 p-3">
-                        <h5 className="text-blue-gray-900 block font-sans text-base font-semibold leading-snug tracking-normal antialiased">
-                          + Create rack
-                        </h5>
-                      </div>
-                    </div>
                   </div>
                 </div>
               ),

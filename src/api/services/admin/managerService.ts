@@ -126,6 +126,22 @@ export const useAddStationManager = () => {
     },
   );
 };
+
+export const useChangeManager = () => {
+  return useMutation(
+    async (payload: any) =>
+      apiClient.post<MangerCreateResponse>({
+        url: `${ManagerApi.AddManagerStations}/${payload.id}/managers`,
+        data: { userId: payload.manager },
+      }),
+    {
+      onSuccess: () => {
+        message.success('change manager to station sucessfully');
+        queryClient.invalidateQueries(['listStation']);
+      },
+    },
+  );
+};
 export default {
   GetManager,
 };

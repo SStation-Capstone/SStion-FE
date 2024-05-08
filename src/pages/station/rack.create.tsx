@@ -68,7 +68,7 @@ export function ManageRackCreate({ clickOne, onClose }: ZoneCreateFormProps) {
           required
           rules={[{ required: true, message: 'Please input zone name' }]}
         >
-          <Input />
+          <Input disabled={clickOne?.name} />
         </Form.Item>
 
         <Form.Item

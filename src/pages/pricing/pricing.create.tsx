@@ -24,11 +24,11 @@ export function PricingCreate({ clickOne, onClose }: StaffCreateFormProps) {
         const updateData: PricingPayload = {
           ...clickOne,
           id: clickOne.id,
+          price: 0,
         };
         updateData.startTime = values.startTime;
         updateData.endTime = values.endTime;
-        updateData.pricePerUnit = values.pricePerUnit;
-        updateData.unitDuration = values.unitDuration;
+        updateData.price = values.price;
         updateMutate(updateData);
         setLoading(false);
       } else {
@@ -75,7 +75,7 @@ export function PricingCreate({ clickOne, onClose }: StaffCreateFormProps) {
         // wrapperCol={{ span: 18 }}
         layout="vertical"
       >
-        <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-4">
+        <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
           <Form.Item
             label="Start Time"
             name="startTime"
@@ -100,21 +100,10 @@ export function PricingCreate({ clickOne, onClose }: StaffCreateFormProps) {
           </Form.Item>
           <Form.Item
             label="Price"
-            name="pricePerUnit"
+            name="price"
             required
             rules={[
               { required: true, message: 'Please input price' },
-              { validator: validateNumber as any },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Duration"
-            name="unitDuration"
-            required
-            rules={[
-              { required: true, message: 'Please input Duration' },
               { validator: validateNumber as any },
             ]}
           >

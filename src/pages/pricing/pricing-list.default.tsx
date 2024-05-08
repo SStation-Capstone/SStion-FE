@@ -51,12 +51,8 @@ export default function StaffManagerList() {
       dataIndex: 'endTime',
     },
     {
-      title: 'Price Per Unit',
-      dataIndex: 'pricePerUnit',
-    },
-    {
-      title: 'Unit Duration',
-      dataIndex: 'unitDuration',
+      title: 'Price',
+      dataIndex: 'formatPrice',
     },
     {
       title: 'Action',
