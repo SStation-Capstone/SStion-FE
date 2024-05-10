@@ -9,6 +9,8 @@ import { PackageList } from '@/pages/station/package-list.container';
 import { PaymentStationList } from '@/pages/station/payment-list.container';
 import { StationDetail } from '@/pages/station/station.detail';
 
+import { StationPricing } from './station-list.pricing';
+import { StationStaff } from './station-list.staff';
 import { ManageStationEdit } from './station.edit';
 
 import { InputType } from '#/api';
@@ -31,12 +33,23 @@ export default function ManageStationManagerList() {
   const [clickOne, setClickOne] = useState<Station>();
   const [clickTwo, setClickTwo] = useState();
   const [showInfo, setShowInfo] = useState(false);
+  const [stationId, setStationId] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
+  const [showPricing, setShowPricing] = useState(false);
+  const [showStaff, setShowStaff] = useState(false);
   const { data, isLoading } = useListStation(listRelateParams);
   const [showPayment, setShowPayment] = useState<any>(false);
   const [showPackageDetail, setShowPackageDetail] = useState(false);
   if (isLoading) return <CircleLoading />;
 
+  const onOpenPricing = (record?: any) => {
+    setStationId(record);
+    setShowPricing(true);
+  };
+  const onOpenStaff = (record?: any) => {
+    setStationId(record);
+    setShowStaff(true);
+  };
   const onOpenFormHandler = (record?: Station) => {
     if (record) {
       setClickOne(record);
@@ -63,6 +76,12 @@ export default function ManageStationManagerList() {
   };
   const closePayment = async () => {
     setShowPayment(false);
+  };
+  const closePricing = async () => {
+    setShowPricing(false);
+  };
+  const closeStaff = async () => {
+    setShowStaff(false);
   };
   const closePackageDetail = async () => {
     setShowPackageDetail(false);
@@ -120,19 +139,27 @@ export default function ManageStationManagerList() {
           <div className="flex gap-2">
             <Link to={`/zone/${record.id}`}>
               <div className="flex cursor-pointer items-center rounded-md bg-blue-200 fill-blue-400 p-2 duration-100 hover:bg-blue-300 active:border active:border-blue-400">
-                <span className="text-sm font-bold text-blue-500">config</span>
+                <span className="text-sm font-bold text-blue-500">manage</span>
               </div>
             </Link>
-            <Link to={`/staff/${record.id}`}>
-              <div className="flex cursor-pointer items-center rounded-md bg-blue-200 fill-blue-400 p-2 duration-100 hover:bg-blue-300 active:border active:border-blue-400">
-                <span className="text-sm font-bold text-blue-500">staff</span>
-              </div>
-            </Link>
-            <Link to={`/pricing/${record.id}`}>
-              <div className="flex cursor-pointer items-center rounded-md bg-blue-200 fill-blue-400 p-2 duration-100 hover:bg-blue-300 active:border active:border-blue-400">
-                <span className="text-sm font-bold text-blue-500">service fees</span>
-              </div>
-            </Link>
+            <div
+              className="flex cursor-pointer items-center rounded-md bg-blue-200 fill-blue-400 p-2 duration-100 hover:bg-blue-300 active:border active:border-blue-400"
+              onClick={(e) => {
+                e.stopPropagation();
+                onOpenStaff(record.id);
+              }}
+            >
+              <span className="text-sm font-bold text-blue-500">staffs</span>
+            </div>
+            <div
+              className="flex cursor-pointer items-center rounded-md bg-blue-200 fill-blue-400 p-2 duration-100 hover:bg-blue-300 active:border active:border-blue-400"
+              onClick={(e) => {
+                e.stopPropagation();
+                onOpenPricing(record.id);
+              }}
+            >
+              <span className="text-sm font-bold text-blue-500">service fees</span>
+            </div>
           </div>
           {/* <IconButton onClick={() => onOpenFormHandler(record)}>
             <Iconify icon="solar:pen-bold-duotone" size={18} />
@@ -170,7 +197,7 @@ export default function ManageStationManagerList() {
                 setShowPayment(record.id);
               }}
             >
-              Payment
+              Payments
             </Button>
             <Button
               type="primary"
@@ -181,7 +208,7 @@ export default function ManageStationManagerList() {
                 onOpenPackageDetail(record);
               }}
             >
-              Package
+              Packages
             </Button>
           </div>
         </div>
@@ -268,6 +295,8 @@ export default function ManageStationManagerList() {
         style={{ marginTop: '1rem' }}
       />
       {/* <ManageStationEdit {...roleModalPros} /> */}
+      {showStaff && <StationStaff clickOne={stationId} onClose={closeStaff} />}
+      {showPricing && <StationPricing clickOne={stationId} onClose={closePricing} />}
       {showDetail && <StationDetail clickOne={clickOne} check onClose={closeDetail} />}
       {showInfo && <ManageStationEdit clickOne={clickOne} onClose={closeAndRefetchHandler} />}
       {showPayment && <PaymentStationList clickOne={showPayment} onClose={closePayment} />}

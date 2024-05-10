@@ -231,14 +231,7 @@ export default function ManageStationUserList() {
   // console.log('data', data);
 
   return (
-    <Card
-      title="User List"
-      // extra={
-      //   <Button type="primary" onClick={() => onOpenFormHandler()}>
-      //     New
-      //   </Button>
-      // }
-    >
+    <Card>
       <Form form={form} onFinish={onFinishHandler}>
         <Row gutter={24} justify="space-between">
           <Col span={20}>

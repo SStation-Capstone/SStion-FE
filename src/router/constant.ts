@@ -97,7 +97,7 @@ const ADMIN_USER_PERMISSION: Permission = {
 const STATION_MANAGER_PERMISSION: Permission = {
   id: '9100714781927704',
   parentId: '',
-  label: 'Station Manager',
+  label: 'Manager',
   name: 'manager',
   icon: 'ic-user',
   type: PermissionType.MENU,
@@ -223,7 +223,7 @@ const STATION_MANAGER_STAFF_MANAGE_PERMISSION: Permission = {
 const STATION_MANAGER_PRICING_MANAGE_PERMISSION: Permission = {
   id: '9100714781927712',
   parentId: '',
-  label: 'Pricing',
+  label: 'Service Fees',
   name: 'pricing',
   icon: 'solar:tag-price-bold',
   type: PermissionType.MENU,
@@ -301,7 +301,7 @@ const PACKAGE_HISTORY_STATION_MANAGE_PERMISSION: Permission = {
 const PAYMENT_STATION_MANAGE_PERMISSION: Permission = {
   id: '9100714781927733',
   parentId: '',
-  label: 'Payment Manager',
+  label: 'Payment',
   name: 'paymentManager',
   icon: 'fluent:payment-48-filled',
   type: PermissionType.MENU,
@@ -318,6 +318,7 @@ export const ADMIN_PERMISSION = [
   ADMIN_TRANSACTIONS_PERMISSION,
   ADMIN_USER_PERMISSION,
   PAYMENT_STATION_MANAGE_PERMISSION,
+  PACKAGE_STATION_MANAGE_PERMISSION,
 ];
 export const STATION_MANAGER_LIST_PERMISSION = [
   STATION_MANAGER_CONFIG_PERMISSION,

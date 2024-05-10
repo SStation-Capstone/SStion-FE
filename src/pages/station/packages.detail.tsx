@@ -188,7 +188,7 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
                     {clickOne.isCod ? 'true' : 'false'}
                   </Descriptions.Item> */}
                   <Descriptions.Item label="Total Days" span={3}>
-                    {clickOne.TotalDays}
+                    {clickOne.totalDays}
                   </Descriptions.Item>
                   {/* <Descriptions.Item label="Checkin Days" span={3}>
                     {clickOne.checkinDays}

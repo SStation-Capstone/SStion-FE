@@ -55,6 +55,18 @@ export function PricingDefaultCreate({ clickOne, onClose }: StaffCreateFormProps
       callback();
     }
   };
+  const validateNumberThan = (_: any, value: any, callback: (error?: Error) => void) => {
+    // eslint-disable-next-line no-restricted-globals
+    if (isNaN(value)) {
+      callback(new Error('Please input a number'));
+    }
+    // eslint-disable-next-line no-restricted-globals
+    if (parseInt(value, 10) < 500) {
+      callback(new Error('Please input a number than 500'));
+    } else {
+      callback();
+    }
+  };
   return (
     <Modal
       title={clickOne?.id ? 'Edit default pricing' : 'Create default pricing'}
@@ -80,7 +92,7 @@ export function PricingDefaultCreate({ clickOne, onClose }: StaffCreateFormProps
         <Row justify="space-between">
           <Col span={7}>
             <Form.Item
-              label="Start Time"
+              label="Start Time (h)"
               name="startTime"
               required
               rules={[
@@ -93,7 +105,7 @@ export function PricingDefaultCreate({ clickOne, onClose }: StaffCreateFormProps
           </Col>
           <Col span={7}>
             <Form.Item
-              label="End Time"
+              label="End Time (h)"
               name="endTime"
               required
               rules={[
@@ -106,12 +118,12 @@ export function PricingDefaultCreate({ clickOne, onClose }: StaffCreateFormProps
           </Col>
           <Col span={7}>
             <Form.Item
-              label="Price"
+              label="Price (đ)"
               name="price"
               required
               rules={[
                 { required: true, message: 'Please input price' },
-                { validator: validateNumber as any },
+                { validator: validateNumberThan as any },
               ]}
             >
               <Input />

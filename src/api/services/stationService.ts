@@ -200,7 +200,7 @@ export const useListZoneStaff = (values?: any) => {
   );
 };
 export const useListZone = (values?: any) => {
-  return useQuery(['listZoneStationManager', values], () =>
+  return useQuery(['listZone', values], () =>
     apiClient.get<StationGetRes>({
       url: `${StationApi.GetStation}/${values}/zones`,
       // params: values,

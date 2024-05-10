@@ -34,15 +34,15 @@ export function StationDetail({ clickOne, check, onClose }: PackagesFormProps) {
       width: '5%',
     },
     {
-      title: 'Start Time',
+      title: 'Start Time (h)',
       dataIndex: 'startTime',
     },
     {
-      title: 'End Time',
+      title: 'End Time (h)',
       dataIndex: 'endTime',
     },
     {
-      title: 'Price',
+      title: 'Price (đ)',
       dataIndex: 'formatPrice',
     },
   ];
@@ -101,12 +101,12 @@ export function StationDetail({ clickOne, check, onClose }: PackagesFormProps) {
                 }}
               >
                 <Avatar.Group>
-                  <Avatar size={74} shape="square" src={clickOne.manager.avatarUrl} />
+                  <Avatar size={74} shape="square" src={clickOne.manager?.avatarUrl} />
                   <div className="flex items-center pl-4">
                     <div>
-                      <h4 className="m-0 font-semibold">{clickOne.manager.fullName}</h4>
-                      <p>Email: {clickOne.manager.email}</p>
-                      <p>Phone Number: {clickOne.manager.phoneNumber}</p>
+                      <h4 className="m-0 font-semibold">{clickOne.manager?.fullName}</h4>
+                      <p>Email: {clickOne.manager?.email}</p>
+                      <p>Phone Number: {clickOne.manager?.phoneNumber}</p>
                     </div>
                   </div>
                 </Avatar.Group>
@@ -126,7 +126,7 @@ export function StationDetail({ clickOne, check, onClose }: PackagesFormProps) {
               </Card>
             </Col>
           </Row>
-          <strong>pricing</strong>
+          <strong>Service fee</strong>
           <Table
             rowKey="id"
             size="small"

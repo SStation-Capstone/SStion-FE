@@ -75,7 +75,7 @@ export default function ManageShelfManagerList({ stationId, id }: StationEditFor
           type="card"
           items={data?.contends.map((item: any, i) => {
             return {
-              label: `Shelf ${i + 1}`,
+              label: item.name,
               key: item.id,
               children: (
                 <div className="relative mb-8 mt-4 flex flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md">
@@ -103,7 +103,6 @@ export default function ManageShelfManagerList({ stationId, id }: StationEditFor
                           Shelf index: {item.index}
                         </span>
                       </Tooltip>
-
                       <Popconfirm
                         title="Delete the shelf"
                         okText="Yes"
@@ -138,28 +137,30 @@ export default function ManageShelfManagerList({ stationId, id }: StationEditFor
                       </div>
                     </div>
                     {item.rackSorts.length > 0 &&
-                      item.rackSorts.reverse().map((rack: any) => (
+                      item.rackSorts.reverse().map((rack: any, rackIndex) => (
                         <div className="flex h-full w-full gap-3" key={rack.id}>
                           <div className="flex cursor-pointer" onClick={() => onOpenFormRack(rack)}>
                             <Iconify icon="solar:pen-bold-duotone" size={18} />
                           </div>
-                          <Popconfirm
-                            title="Delete the rack"
-                            okText="Yes"
-                            cancelText="No"
-                            placement="left"
-                            onConfirm={() => {
-                              deleteRack(rack.id.toString());
-                            }}
-                          >
-                            <div className="flex cursor-pointer">
-                              <Iconify
-                                icon="mingcute:delete-2-fill"
-                                size={18}
-                                className="text-error"
-                              />
-                            </div>
-                          </Popconfirm>
+                          {rackIndex === 0 && (
+                            <Popconfirm
+                              title="Delete the rack"
+                              okText="Yes"
+                              cancelText="No"
+                              placement="left"
+                              onConfirm={() => {
+                                deleteRack(rack.id.toString());
+                              }}
+                            >
+                              <div className="flex cursor-pointer">
+                                <Iconify
+                                  icon="mingcute:delete-2-fill"
+                                  size={18}
+                                  className="text-error"
+                                />
+                              </div>
+                            </Popconfirm>
+                          )}
                           <Tooltip
                             placement="top"
                             color="#fefefe"
@@ -220,7 +221,12 @@ export default function ManageShelfManagerList({ stationId, id }: StationEditFor
                           >
                             <div
                               onClick={() => onOpenFormHandler(rack)}
-                              style={{ cursor: 'pointer', width: '100%' }}
+                              style={{
+                                cursor: 'pointer',
+                                width: '100%',
+                                paddingLeft: `${rackIndex === 0 ? '0px' : '30px'}`,
+                                paddingRight: '10px',
+                              }}
                             >
                               <Progress
                                 className="ant-progress-custom"

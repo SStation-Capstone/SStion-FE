@@ -28,7 +28,7 @@ const { Title } = Typography;
 export default function PackagesManagerList() {
   const id = getItem(StorageEnum.User).stationId as number;
   const [listRelateParams, setListRelateParams] = useState<InputType>();
-  const { data, isLoading } = useListStaffPackage({ id, listRelateParams });
+  const { data, isLoading } = useListStaffPackage({ id: id || 0, listRelateParams });
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);

@@ -37,6 +37,11 @@ export function StationByManager({ clickOne, onClose }: PackagesFormProps) {
       dataIndex: 'name',
     },
     {
+      title: 'Name manager',
+      dataIndex: 'fullName',
+      render: (_: any) => <div>{clickOne.fullName}</div>,
+    },
+    {
       title: 'Description',
       dataIndex: 'description',
     },
@@ -62,18 +67,18 @@ export function StationByManager({ clickOne, onClose }: PackagesFormProps) {
       title: 'View',
       key: 'operation',
       align: 'center',
-      width: 250,
+      width: 350,
       render: (_, record) => (
         <div className="text-gray flex w-full items-center justify-center">
           <div className="flex gap-2">
             <Link to={`/zone/${record.id}`}>
               <div className="flex cursor-pointer items-center rounded-md bg-blue-200 fill-blue-400 p-2 duration-100 hover:bg-blue-300 active:border active:border-blue-400">
-                <span className="text-sm font-bold text-blue-500">config</span>
+                <span className="text-sm font-bold text-blue-500">manager config</span>
               </div>
             </Link>
             <Link to={`/staff/${record.id}`}>
               <div className="flex cursor-pointer items-center rounded-md bg-blue-200 fill-blue-400 p-2 duration-100 hover:bg-blue-300 active:border active:border-blue-400">
-                <span className="text-sm font-bold text-blue-500">staff</span>
+                <span className="text-sm font-bold text-blue-500">staffs</span>
               </div>
             </Link>
             <Link to={`/pricing/${record.id}`}>

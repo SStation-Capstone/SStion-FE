@@ -18,8 +18,10 @@ import { InputType } from '#/api';
 import { Pricing } from '#/entity';
 
 const { Title } = Typography;
-
-export default function StaffManagerList() {
+export type PricingFormProps = {
+  check?: any;
+};
+export default function StaffManagerList({ check }: PricingFormProps) {
   const [form] = Form.useForm();
   const { id } = useParams();
   const [listRelateParams, setListRelateParams] = useState<InputType>();
@@ -27,9 +29,9 @@ export default function StaffManagerList() {
   const [clickTwo, setClickTwo] = useState<any>();
   const [showInfo, setShowInfo] = useState(false);
   const [showDefault, setShowDefault] = useState(false);
-  const { data, isLoading } = useListPricing(id);
-  const { mutateAsync: deleteMutate } = useDeletePricing(id);
-  const { mutateAsync: createMutate } = useGoPricingDefault(id);
+  const { data, isLoading } = useListPricing(check || id);
+  const { mutateAsync: deleteMutate } = useDeletePricing(check || id);
+  const { mutateAsync: createMutate } = useGoPricingDefault(check || id);
   if (isLoading) return <CircleLoading />;
 
   const onOpenFormHandler = (record?: Pricing) => {
@@ -125,7 +127,7 @@ export default function StaffManagerList() {
           <Button type="primary" onClick={() => onOpenFormHandler()}>
             New
           </Button>
-          <Button type="primary" onClick={() => onOpenDefault(id)}>
+          <Button type="primary" onClick={() => onOpenDefault(check || id)}>
             Use default pricing
           </Button>
         </div>
@@ -173,7 +175,9 @@ export default function StaffManagerList() {
         current={data?.page}
         style={{ marginTop: '1rem' }}
       />
-      {showInfo && <PricingCreate clickOne={clickOne} onClose={closeAndRefetchHandler} />}
+      {showInfo && (
+        <PricingCreate clickOne={clickOne} check={check || id} onClose={closeAndRefetchHandler} />
+      )}
       {showDefault && <PricingDefaultModal click={clickTwo} onClose={closeDefault} />}
     </Card>
   );
