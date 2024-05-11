@@ -1,4 +1,4 @@
-import { Button, Col, Form, Input, Pagination, Typography, Row, Modal } from 'antd';
+import { Button, Form, Pagination, Typography, Modal } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
 
@@ -21,27 +21,16 @@ export default function PricingDefaultModal({ click, onClose }: PricingFormProps
 
   const columns: ColumnsType<any> = [
     {
-      title: 'No',
-      dataIndex: 'no',
-      // eslint-disable-next-line no-plusplus
-      render: (_text, _data, index) => <Title level={5}>{++index}</Title>,
-      width: '5%',
-    },
-    {
-      title: 'Start Time',
+      title: 'From (h)',
       dataIndex: 'startTime',
     },
     {
-      title: 'End Time',
+      title: 'to (h)',
       dataIndex: 'endTime',
     },
     {
       title: 'Price',
-      dataIndex: 'pricePerUnit',
-    },
-    {
-      title: 'Duration',
-      dataIndex: 'unitDuration',
+      dataIndex: 'formatPrice',
     },
   ];
 

@@ -1,4 +1,4 @@
-import { Button, Card, Col, Form, Image, Input, Pagination, Popconfirm, Row } from 'antd';
+import { Button, Card, Col, Form, Image, Input, Pagination, Row, Typography } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
 
@@ -8,6 +8,7 @@ import { CircleLoading } from '@/components/loading';
 
 import { ManagerListStation } from './manager-list.station';
 import { ManagerEdit } from './manger.edit';
+import { StationByManager } from './station-list.manager';
 
 import { InputType } from '#/api';
 import { Manager, Station } from '#/entity';
@@ -29,6 +30,7 @@ export default function ManageStationManagerList() {
   const [clickOne, setClickOne] = useState<Manager>();
   const [clickOneStation, setClickOneStation] = useState<Station>();
   const [showInfo, setShowInfo] = useState(false);
+  const [showStation, setShowStation] = useState(false);
   const [showAddToStation, setShowAddToStation] = useState(false);
   const { data, isLoading } = useListManager(listRelateParams);
   const { mutateAsync: deleteMutate } = useDeleteManager();
@@ -41,6 +43,14 @@ export default function ManageStationManagerList() {
       setClickOne(undefined);
     }
     setShowInfo(true);
+  };
+  const onOpenStation = (record?: any) => {
+    if (record) {
+      setClickOne(record);
+    } else {
+      setClickOne(undefined);
+    }
+    setShowStation(true);
   };
   const submitHandle = (record?: Manager) => {
     if (record?.id) {
@@ -57,13 +67,19 @@ export default function ManageStationManagerList() {
   const closeAndRefetchHandler = async () => {
     setShowInfo(false);
   };
+  const closeStation = async () => {
+    setShowStation(false);
+  };
   const closeAndRefetchHandlerStation = async () => {
     setShowAddToStation(false);
   };
   const columns: ColumnsType<Manager> = [
     {
-      title: 'Id',
-      dataIndex: 'id',
+      title: 'No',
+      dataIndex: 'no',
+      // eslint-disable-next-line no-plusplus
+      render: (_text, _data, index) => <Typography>{++index}</Typography>,
+      width: '5%',
     },
     {
       title: 'UserName',
@@ -121,13 +137,23 @@ export default function ManageStationManagerList() {
       width: 100,
       render: (_, record) => (
         <div className="text-gray flex w-full justify-center">
-          <IconButton onClick={() => onOpenFormHandlerStation(record)}>
+          <IconButton
+            onClick={(e) => {
+              e.stopPropagation();
+              onOpenFormHandlerStation(record);
+            }}
+          >
             <Iconify icon="solar:add-circle-line-duotone" size={18} />
           </IconButton>
-          <IconButton onClick={() => onOpenFormHandler(record)}>
+          <IconButton
+            onClick={(e) => {
+              e.stopPropagation();
+              onOpenFormHandler(record);
+            }}
+          >
             <Iconify icon="solar:pen-bold-duotone" size={18} />
           </IconButton>
-          <Popconfirm
+          {/* <Popconfirm
             title="Delete the Role"
             okText="Yes"
             cancelText="No"
@@ -137,7 +163,7 @@ export default function ManageStationManagerList() {
             <IconButton>
               <Iconify icon="mingcute:delete-2-fill" size={18} className="text-error" />
             </IconButton>
-          </Popconfirm>
+          </Popconfirm> */}
         </div>
       ),
     },
@@ -181,33 +207,39 @@ export default function ManageStationManagerList() {
   // console.log('data', data);
 
   return (
-    <Card
-      title="Manager List"
-      extra={
-        <Button type="primary" onClick={() => onOpenFormHandler()}>
-          New
-        </Button>
-      }
-    >
+    <Card>
       <Form form={form} onFinish={onFinishHandler}>
         <Row gutter={24} justify="space-between">
-          <Col span={8}>
-            <Form.Item name="Search">
-              <Input placeholder="Search by name" allowClear />
-            </Form.Item>
-          </Col>
-          <Col span={4}>
-            <Row>
-              <Col span={12}>
-                <Form.Item name="search">
-                  <Button type="primary" htmlType="submit">
-                    Search
-                  </Button>
+          <Col span={20}>
+            <Row gutter={24} justify="flex-start">
+              <Col span={8}>
+                <Form.Item name="Search">
+                  <Input placeholder="Search by name" allowClear />
                 </Form.Item>
               </Col>
+              <Col span={8}>
+                <Row>
+                  <Col span={7}>
+                    <Form.Item name="search">
+                      <Button type="primary" htmlType="submit">
+                        Search
+                      </Button>
+                    </Form.Item>
+                  </Col>
+                  <Col span={7}>
+                    <Button type="primary" onClick={resetHandler}>
+                      Reset
+                    </Button>
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+          </Col>
+          <Col span={2}>
+            <Row>
               <Col span={12}>
-                <Button type="primary" onClick={resetHandler}>
-                  Reset
+                <Button type="primary" onClick={() => onOpenFormHandler()}>
+                  New
                 </Button>
               </Col>
             </Row>
@@ -222,6 +254,13 @@ export default function ManageStationManagerList() {
         columns={columns}
         dataSource={data?.contends}
         loading={isLoading}
+        onRow={(record, rowIndex) => {
+          return {
+            onClick: (event) => {
+              onOpenStation(record);
+            },
+          };
+        }}
       />
       <Pagination
         showSizeChanger
@@ -231,9 +270,9 @@ export default function ManageStationManagerList() {
         current={data?.page}
         style={{ marginTop: '1rem' }}
       />
-
       {/* <ManagerEdit {...roleModalPros} /> */}
       {showInfo && <ManagerEdit clickOne={clickOne} onClose={closeAndRefetchHandler} />}
+      {showStation && <StationByManager clickOne={clickOne} onClose={closeStation} />}
       {showAddToStation && (
         <ManagerListStation clickOne={clickOneStation} onClose={closeAndRefetchHandlerStation} />
       )}

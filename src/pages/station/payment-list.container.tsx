@@ -5,6 +5,8 @@ import { useState } from 'react';
 import { useListStationPayment } from '@/api/services/stationService';
 import { CircleLoading } from '@/components/loading';
 
+import { PaymentDetail } from '../payment/payment.detail';
+
 import { InputType } from '#/api';
 
 const { Title } = Typography;
@@ -14,9 +16,22 @@ export type PackagesFormProps = {
 };
 export function PaymentStationList({ clickOne, onClose }: PackagesFormProps) {
   const [listRelateParams, setListRelateParams] = useState<InputType>();
+  const [click, setClick] = useState<any>();
+  const [showInfo, setShowInfo] = useState(false);
   const { data, isLoading } = useListStationPayment({ id: clickOne, listRelateParams });
   if (isLoading) return <CircleLoading />;
+  const onOpenFormHandler = (record?: any) => {
+    if (record) {
+      setClick(record);
+    } else {
+      setClick(undefined);
+    }
+    setShowInfo(true);
+  };
 
+  const closeAndRefetchHandler = async () => {
+    setShowInfo(false);
+  };
   const columns = [
     {
       title: 'No',
@@ -26,22 +41,15 @@ export function PaymentStationList({ clickOne, onClose }: PackagesFormProps) {
       width: '5%',
     },
     {
-      title: 'stationName',
-      dataIndex: 'stationName',
+      title: 'Station Name',
+      dataIndex: 'station',
+      render: (_: any, record: any) => <div>{record.station.name}</div>,
     },
     {
-      title: 'packageName',
-      dataIndex: 'packageName',
+      title: 'Package Name',
+      dataIndex: 'package',
+      render: (_: any, record: any) => <div>{record.package.name}</div>,
     },
-    {
-      title: 'createdBy',
-      dataIndex: 'createdBy',
-    },
-    {
-      title: 'modifiedBy',
-      dataIndex: 'modifiedBy',
-    },
-    { title: 'priceCod', dataIndex: 'priceCod' },
     { title: 'totalPrice', dataIndex: 'totalPrice' },
     { title: 'status', dataIndex: 'status' },
   ];
@@ -70,15 +78,24 @@ export function PaymentStationList({ clickOne, onClose }: PackagesFormProps) {
         columns={columns}
         dataSource={data?.contends}
         loading={isLoading}
+        onRow={(record, rowIndex) => {
+          return {
+            onClick: (event) => {
+              onOpenFormHandler(record);
+            },
+          };
+        }}
       />
       <Pagination
         showSizeChanger
         onChange={onPageChange}
+        // eslint-disable-next-line no-unsafe-optional-chaining
         total={data?.totalPages * 10}
         // showTotal={(total) => `共 ${total} 条`}
         current={data?.page}
         style={{ marginTop: '1rem' }}
       />
+      {showInfo && <PaymentDetail onClose={closeAndRefetchHandler} clickOne={click} />}
     </Modal>
   );
 }

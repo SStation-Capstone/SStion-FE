@@ -13,15 +13,17 @@ import { InputType } from '#/api';
 import { Staff } from '#/entity';
 
 const { Title } = Typography;
-
-export default function StaffManagerList() {
+export type StaffFormProps = {
+  check?: any;
+};
+export default function StaffManagerList({ check }: StaffFormProps) {
   const [form] = Form.useForm();
   const { id } = useParams();
   const [listRelateParams, setListRelateParams] = useState<InputType>();
   const [clickOne, setClickOne] = useState<Staff>();
   const [showInfo, setShowInfo] = useState(false);
-  const { data, isLoading } = useListStaff(id);
-  const { mutateAsync: deleteMutate } = useDeleteStaff(id);
+  const { data, isLoading } = useListStaff(check || id);
+  const { mutateAsync: deleteMutate } = useDeleteStaff(check || id);
   if (isLoading) return <CircleLoading />;
   console.log('data', data);
   const onOpenFormHandler = (record?: Staff) => {

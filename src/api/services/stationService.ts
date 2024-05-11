@@ -44,8 +44,7 @@ export interface PricingPayload {
   id: number;
   startTime: number;
   endTime: number;
-  unitDuration: number;
-  pricePerUnit: number;
+  price: number;
 }
 
 export interface PutStaffPayload {
@@ -56,22 +55,22 @@ export interface PutStaffPayload {
 }
 
 export interface ShelfPayload {
-  name: string;
-  description: string;
+  // name: string;
+  // description: string;
   // index: number;
   // width: number;
   // height: number;
   // length: number;
   zoneId: any;
   numberOfRacks: number;
-  numberOfSlotsPerRack: number;
-  slot: object;
+  // numberOfSlotsPerRack: number;
+  // slot: object;
 }
 export interface CheckInPayload {
   name: string;
   description: string;
-  priceCod: number;
-  isCod: boolean;
+  // priceCod: number;
+  // isCod: boolean;
   weight: number;
   height: number;
   width: number;
@@ -80,8 +79,8 @@ export interface CheckInPayload {
   zoneId: number;
   shelfId: any;
   rackId: any;
-  slotId: any;
-  senderId: string;
+  // slotId: any;
+  // senderId: string;
   receiverId: string;
   packageImages: any[];
 }
@@ -201,7 +200,7 @@ export const useListZoneStaff = (values?: any) => {
   );
 };
 export const useListZone = (values?: any) => {
-  return useQuery(['listZoneStationManager', values], () =>
+  return useQuery(['listZone', values], () =>
     apiClient.get<StationGetRes>({
       url: `${StationApi.GetStation}/${values}/zones`,
       // params: values,
@@ -650,7 +649,7 @@ export const useGetPackageDetail = (data?: any) => {
 export const useGetPackageBySlot = (data?: any) => {
   return useQuery(['package', data], () =>
     apiClient.get({
-      url: `${StationApi.Packages}?SlotId=${data.id}`,
+      url: `${StationApi.Packages}?RackId=${data.id}`,
       params: data.payload,
     }),
   );

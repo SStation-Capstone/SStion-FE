@@ -76,7 +76,7 @@ export default function ManageZoneManagerList() {
 
   return (
     <Card
-      title="Package Management"
+      title="Zone Management"
       extra={
         <>
           <Button type="primary" onClick={() => onOpenFormHandler()}>

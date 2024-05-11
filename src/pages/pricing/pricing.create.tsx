@@ -1,6 +1,5 @@
 import { Button, Form, Input, Modal, message } from 'antd';
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
 
 import { PricingPayload, useCreatePricing, useUpdatePricing } from '@/api/services/stationService';
 
@@ -8,13 +7,13 @@ import { Pricing } from '#/entity';
 
 export type StaffCreateFormProps = {
   clickOne?: Pricing;
+  check?: Pricing;
   onClose: () => void;
 };
-export function PricingCreate({ clickOne, onClose }: StaffCreateFormProps) {
+export function PricingCreate({ clickOne, check, onClose }: StaffCreateFormProps) {
   const [form] = Form.useForm();
-  const { id } = useParams();
-  const { mutateAsync: createMutate } = useCreatePricing(id);
-  const { mutateAsync: updateMutate } = useUpdatePricing(id);
+  const { mutateAsync: createMutate } = useCreatePricing(check);
+  const { mutateAsync: updateMutate } = useUpdatePricing(check);
   const [loading, setLoading] = useState<boolean>(false);
   const submitHandle = async () => {
     setLoading(true);
@@ -24,11 +23,11 @@ export function PricingCreate({ clickOne, onClose }: StaffCreateFormProps) {
         const updateData: PricingPayload = {
           ...clickOne,
           id: clickOne.id,
+          price: 0,
         };
         updateData.startTime = values.startTime;
         updateData.endTime = values.endTime;
-        updateData.pricePerUnit = values.pricePerUnit;
-        updateData.unitDuration = values.unitDuration;
+        updateData.price = values.price;
         updateMutate(updateData);
         setLoading(false);
       } else {
@@ -53,9 +52,21 @@ export function PricingCreate({ clickOne, onClose }: StaffCreateFormProps) {
       callback();
     }
   };
+  const validateNumberThan = (_: any, value: any, callback: (error?: Error) => void) => {
+    // eslint-disable-next-line no-restricted-globals
+    if (isNaN(value)) {
+      callback(new Error('Please input a number'));
+    }
+    // eslint-disable-next-line no-restricted-globals
+    if (parseInt(value, 10) < 500) {
+      callback(new Error('Please input a number than 500'));
+    } else {
+      callback();
+    }
+  };
   return (
     <Modal
-      title={clickOne?.id ? 'Edit Staff' : 'Create Staff'}
+      title={clickOne?.id ? 'Edit service fee' : 'Create service fee'}
       open
       onOk={submitHandle}
       onCancel={() => onClose()}
@@ -75,9 +86,9 @@ export function PricingCreate({ clickOne, onClose }: StaffCreateFormProps) {
         // wrapperCol={{ span: 18 }}
         layout="vertical"
       >
-        <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-4">
+        <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
           <Form.Item
-            label="Start Time"
+            label="Start Time (h)"
             name="startTime"
             required
             rules={[
@@ -88,7 +99,7 @@ export function PricingCreate({ clickOne, onClose }: StaffCreateFormProps) {
             <Input />
           </Form.Item>
           <Form.Item
-            label="End Time"
+            label="End Time (h)"
             name="endTime"
             required
             rules={[
@@ -99,23 +110,12 @@ export function PricingCreate({ clickOne, onClose }: StaffCreateFormProps) {
             <Input />
           </Form.Item>
           <Form.Item
-            label="Price"
-            name="pricePerUnit"
+            label="Price (đ)"
+            name="price"
             required
             rules={[
               { required: true, message: 'Please input price' },
-              { validator: validateNumber as any },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Duration"
-            name="unitDuration"
-            required
-            rules={[
-              { required: true, message: 'Please input Duration' },
-              { validator: validateNumber as any },
+              { validator: validateNumberThan as any },
             ]}
           >
             <Input />

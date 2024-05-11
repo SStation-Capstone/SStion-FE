@@ -550,12 +550,12 @@ small.redtext {
 }
 
 .ant-progress-custom {
-  width: 50px !important;
+  width: 200px !important;
   height: 50px;
 }
 
 .ant-progress-custom.css-dev-only-do-not-override-1de8xem.ant-progress .ant-progress-inner {
-  width: 50px;
+  width: 200px;
   height: 50px;
   border-radius: 10px;
 }

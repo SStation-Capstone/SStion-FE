@@ -38,18 +38,11 @@ export default function ManageStationManagerList() {
   };
   const columns: TableProps<TransactionData>['columns'] = [
     {
-      title: 'Id',
-      dataIndex: 'id',
-      render: (_, record) => (
-        <Typography.Link
-          onClick={() => {
-            setShowInfo(true);
-            setClickOne(record);
-          }}
-        >
-          {record.id}
-        </Typography.Link>
-      ),
+      title: 'No',
+      dataIndex: 'no',
+      // eslint-disable-next-line no-plusplus
+      render: (_text, _data, index) => <Typography>{++index}</Typography>,
+      width: '5%',
     },
     // {
     //   title: 'count',
@@ -144,14 +137,7 @@ export default function ManageStationManagerList() {
     }
   };
   return (
-    <Card
-      title="Transaction List"
-      // extra={
-      //   <Button type="primary" onClick={() => onOpenFormHandler()}>
-      //     New
-      //   </Button>
-      // }
-    >
+    <Card>
       <Form form={form} onFinish={onFinishHandler}>
         <Row gutter={24} justify="space-between">
           <Col span={20}>
@@ -199,6 +185,13 @@ export default function ManageStationManagerList() {
         columns={columns}
         dataSource={data?.contends}
         loading={isLoading}
+        onRow={(record, rowIndex) => {
+          return {
+            onClick: (event) => {
+              onOpenFormHandler(record);
+            },
+          };
+        }}
       />
       <Pagination
         onChange={onPageChange}

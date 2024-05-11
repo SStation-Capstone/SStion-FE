@@ -1,16 +1,4 @@
-import { TinyColor } from '@ctrl/tinycolor';
-import {
-  Avatar,
-  Button,
-  Card,
-  Col,
-  ConfigProvider,
-  Form,
-  Input,
-  Pagination,
-  Row,
-  Typography,
-} from 'antd';
+import { Avatar, Button, Card, Col, Form, Input, Pagination, Row } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -20,41 +8,24 @@ import { CircleLoading } from '@/components/loading';
 
 import { PackageList } from './package-list.container';
 import { PaymentStationList } from './payment-list.container';
+import { StationDetail } from './station.detail';
 import { ManageStationEdit } from './station.edit';
 
 import { InputType } from '#/api';
 import { Station } from '#/entity';
 
-const { Title } = Typography;
-
-// const DEFAULE_ROLE_VALUE: Station = {
-//   id: -1,
-//   name: '',
-//   description: '',
-//   contactPhone: '',
-//   address: '',
-//   latitude: '',
-//   longitude: '',
-//   stationImages: [],
-// };
 export default function ManageStationManagerList() {
   const [form] = Form.useForm();
-  const colors1 = ['#6253E1', '#04BEFE'];
-  const colors2 = ['#40e495', '#30dd8a', '#2bb673'];
   const [listRelateParams, setListRelateParams] = useState<InputType>();
   const [clickOne, setClickOne] = useState<Station>();
   const [clickTwo, setClickTwo] = useState();
   const [showInfo, setShowInfo] = useState(false);
+  const [showDetail, setShowDetail] = useState(false);
   const [showPayment, setShowPayment] = useState<any>(false);
   const [showPackageDetail, setShowPackageDetail] = useState(false);
   const { data, isLoading } = useListStation(listRelateParams);
   // const { mutateAsync: deleteMutate } = useDeleteStation();
   if (isLoading) return <CircleLoading />;
-  const getHoverColors = (colors: string[]) =>
-    colors.map((color) => new TinyColor(color).lighten(5).toString());
-  const getActiveColors = (colors: string[]) =>
-    colors.map((color) => new TinyColor(color).darken(5).toString());
-
   const onOpenFormHandler = (record?: Station) => {
     if (record) {
       setClickOne(record);
@@ -63,7 +34,14 @@ export default function ManageStationManagerList() {
     }
     setShowInfo(true);
   };
-
+  const onOpenFormDetail = (record?: Station) => {
+    if (record) {
+      setClickOne(record);
+    } else {
+      setClickOne(undefined);
+    }
+    setShowDetail(true);
+  };
   const onOpenPackageDetail = (record?: any) => {
     if (record) {
       setClickTwo(record);
@@ -76,6 +54,9 @@ export default function ManageStationManagerList() {
   const closeAndRefetchHandler = async () => {
     setShowInfo(false);
   };
+  const closeDetail = async () => {
+    setShowDetail(false);
+  };
   const closePayment = async () => {
     setShowPayment(false);
   };
@@ -83,13 +64,13 @@ export default function ManageStationManagerList() {
     setShowPackageDetail(false);
   };
   const columns: ColumnsType<Station> = [
-    {
-      title: 'No',
-      dataIndex: 'no',
-      // eslint-disable-next-line no-plusplus
-      render: (_text, _data, index) => <Title level={5}>{++index}</Title>,
-      width: '5%',
-    },
+    // {
+    //   title: 'No',
+    //   dataIndex: 'no',
+    //   // eslint-disable-next-line no-plusplus
+    //   render: (_text, _data, index) => <Title level={5}>{++index}</Title>,
+    //   width: '5%',
+    // },
     {
       title: 'Images',
       dataIndex: 'stationImages',
@@ -124,18 +105,34 @@ export default function ManageStationManagerList() {
     //     </ProTag>
     //   ),
     // },
-    { title: 'Address', dataIndex: 'address' },
+    {
+      title: 'Address',
+      dataIndex: 'address',
+      render: (text) => (
+        <div
+          style={{
+            maxWidth: 200,
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          }}
+        >
+          {text}
+        </div>
+      ),
+    },
+
     {
       title: 'View',
       key: 'operation',
       align: 'center',
-      width: 100,
+      width: 250,
       render: (_, record) => (
         <div className="text-gray flex w-full items-center justify-center">
           <div className="flex gap-2">
             <Link to={`/zone/${record.id}`}>
               <div className="flex cursor-pointer items-center rounded-md bg-blue-200 fill-blue-400 p-2 duration-100 hover:bg-blue-300 active:border active:border-blue-400">
-                <span className="text-sm font-bold text-blue-500">zone</span>
+                <span className="text-sm font-bold text-blue-500">config</span>
               </div>
             </Link>
             <Link to={`/staff/${record.id}`}>
@@ -145,7 +142,7 @@ export default function ManageStationManagerList() {
             </Link>
             <Link to={`/pricing/${record.id}`}>
               <div className="flex cursor-pointer items-center rounded-md bg-blue-200 fill-blue-400 p-2 duration-100 hover:bg-blue-300 active:border active:border-blue-400">
-                <span className="text-sm font-bold text-blue-500">pricing</span>
+                <span className="text-sm font-bold text-blue-500">service fees</span>
               </div>
             </Link>
           </div>
@@ -176,56 +173,28 @@ export default function ManageStationManagerList() {
       render: (_, record) => (
         <div className="text-gray flex w-full items-center justify-center">
           <div className="flex gap-2">
-            <ConfigProvider
-              theme={{
-                components: {
-                  Button: {
-                    colorPrimary: `linear-gradient(135deg, ${colors1.join(', ')})`,
-                    colorPrimaryHover: `linear-gradient(135deg, ${getHoverColors(colors1).join(
-                      ', ',
-                    )})`,
-                    colorPrimaryActive: `linear-gradient(135deg, ${getActiveColors(colors1).join(
-                      ', ',
-                    )})`,
-                    lineWidth: 0,
-                  },
-                },
+            <Button
+              type="primary"
+              size="large"
+              style={{ padding: '0 10px', height: '35px' }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowPayment(record.id);
               }}
             >
-              <Button
-                type="primary"
-                size="large"
-                style={{ padding: '0 10px', height: '35px' }}
-                onClick={() => setShowPayment(record.id)}
-              >
-                Payment
-              </Button>
-            </ConfigProvider>
-            <ConfigProvider
-              theme={{
-                components: {
-                  Button: {
-                    colorPrimary: `linear-gradient(135deg, ${colors2.join(', ')})`,
-                    colorPrimaryHover: `linear-gradient(135deg, ${getHoverColors(colors2).join(
-                      ', ',
-                    )})`,
-                    colorPrimaryActive: `linear-gradient(135deg, ${getActiveColors(colors2).join(
-                      ', ',
-                    )})`,
-                    lineWidth: 0,
-                  },
-                },
+              Payment
+            </Button>
+            <Button
+              type="primary"
+              size="large"
+              style={{ padding: '0 10px', height: '35px', backgroundColor: '#13c2c2' }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onOpenPackageDetail(record);
               }}
             >
-              <Button
-                type="primary"
-                size="large"
-                style={{ padding: '0 10px', height: '35px' }}
-                onClick={() => onOpenPackageDetail(record)}
-              >
-                Package
-              </Button>
-            </ConfigProvider>
+              Package
+            </Button>
           </div>
         </div>
       ),
@@ -247,33 +216,39 @@ export default function ManageStationManagerList() {
   };
 
   return (
-    <Card
-      title="List station"
-      extra={
-        <Button type="primary" onClick={() => onOpenFormHandler()}>
-          New
-        </Button>
-      }
-    >
+    <Card>
       <Form form={form} onFinish={onFinishHandler}>
         <Row gutter={24} justify="space-between">
-          <Col span={8}>
-            <Form.Item name="Search">
-              <Input placeholder="Search by name" allowClear />
-            </Form.Item>
-          </Col>
-          <Col span={4}>
-            <Row>
-              <Col span={12}>
-                <Form.Item name="search">
-                  <Button type="primary" htmlType="submit">
-                    Search
-                  </Button>
+          <Col span={20}>
+            <Row gutter={24} justify="flex-start">
+              <Col span={8}>
+                <Form.Item name="Search">
+                  <Input placeholder="Search by name" allowClear />
                 </Form.Item>
               </Col>
+              <Col span={8}>
+                <Row>
+                  <Col span={7}>
+                    <Form.Item name="search">
+                      <Button type="primary" htmlType="submit">
+                        Search
+                      </Button>
+                    </Form.Item>
+                  </Col>
+                  <Col span={7}>
+                    <Button type="primary" onClick={resetHandler}>
+                      Reset
+                    </Button>
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+          </Col>
+          <Col span={2}>
+            <Row>
               <Col span={12}>
-                <Button type="primary" onClick={resetHandler}>
-                  Reset
+                <Button type="primary" onClick={() => onOpenFormHandler()}>
+                  New
                 </Button>
               </Col>
             </Row>
@@ -288,6 +263,13 @@ export default function ManageStationManagerList() {
         columns={columns}
         dataSource={data?.contends}
         loading={isLoading}
+        onRow={(record, rowIndex) => {
+          return {
+            onClick: (event) => {
+              onOpenFormDetail(record);
+            },
+          };
+        }}
       />
       <Pagination
         showSizeChanger
@@ -298,6 +280,7 @@ export default function ManageStationManagerList() {
         style={{ marginTop: '1rem' }}
       />
       {/* <ManageStationEdit {...roleModalPros} /> */}
+      {showDetail && <StationDetail clickOne={clickOne} onClose={closeDetail} />}
       {showPayment && <PaymentStationList clickOne={showPayment} onClose={closePayment} />}
       {showPackageDetail && <PackageList clickOne={clickTwo} onClose={closePackageDetail} />}
       {showInfo && <ManageStationEdit clickOne={clickOne} onClose={closeAndRefetchHandler} />}

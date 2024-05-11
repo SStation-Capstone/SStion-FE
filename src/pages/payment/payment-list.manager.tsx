@@ -8,6 +8,10 @@ import { CircleLoading } from '@/components/loading';
 import { getItem } from '@/utils/storage';
 import { numberWithCommas } from '@/utils/string';
 
+import { TransactionTpeRender } from '../admin/transactions/constant';
+
+import { PaymentDetail } from './payment.detail';
+
 import { InputType } from '#/api';
 import { StorageEnum } from '#/enum';
 
@@ -21,8 +25,22 @@ export default function PaymentStationManagerList() {
     stationIds: id || `?StationIds=${idStaff}`,
     values: listRelateParams,
   });
+  const [clickOne, setClickOne] = useState<any>();
+  const [showInfo, setShowInfo] = useState(false);
   // const { mutateAsync: deleteMutate } = useDeleteStation();
   if (isLoading) return <CircleLoading />;
+  const onOpenFormHandler = (record?: any) => {
+    if (record) {
+      setClickOne(record);
+    } else {
+      setClickOne(undefined);
+    }
+    setShowInfo(true);
+  };
+
+  const closeAndRefetchHandler = async () => {
+    setShowInfo(false);
+  };
   const columns = [
     {
       title: 'No',
@@ -59,18 +77,27 @@ export default function PaymentStationManagerList() {
       render: (_: any, record: any) => <div>{record.package.name}</div>,
     },
     {
-      title: 'Created By',
-      dataIndex: 'createdBy',
+      title: 'Type',
+      dataIndex: 'type',
+      render: (_: any, record: any) => (
+        <Tag color={TransactionTpeRender.find((e) => e.status === record?.type)?.color}>
+          {record.type}
+        </Tag>
+      ),
     },
-    {
-      title: 'Modified By',
-      dataIndex: 'modifiedBy',
-    },
-    {
-      title: 'Price Cod',
-      dataIndex: 'priceCod',
-      render: (_: any, record: any) => <div>{numberWithCommas(record.priceCod)} đ</div>,
-    },
+    // {
+    //   title: 'Created By',
+    //   dataIndex: 'createdBy',
+    // },
+    // {
+    //   title: 'Modified By',
+    //   dataIndex: 'modifiedBy',
+    // },
+    // {
+    //   title: 'Price Cod',
+    //   dataIndex: 'priceCod',
+    //   render: (_: any, record: any) => <div>{numberWithCommas(record.priceCod)} đ</div>,
+    // },
     {
       title: 'Service Fee',
       dataIndex: 'serviceFee',
@@ -98,7 +125,7 @@ export default function PaymentStationManagerList() {
   };
 
   return (
-    <Card title="List payment station">
+    <Card>
       <Table
         rowKey="id"
         size="small"
@@ -107,6 +134,13 @@ export default function PaymentStationManagerList() {
         columns={columns as any}
         dataSource={data?.contends}
         loading={isLoading}
+        onRow={(record, rowIndex) => {
+          return {
+            onClick: (event) => {
+              onOpenFormHandler(record);
+            },
+          };
+        }}
       />
       <Pagination
         showSizeChanger
@@ -117,6 +151,7 @@ export default function PaymentStationManagerList() {
         current={data?.page}
         style={{ marginTop: '1rem' }}
       />
+      {showInfo && <PaymentDetail onClose={closeAndRefetchHandler} clickOne={clickOne} />}
     </Card>
   );
 }

@@ -26,11 +26,11 @@ export function PricingDefaultCreate({ clickOne, onClose }: StaffCreateFormProps
         const updateData: PricingPayload = {
           ...clickOne,
           id: clickOne.id,
+          price: 0,
         };
         updateData.startTime = values.startTime;
         updateData.endTime = values.endTime;
-        updateData.pricePerUnit = values.pricePerUnit;
-        updateData.unitDuration = values.unitDuration;
+        updateData.price = values.price;
         updateMutate(updateData);
         setLoading(false);
       } else {
@@ -51,6 +51,18 @@ export function PricingDefaultCreate({ clickOne, onClose }: StaffCreateFormProps
     // eslint-disable-next-line no-restricted-globals
     if (isNaN(value)) {
       callback(new Error('Please input a number'));
+    } else {
+      callback();
+    }
+  };
+  const validateNumberThan = (_: any, value: any, callback: (error?: Error) => void) => {
+    // eslint-disable-next-line no-restricted-globals
+    if (isNaN(value)) {
+      callback(new Error('Please input a number'));
+    }
+    // eslint-disable-next-line no-restricted-globals
+    if (parseInt(value, 10) < 500) {
+      callback(new Error('Please input a number than 500'));
     } else {
       callback();
     }
@@ -78,9 +90,9 @@ export function PricingDefaultCreate({ clickOne, onClose }: StaffCreateFormProps
         layout="vertical"
       >
         <Row justify="space-between">
-          <Col span={11}>
+          <Col span={7}>
             <Form.Item
-              label="Start Time"
+              label="Start Time (h)"
               name="startTime"
               required
               rules={[
@@ -91,9 +103,9 @@ export function PricingDefaultCreate({ clickOne, onClose }: StaffCreateFormProps
               <Input />
             </Form.Item>
           </Col>
-          <Col span={11}>
+          <Col span={7}>
             <Form.Item
-              label="End Time"
+              label="End Time (h)"
               name="endTime"
               required
               rules={[
@@ -104,29 +116,14 @@ export function PricingDefaultCreate({ clickOne, onClose }: StaffCreateFormProps
               <Input />
             </Form.Item>
           </Col>
-        </Row>
-        <Row justify="space-between">
-          <Col span={11}>
+          <Col span={7}>
             <Form.Item
-              label="Price Per Unit"
-              name="pricePerUnit"
+              label="Price (đ)"
+              name="price"
               required
               rules={[
-                { required: true, message: 'Please input price per unit' },
-                { validator: validateNumber as any },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-          </Col>
-          <Col span={11}>
-            <Form.Item
-              label="Unit Duration"
-              name="unitDuration"
-              required
-              rules={[
-                { required: true, message: 'Please input unit duration' },
-                { validator: validateNumber as any },
+                { required: true, message: 'Please input price' },
+                { validator: validateNumberThan as any },
               ]}
             >
               <Input />

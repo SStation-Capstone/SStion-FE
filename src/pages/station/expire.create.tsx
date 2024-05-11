@@ -38,9 +38,8 @@ export function ManageExpireCreate({ zoneId, packageId, slotId, onClose }: Expir
       setLoading(true);
       const values = await form.validateFields();
       const createData: any = {
-        currentSlotId: slotId,
-        newSlotId: values.newSlotId,
-        isForce: false,
+        currentRackId: slotId,
+        newRackId: values.newRackId,
       };
       // createMutate(createData);
       const accessToken = getItem(StorageEnum.Token) as unknown as UserToken;
@@ -62,15 +61,16 @@ export function ManageExpireCreate({ zoneId, packageId, slotId, onClose }: Expir
         setLoading(false);
         return onClose();
       }
-      if (response.status === 404) {
-        try {
-          return setVisible(true);
-        } catch (error) {
-          setLoading(false);
-        }
-      } else {
-        message.error('Change location fail!');
-      }
+      // if (response.status === 404) {
+      //   try {
+      //     return setVisible(true);
+      //   } catch (error) {
+      //     setLoading(false);
+      //   }
+      // } else {
+      //   message.error('Change location fail!');
+      // }
+      message.error('Change location fail!');
       setLoading(false);
       onClose();
     } catch (error) {
@@ -82,8 +82,7 @@ export function ManageExpireCreate({ zoneId, packageId, slotId, onClose }: Expir
       const values = await form.validateFields();
       const createData: any = {
         currentSlotId: slotId,
-        newSlotId: values.newSlotId,
-        isForce: true,
+        newSlotId: values.newRackId,
       };
       const accessToken = getItem(StorageEnum.Token) as unknown as UserToken;
       await fetch(`${import.meta.env.VITE_APP_BASE_API}/packages/${packageId}/change-location`, {
@@ -172,8 +171,8 @@ export function ManageExpireCreate({ zoneId, packageId, slotId, onClose }: Expir
         )}
         {shelf && (
           <Form.Item
-            label="New Slot by rack"
-            name="rackId"
+            label="New rack"
+            name="newRackId"
             required
             rules={[{ required: true, message: 'Please input New Slot by rack' }]}
           >
@@ -188,7 +187,7 @@ export function ManageExpireCreate({ zoneId, packageId, slotId, onClose }: Expir
             />
           </Form.Item>
         )}
-        {rack && (
+        {/* {rack && (
           <Form.Item
             label="New Slot"
             name="newSlotId"
@@ -206,7 +205,7 @@ export function ManageExpireCreate({ zoneId, packageId, slotId, onClose }: Expir
               )}
             />
           </Form.Item>
-        )}
+        )} */}
       </Form>
       {visible && (
         <Alert

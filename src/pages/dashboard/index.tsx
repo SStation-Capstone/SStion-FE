@@ -308,9 +308,7 @@ export default function MenuLevel() {
               <Timeline pending="Recording..." className="timelinelist">
                 {OrdersHistoryData?.contends.map((t, index) => (
                   <Timeline.Item color="green" key={index}>
-                    <Title level={5}>
-                      {numberWithCommas(t.status)} + {numberWithCommas(t.priceCod)} đ
-                    </Title>
+                    <Title level={5}>{t.status}</Title>
                     <Text>Total price : {numberWithCommas(t.totalPrice)} đ</Text>
                   </Timeline.Item>
                 ))}

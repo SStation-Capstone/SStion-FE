@@ -19,16 +19,16 @@ export function ManageShelfCreate({ clickOne, onClose }: ZoneCreateFormProps) {
     const values = await form.validateFields();
     try {
       const createData: ShelfPayload = {
-        name: values.name,
-        description: values.description,
+        // name: values.name,
+        // description: values.description,
         // index: values.index,
         // width: values.width,
         // height: values.height,
         // length: values.length,
         zoneId: clickOne?.id,
         numberOfRacks: values.numberOfRacks,
-        numberOfSlotsPerRack: values.numberOfSlotsPerRack,
-        slot: { width: values.widthSlot, height: values.heightSlot, length: values.lengthSlot },
+        // numberOfSlotsPerRack: values.numberOfSlotsPerRack,
+        // slot: { width: values.widthSlot, height: values.heightSlot, length: values.lengthSlot },
       };
       // createData.zoneId = clickOne.id;
       createMutate(createData);
@@ -70,7 +70,7 @@ export function ManageShelfCreate({ clickOne, onClose }: ZoneCreateFormProps) {
         // wrapperCol={{ span: 18 }}
         layout="vertical"
       >
-        <Form.Item
+        {/* <Form.Item
           label="Name"
           name="name"
           required
@@ -86,6 +86,17 @@ export function ManageShelfCreate({ clickOne, onClose }: ZoneCreateFormProps) {
           rules={[{ required: true, message: 'Please input shelf description' }]}
         >
           <Input.TextArea />
+        </Form.Item> */}
+        <Form.Item
+          label="Number Racks"
+          name="numberOfRacks"
+          required
+          rules={[
+            { required: true, message: 'Please input numberOfRacks' },
+            { validator: validateNumber as any },
+          ]}
+        >
+          <Input />
         </Form.Item>
         <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
           {/* <Form.Item
@@ -121,7 +132,7 @@ export function ManageShelfCreate({ clickOne, onClose }: ZoneCreateFormProps) {
           >
             <Input />
           </Form.Item> */}
-          <Form.Item
+          {/* <Form.Item
             label="Width Slot (cm)"
             name="widthSlot"
             required
@@ -153,7 +164,7 @@ export function ManageShelfCreate({ clickOne, onClose }: ZoneCreateFormProps) {
             ]}
           >
             <Input />
-          </Form.Item>
+          </Form.Item> */}
           {/* <Form.Item
             label="Index"
             name="index"
@@ -165,18 +176,7 @@ export function ManageShelfCreate({ clickOne, onClose }: ZoneCreateFormProps) {
           >
             <Input />
           </Form.Item> */}
-          <Form.Item
-            label="Number Racks"
-            name="numberOfRacks"
-            required
-            rules={[
-              { required: true, message: 'Please input numberOfRacks' },
-              { validator: validateNumber as any },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
+          {/* <Form.Item
             label="number Slots Rack"
             name="numberOfSlotsPerRack"
             required
@@ -186,7 +186,7 @@ export function ManageShelfCreate({ clickOne, onClose }: ZoneCreateFormProps) {
             ]}
           >
             <Input />
-          </Form.Item>
+          </Form.Item> */}
         </div>
       </Form>
     </Modal>

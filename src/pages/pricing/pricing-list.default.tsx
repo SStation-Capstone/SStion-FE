@@ -35,28 +35,24 @@ export default function StaffManagerList() {
     setShowInfo(false);
   };
   const columns: ColumnsType<any> = [
+    // {
+    //   title: 'No',
+    //   dataIndex: 'no',
+    //   // eslint-disable-next-line no-plusplus
+    //   render: (_text, _data, index) => <Title level={5}>{++index}</Title>,
+    //   width: '5%',
+    // },
     {
-      title: 'No',
-      dataIndex: 'no',
-      // eslint-disable-next-line no-plusplus
-      render: (_text, _data, index) => <Title level={5}>{++index}</Title>,
-      width: '5%',
-    },
-    {
-      title: 'Start Time',
+      title: 'From (h)',
       dataIndex: 'startTime',
     },
     {
-      title: 'End Time',
+      title: 'to (h)',
       dataIndex: 'endTime',
     },
     {
-      title: 'Price Per Unit',
-      dataIndex: 'pricePerUnit',
-    },
-    {
-      title: 'Unit Duration',
-      dataIndex: 'unitDuration',
+      title: 'Price',
+      dataIndex: 'formatPrice',
     },
     {
       title: 'Action',
@@ -101,7 +97,6 @@ export default function StaffManagerList() {
 
   return (
     <Card
-      title="List Pricing"
       extra={
         <Button type="primary" onClick={() => onOpenFormHandler()}>
           New
