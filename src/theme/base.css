@@ -601,3 +601,7 @@ small.redtext {
   background: #1890ff;
   border-radius: 0.5rem;
 }
+
+.progress-custom-rack .ant-progress-text{
+  transform: translateX(-40px);
+}

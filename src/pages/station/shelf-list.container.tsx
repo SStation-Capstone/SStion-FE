@@ -137,7 +137,7 @@ export default function ManageShelfManagerList({ stationId, id }: StationEditFor
                       </div>
                     </div>
                     {item.rackSorts.length > 0 &&
-                      item.rackSorts.reverse().map((rack: any, rackIndex) => (
+                      item.rackSorts.map((rack: any, rackIndex) => (
                         <div className="flex h-full w-full gap-3" key={rack.id}>
                           <div className="flex cursor-pointer" onClick={() => onOpenFormRack(rack)}>
                             <Iconify icon="solar:pen-bold-duotone" size={18} />
@@ -175,13 +175,13 @@ export default function ManageShelfManagerList({ stationId, id }: StationEditFor
                                     description - {rack.description}
                                   </span>
                                   <span className="font-semibold text-black">
-                                    numberOfPackages - {rack.numberOfPackages}
+                                    number Of Packages - {rack.numberOfPackages}
                                   </span>
                                   <span className="font-semibold text-black">
                                     index - {rack.index}
                                   </span>
                                   <span className="font-semibold text-black">
-                                    volumeUsed - {rack.volumeUsed}
+                                    volume Used - {rack.volumeUsed}
                                   </span>
                                 </div>
                                 <div className="flex justify-center">
@@ -229,9 +229,10 @@ export default function ManageShelfManagerList({ stationId, id }: StationEditFor
                               }}
                             >
                               <Progress
-                                className="ant-progress-custom"
+                                className="ant-progress-custom progress-custom-rack"
                                 percent={rack.volumeUsed}
                                 size="small"
+                                format={(percent) => `${rack.name} - ${percent}%`}
                                 // showInfo={false}
                                 // style={{
                                 //   background: `${slot.isActive ? '#fff' : '#ffccc7'}`,

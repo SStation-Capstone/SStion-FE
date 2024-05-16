@@ -34,11 +34,11 @@ export function StationDetail({ clickOne, check, onClose }: PackagesFormProps) {
       width: '5%',
     },
     {
-      title: 'Start Time (h)',
+      title: 'From (h)',
       dataIndex: 'startTime',
     },
     {
-      title: 'End Time (h)',
+      title: 'To (h)',
       dataIndex: 'endTime',
     },
     {

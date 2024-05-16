@@ -59,24 +59,24 @@ export default function StaffManagerList({ check }: PricingFormProps) {
     setShowDefault(false);
   };
   const columns: ColumnsType<any> = [
+    // {
+    //   title: 'No',
+    //   dataIndex: 'no',
+    //   // eslint-disable-next-line no-plusplus
+    //   render: (_text, _data, index) => <Title level={5}>{++index}</Title>,
+    //   width: '5%',
+    // },
     {
-      title: 'No',
-      dataIndex: 'no',
-      // eslint-disable-next-line no-plusplus
-      render: (_text, _data, index) => <Title level={5}>{++index}</Title>,
-      width: '5%',
-    },
-    {
-      title: 'Start Time',
+      title: 'From (h)',
       dataIndex: 'startTime',
     },
     {
-      title: 'End Time',
+      title: 'To (h)',
       dataIndex: 'endTime',
     },
     {
-      title: 'Price',
-      dataIndex: 'formatPrice',
+      title: 'Price (đ)',
+      dataIndex: 'price',
     },
     {
       title: 'Action',
@@ -121,14 +121,14 @@ export default function StaffManagerList({ check }: PricingFormProps) {
 
   return (
     <Card
-      title="List Pricing"
+      title="Service fee"
       extra={
         <div className="flex gap-3">
           <Button type="primary" onClick={() => onOpenFormHandler()}>
             New
           </Button>
           <Button type="primary" onClick={() => onOpenDefault(check || id)}>
-            Use default pricing
+            Use default service fee
           </Button>
         </div>
       }

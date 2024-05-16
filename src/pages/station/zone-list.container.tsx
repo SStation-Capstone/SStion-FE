@@ -75,27 +75,55 @@ export default function ManageZoneManagerList() {
   // };
 
   return (
-    <Card
-      title="Zone Management"
-      extra={
-        <>
-          <Button type="primary" onClick={() => onOpenFormHandler()}>
-            New
-          </Button>
-          {/* <Button className="ml-2" type="primary" onClick={() => onOpenCheckInFormHandler(true)}>
+    <>
+      {stationData && (
+        <Card
+          bodyStyle={{ display: 'none' }}
+          title={
+            <Row justify="space-between" align="middle" gutter={[24, 0]} className="p-4">
+              <Col span={24} md={8} className="col-info">
+                <Avatar.Group>
+                  <Avatar size={74} shape="square" src={stationData.stationImages[0]?.imageUrl} />
+                  <div className="flex items-center pl-4">
+                    <div>
+                      <h4 className="m-0 font-semibold">{stationData.name}</h4>
+                      <p>{stationData.description}</p>
+                      <p>{stationData.address}</p>
+                    </div>
+                  </div>
+                </Avatar.Group>
+              </Col>
+              <Col span={24} md={8} className="col-info">
+                <div className="items-center justify-end">
+                  <p className="pl-4 text-xl">Balance: {numberWithCommas(stationData.balance)} đ</p>
+                  <p className="pl-4 text-xl">Contact Phone: {stationData.contactPhone}</p>
+                </div>
+              </Col>
+            </Row>
+          }
+        />
+      )}
+      <Card
+        title="Zone Management"
+        extra={
+          <>
+            <Button type="primary" onClick={() => onOpenFormHandler()}>
+              New
+            </Button>
+            {/* <Button className="ml-2" type="primary" onClick={() => onOpenCheckInFormHandler(true)}>
             Check in
           </Button> */}
-          {/* <Button
+            {/* <Button
             className="ml-2"
             type="primary"
             onClick={() => navigate(`?packageId=${packageId}`)}
           >
             Check out
           </Button> */}
-        </>
-      }
-    >
-      {/* <Form form={form} onFinish={onFinishHandler}>
+          </>
+        }
+      >
+        {/* <Form form={form} onFinish={onFinishHandler}>
         <Row gutter={24} justify="space-between">
           <Col span={8}>
             <Form.Item name="Search">
@@ -120,68 +148,69 @@ export default function ManageZoneManagerList() {
           </Col>
         </Row>
       </Form> */}
-      {stationData && (
-        <Avatar.Group>
-          <Avatar size={74} shape="square" src={stationData.stationImages[0].imageUrl} />
-          <div className="flex items-center pl-4">
-            <div>
-              <h4 className="m-0 font-semibold">
-                balance: {numberWithCommas(stationData?.balance) || 0} đ
-              </h4>
+        {/* {stationData && (
+          <Avatar.Group>
+            <Avatar size={74} shape="square" src={stationData.stationImages[0].imageUrl} />
+            <div className="flex items-center pl-4">
+              <div>
+                <h4 className="m-0 font-semibold">
+                  balance: {numberWithCommas(stationData?.balance) || 0} đ
+                </h4>
+              </div>
             </div>
-          </div>
-        </Avatar.Group>
-      )}
-      {data && (
-        <Row gutter={[24, 0]}>
-          {data.contends.map((item, index) => (
-            <Col className="mb-5 h-fit w-min" key={index}>
-              <Card
-                bordered={false}
-                className="header-solid h-full"
-                title={<h6 className="m-0 font-semibold">{item.name}</h6>}
-                extra={
-                  <div className="text-gray flex w-full items-center justify-center gap-2">
-                    <Button
-                      className="ml-2"
-                      type="primary"
-                      onClick={() => onOpenCheckInFormHandler(item.id)}
-                    >
-                      Check in
-                    </Button>
-                    <Button onClick={() => onOpenFormShelf(item)}>+ Shelf</Button>
-                    <IconButton onClick={() => onOpenFormHandler(item)}>
-                      <Iconify icon="solar:pen-bold-duotone" size={18} />
-                    </IconButton>
-                    <Popconfirm
-                      title="Delete the station"
-                      okText="Yes"
-                      cancelText="No"
-                      placement="left"
-                      onConfirm={() => {
-                        deleteMutate(item.id.toString());
-                      }}
-                    >
-                      <IconButton>
-                        <Iconify icon="mingcute:delete-2-fill" size={18} className="text-error" />
+          </Avatar.Group>
+        )} */}
+        {data && (
+          <Row gutter={[24, 0]}>
+            {data.contends.map((item, index) => (
+              <Col className="mb-5 h-fit w-min" key={index}>
+                <Card
+                  bordered={false}
+                  className="header-solid h-full"
+                  title={<h6 className="m-0 font-semibold">{item.name}</h6>}
+                  extra={
+                    <div className="text-gray flex w-full items-center justify-center gap-2">
+                      <Button
+                        className="ml-2"
+                        type="primary"
+                        onClick={() => onOpenCheckInFormHandler(item.id)}
+                      >
+                        Check in
+                      </Button>
+                      <Button onClick={() => onOpenFormShelf(item)}>+ Shelf</Button>
+                      <IconButton onClick={() => onOpenFormHandler(item)}>
+                        <Iconify icon="solar:pen-bold-duotone" size={18} />
                       </IconButton>
-                    </Popconfirm>
-                  </div>
-                }
-              >
-                <ManageShelfManagerList stationId={id} id={item.id.toString()} />
-              </Card>
-            </Col>
-          ))}
-        </Row>
-      )}
-      {showInfo && (
-        <ManageZoneCreate stationId={id} clickOne={clickOne} onClose={closeAndRefetchHandler} />
-      )}
-      {showFormCheckIn && (
-        <ManageCheckInCreate stationId={id} zoneId={clickThree} onClose={closeFormCheckIn} />
-      )}
-      {showInfoShelf && <ManageShelfCreate clickOne={clickTwo} onClose={closeAndRefetchShelf} />}
-    </Card>
+                      <Popconfirm
+                        title="Delete the station"
+                        okText="Yes"
+                        cancelText="No"
+                        placement="left"
+                        onConfirm={() => {
+                          deleteMutate(item.id.toString());
+                        }}
+                      >
+                        <IconButton>
+                          <Iconify icon="mingcute:delete-2-fill" size={18} className="text-error" />
+                        </IconButton>
+                      </Popconfirm>
+                    </div>
+                  }
+                >
+                  <ManageShelfManagerList stationId={id} id={item.id.toString()} />
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        )}
+        {showInfo && (
+          <ManageZoneCreate stationId={id} clickOne={clickOne} onClose={closeAndRefetchHandler} />
+        )}
+        {showFormCheckIn && (
+          <ManageCheckInCreate stationId={id} zoneId={clickThree} onClose={closeFormCheckIn} />
+        )}
+        {showInfoShelf && <ManageShelfCreate clickOne={clickTwo} onClose={closeAndRefetchShelf} />}
+      </Card>
+    </>
   );
 }

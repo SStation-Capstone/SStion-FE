@@ -51,8 +51,8 @@ export default function StaffManagerList() {
       dataIndex: 'endTime',
     },
     {
-      title: 'Price',
-      dataIndex: 'formatPrice',
+      title: 'Price (đ)',
+      dataIndex: 'price',
     },
     {
       title: 'Action',

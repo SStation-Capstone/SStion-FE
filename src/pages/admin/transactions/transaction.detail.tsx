@@ -126,69 +126,75 @@ export function TransactionDetail({ clickOne, onClose }: TransactionDetailProps)
         </Descriptions>
       </div>
       <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
-        <Descriptions title="Package" bordered style={{ marginBottom: '2rem' }}>
-          <Descriptions.Item label="Name" span={3}>
-            {clickOne?.payment?.package.name}
-          </Descriptions.Item>
-          <Descriptions.Item label="Location" span={3}>
-            {clickOne?.payment?.package.location}
-          </Descriptions.Item>
-          <Descriptions.Item label="Description" span={3}>
-            {clickOne?.payment?.package.description}
-          </Descriptions.Item>
-          {/* <Descriptions.Item label="Amount" span={3}>
+        {clickOne?.payment && (
+          <Descriptions title="Package" bordered style={{ marginBottom: '2rem' }}>
+            <Descriptions.Item label="Name" span={3}>
+              {clickOne?.payment?.package.name}
+            </Descriptions.Item>
+            <Descriptions.Item label="Location" span={3}>
+              {clickOne?.payment?.package.location}
+            </Descriptions.Item>
+            <Descriptions.Item label="Description" span={3}>
+              {clickOne?.payment?.package.description}
+            </Descriptions.Item>
+            {/* <Descriptions.Item label="Amount" span={3}>
             {numberWithCommas(clickOne.amount)} đ
           </Descriptions.Item> */}
-          {/* <Descriptions.Item label="Method" span={3}>
+            {/* <Descriptions.Item label="Method" span={3}>
             <Typography.Text strong>{clickOne?.method}</Typography.Text>
           </Descriptions.Item> */}
-          <Descriptions.Item label="Create at" span={3}>
-            {moment(clickOne?.payment?.package.createdAt).format('DD/MM/YYYY HH:mm:ss')}
-          </Descriptions.Item>
-          <Descriptions.Item label="Height" span={1}>
-            {clickOne?.payment?.package.height} cm
-          </Descriptions.Item>
-          <Descriptions.Item label="Length" span={1}>
-            {clickOne?.payment?.package.length} cm
-          </Descriptions.Item>
-          <Descriptions.Item label="Total Days" span={1}>
-            {clickOne?.payment?.package.totalDays}
-          </Descriptions.Item>
-          <Descriptions.Item label="Volume" span={1}>
-            {clickOne?.payment?.package.volume}
-          </Descriptions.Item>
-          <Descriptions.Item label="Weight" span={1}>
-            {clickOne?.payment?.package.weight} cm
-          </Descriptions.Item>
-          <Descriptions.Item label="width" span={1}>
-            {clickOne?.payment?.package.width} kg
-          </Descriptions.Item>
-          <Descriptions.Item label="Status" span={3}>
-            <Tag color={TransactionStatusRender.find((e) => e.status === clickOne?.status)?.color}>
-              {clickOne?.payment?.package.status}
-            </Tag>
-          </Descriptions.Item>
-        </Descriptions>
-        <Descriptions title="Station" bordered>
-          <Descriptions.Item label="Name" span={3}>
-            {clickOne?.payment?.station.name}
-          </Descriptions.Item>
-          <Descriptions.Item label="Description" span={3}>
-            {clickOne?.payment?.station.description}
-          </Descriptions.Item>
-          <Descriptions.Item label="Phone" span={3}>
-            {clickOne?.payment?.station.contactPhone}
-          </Descriptions.Item>
-          <Descriptions.Item label="Create at" span={3}>
-            {moment(clickOne?.payment?.station.createdAt).format('DD/MM/YYYY HH:mm:ss')}
-          </Descriptions.Item>
-          <Descriptions.Item label="Address" span={3}>
-            {clickOne?.payment?.station.address}
-          </Descriptions.Item>
-          <Descriptions.Item label="Balance" span={3}>
-            {clickOne?.payment?.station.formatBalance}
-          </Descriptions.Item>
-        </Descriptions>
+            <Descriptions.Item label="Create at" span={3}>
+              {moment(clickOne?.payment?.package.createdAt).format('DD/MM/YYYY HH:mm:ss')}
+            </Descriptions.Item>
+            <Descriptions.Item label="Height" span={1}>
+              {clickOne?.payment?.package.height} cm
+            </Descriptions.Item>
+            <Descriptions.Item label="Length" span={1}>
+              {clickOne?.payment?.package.length} cm
+            </Descriptions.Item>
+            <Descriptions.Item label="Total Days" span={1}>
+              {clickOne?.payment?.package.totalDays}
+            </Descriptions.Item>
+            <Descriptions.Item label="Volume" span={1}>
+              {clickOne?.payment?.package.volume}
+            </Descriptions.Item>
+            <Descriptions.Item label="Weight" span={1}>
+              {clickOne?.payment?.package.weight} cm
+            </Descriptions.Item>
+            <Descriptions.Item label="width" span={1}>
+              {clickOne?.payment?.package.width} kg
+            </Descriptions.Item>
+            <Descriptions.Item label="Status" span={3}>
+              <Tag
+                color={TransactionStatusRender.find((e) => e.status === clickOne?.status)?.color}
+              >
+                {clickOne?.payment?.package.status}
+              </Tag>
+            </Descriptions.Item>
+          </Descriptions>
+        )}
+        {clickOne?.payment?.station && (
+          <Descriptions title="Station" bordered>
+            <Descriptions.Item label="Name" span={3}>
+              {clickOne?.payment?.station.name}
+            </Descriptions.Item>
+            <Descriptions.Item label="Description" span={3}>
+              {clickOne?.payment?.station.description}
+            </Descriptions.Item>
+            <Descriptions.Item label="Phone" span={3}>
+              {clickOne?.payment?.station.contactPhone}
+            </Descriptions.Item>
+            <Descriptions.Item label="Create at" span={3}>
+              {moment(clickOne?.payment?.station.createdAt).format('DD/MM/YYYY HH:mm:ss')}
+            </Descriptions.Item>
+            <Descriptions.Item label="Address" span={3}>
+              {clickOne?.payment?.station.address}
+            </Descriptions.Item>
+            <Descriptions.Item label="Balance" span={3}>
+              {clickOne?.payment?.station.formatBalance}
+            </Descriptions.Item>
+          </Descriptions>
+        )}
       </div>
     </Modal>
   );
