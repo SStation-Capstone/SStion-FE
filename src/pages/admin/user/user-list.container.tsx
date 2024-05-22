@@ -26,6 +26,7 @@ import {
 import unnamedImage from '@/assets/images/unnamed.jpg';
 import { CircleLoading } from '@/components/loading';
 
+import { UserDetail } from './user.detail';
 import { UserEdit } from './user.edit';
 
 import { User, Station } from '#/entity';
@@ -38,6 +39,7 @@ export default function ManageStationUserList() {
   const [clickOne, setClickOne] = useState<User>();
   const [clickOneStation, setClickOneStation] = useState<Station>();
   const [showInfo, setShowInfo] = useState(false);
+  const [showDetail, setShowDetail] = useState(false);
   const { mutateAsync: updateMutate } = useUpdateUser();
   const { data, isLoading } = useListUser(listRelateParams);
   const { mutateAsync: deleteMutate } = useDeleteUser();
@@ -50,6 +52,14 @@ export default function ManageStationUserList() {
       setClickOne(undefined);
     }
     setShowInfo(true);
+  };
+  const onOpenDetail = (record?: User) => {
+    if (record) {
+      setClickOne(record);
+    } else {
+      setClickOne(undefined);
+    }
+    setShowDetail(true);
   };
   const submitHandle = (record?: User) => {
     if (record?.id) {
@@ -66,6 +76,9 @@ export default function ManageStationUserList() {
   const closeAndRefetchHandler = async () => {
     setShowInfo(false);
   };
+  const closeDetail = async () => {
+    setShowDetail(false);
+  };
   const closeAndRefetchHandlerStation = async () => {
     setShowAddToStation(false);
   };
@@ -80,35 +93,41 @@ export default function ManageStationUserList() {
     {
       title: 'User Name',
       dataIndex: 'userName',
+      render: (text, record) =>
+        text !== null && text.length > 0 ? (
+          <Typography onClick={() => onOpenDetail(record)}>{text}</Typography>
+        ) : (
+          <Typography onClick={() => onOpenDetail(record)}>null</Typography>
+        ),
     },
     {
       title: 'Email',
       dataIndex: 'email',
-      render: (text) =>
+      render: (text, record) =>
         text !== null && text.length > 0 ? (
-          <Typography>{text}</Typography>
+          <Typography onClick={() => onOpenDetail(record)}>{text}</Typography>
         ) : (
-          <Typography>null</Typography>
+          <Typography onClick={() => onOpenDetail(record)}>null</Typography>
         ),
     },
     {
       title: 'Phone Number',
       dataIndex: 'phoneNumber',
-      render: (text) =>
+      render: (text, record) =>
         text !== null && text.length > 0 ? (
-          <Typography>{text}</Typography>
+          <Typography onClick={() => onOpenDetail(record)}>{text}</Typography>
         ) : (
-          <Typography>null</Typography>
+          <Typography onClick={() => onOpenDetail(record)}>null</Typography>
         ),
     },
     {
       title: 'Full Name',
       dataIndex: 'fullName',
-      render: (text) =>
+      render: (text, record) =>
         text !== null && text.length > 0 ? (
-          <Typography>{text}</Typography>
+          <Typography onClick={() => onOpenDetail(record)}>{text}</Typography>
         ) : (
-          <Typography>null</Typography>
+          <Typography onClick={() => onOpenDetail(record)}>null</Typography>
         ),
     },
     {
@@ -299,6 +318,7 @@ export default function ManageStationUserList() {
 
       {/* <UserEdit {...roleModalPros} /> */}
       {showInfo && <UserEdit clickOne={clickOne} onClose={closeAndRefetchHandler} />}
+      {showDetail && <UserDetail onClose={closeDetail} clickOne={clickOne} />}
     </Card>
   );
 }

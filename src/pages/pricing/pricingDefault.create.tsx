@@ -19,8 +19,8 @@ export function PricingDefaultCreate({ clickOne, onClose }: StaffCreateFormProps
   const { mutateAsync: updateMutate } = useUpdatePricingDefault();
   const [loading, setLoading] = useState<boolean>(false);
   const submitHandle = async () => {
-    setLoading(true);
     const values = await form.validateFields();
+    setLoading(true);
     try {
       if (clickOne) {
         const updateData: PricingPayload = {
@@ -69,7 +69,7 @@ export function PricingDefaultCreate({ clickOne, onClose }: StaffCreateFormProps
   };
   return (
     <Modal
-      title={clickOne?.id ? 'Edit default pricing' : 'Create default pricing'}
+      title={clickOne?.id ? 'Edit default service fee' : 'Create default service fee'}
       open
       onOk={submitHandle}
       onCancel={() => onClose()}
@@ -92,7 +92,7 @@ export function PricingDefaultCreate({ clickOne, onClose }: StaffCreateFormProps
         <Row justify="space-between">
           <Col span={7}>
             <Form.Item
-              label="Start Time (h)"
+              label="From (h)"
               name="startTime"
               required
               rules={[
@@ -105,7 +105,7 @@ export function PricingDefaultCreate({ clickOne, onClose }: StaffCreateFormProps
           </Col>
           <Col span={7}>
             <Form.Item
-              label="End Time (h)"
+              label="To (h)"
               name="endTime"
               required
               rules={[

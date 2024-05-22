@@ -65,7 +65,7 @@ export default function PackageStationManagerList() {
   if (isLoading) return <CircleLoading />;
   const onOpenFormExpire = (record?: any) => {
     setZoneId(record.station.id);
-    setSlotId(record.slot.id);
+    setSlotId(record.rack.id);
     setPackageId(record.id);
     setShowExpire(true);
   };
@@ -239,7 +239,7 @@ export default function PackageStationManagerList() {
               }}
             >
               <Iconify icon="iconamoon:notification-fill" size={18} />
-              Push noti
+              Notification
             </Button>
           </div>
         </div>

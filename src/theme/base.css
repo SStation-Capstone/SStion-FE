@@ -554,17 +554,17 @@ small.redtext {
   height: 50px;
 }
 
-.ant-progress-custom.css-dev-only-do-not-override-1de8xem.ant-progress .ant-progress-inner {
+.ant-progress-custom.ant-progress .ant-progress-inner {
   width: 200px;
   height: 50px;
   border-radius: 10px;
 }
 
-.ant-progress-custom.ant-progress .ant-progress-inner {
+/* .ant-progress-custom.ant-progress .ant-progress-inner {
   width: 50px;
   height: 50px;
   border-radius: 10px;
-}
+} */
 
 .ant-progress-custom.ant-progress .ant-progress-bg {
   height: 50px !important;
@@ -600,4 +600,8 @@ small.redtext {
   text-align: center;
   background: #1890ff;
   border-radius: 0.5rem;
+}
+
+.progress-custom-rack .ant-progress-text{
+  transform: translateX(-40px);
 }

@@ -49,7 +49,7 @@ export default function PricingDefaultModal({ click, onClose }: PricingFormProps
 
   return (
     <Modal
-      title="List pricing default"
+      title="Service fee default"
       open
       width={1300}
       onCancel={() => onClose()}

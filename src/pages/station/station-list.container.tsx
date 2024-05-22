@@ -132,7 +132,7 @@ export default function ManageStationManagerList() {
           <div className="flex gap-2">
             <Link to={`/zone/${record.id}`}>
               <div className="flex cursor-pointer items-center rounded-md bg-blue-200 fill-blue-400 p-2 duration-100 hover:bg-blue-300 active:border active:border-blue-400">
-                <span className="text-sm font-bold text-blue-500">config</span>
+                <span className="text-sm font-bold text-blue-500">manager</span>
               </div>
             </Link>
             <Link to={`/staff/${record.id}`}>
@@ -182,7 +182,7 @@ export default function ManageStationManagerList() {
                 setShowPayment(record.id);
               }}
             >
-              Payment
+              Payments
             </Button>
             <Button
               type="primary"
@@ -193,7 +193,7 @@ export default function ManageStationManagerList() {
                 onOpenPackageDetail(record);
               }}
             >
-              Package
+              Packages
             </Button>
           </div>
         </div>

@@ -234,7 +234,7 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
               }}
             >
               <Iconify icon="iconamoon:notification-fill" size={18} />
-              Push noti
+              Notification
             </Button>
             {clickOne.isActive && (
               <Popconfirm

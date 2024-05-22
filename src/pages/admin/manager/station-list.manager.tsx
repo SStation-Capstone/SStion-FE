@@ -1,4 +1,4 @@
-import { Button, Avatar, Modal, Table } from 'antd';
+import { Button, Avatar, Modal, Table, Card, Row, Col } from 'antd';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -9,6 +9,7 @@ export type PackagesFormProps = {
   onClose: () => void;
 };
 export function StationByManager({ clickOne, onClose }: PackagesFormProps) {
+  console.log('🚀 ~ StationByManager ~ clickOne:', clickOne);
   const [showCreateStation, setShowCreateStation] = useState(false);
   const onOpenFormStation = () => {
     setShowCreateStation(true);
@@ -73,7 +74,7 @@ export function StationByManager({ clickOne, onClose }: PackagesFormProps) {
           <div className="flex gap-2">
             <Link to={`/zone/${record.id}`}>
               <div className="flex cursor-pointer items-center rounded-md bg-blue-200 fill-blue-400 p-2 duration-100 hover:bg-blue-300 active:border active:border-blue-400">
-                <span className="text-sm font-bold text-blue-500">manager config</span>
+                <span className="text-sm font-bold text-blue-500">manager</span>
               </div>
             </Link>
             <Link to={`/staff/${record.id}`}>
@@ -106,6 +107,31 @@ export function StationByManager({ clickOne, onClose }: PackagesFormProps) {
         </Button>,
       ]}
     >
+      <Card
+        bodyStyle={{ display: 'none' }}
+        title={
+          <Row justify="space-between" align="middle" gutter={[24, 0]} className="p-4">
+            <Col span={24} md={8} className="col-info">
+              <Avatar.Group>
+                <Avatar size={74} shape="square" src={clickOne.avatarUrl} />
+                <div className="flex items-center pl-4">
+                  <div>
+                    <h4 className="m-0 font-semibold">Full Name: {clickOne.fullName}</h4>
+                    {/* <p>{clickOne.phoneNumber}</p> */}
+                    <p>Email: {clickOne.email}</p>
+                  </div>
+                </div>
+              </Avatar.Group>
+            </Col>
+            <Col span={24} md={8} className="col-info">
+              <div className="items-center justify-end">
+                <p className="pl-4 text-xl">userName: {clickOne.userName}</p>
+                <p className="pl-4 text-xl">Phone Number: {clickOne.userName}</p>
+              </div>
+            </Col>
+          </Row>
+        }
+      />
       <Table
         rowKey="id"
         size="small"
