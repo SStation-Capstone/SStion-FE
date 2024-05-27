@@ -267,19 +267,19 @@ export function ManageCheckOutCreate() {
                   <Descriptions.Item label="Status" span={3}>
                     {data.status}
                   </Descriptions.Item>
-                  <Descriptions.Item label="Price cod" span={3}>
+                  {/* <Descriptions.Item label="Price cod" span={3}>
                     {numberWithCommas(data.priceCod)} đ
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Is cod" span={3}>
+                  </Descriptions.Item> */}
+                  {/* <Descriptions.Item label="Is cod" span={3}>
                     {data.isCod ? 'true' : 'false'}
-                  </Descriptions.Item>
+                  </Descriptions.Item> */}
                   <Descriptions.Item label="Total Hours" span={3}>
                     {data.totalHours}
                   </Descriptions.Item>
                   <Descriptions.Item label="Checkin Days" span={3}>
                     {data.checkinDays}
                   </Descriptions.Item>
-                  <Descriptions.Item label="Service fee" span={3}>
+                  <Descriptions.Item label="Service fees" span={3}>
                     {numberWithCommas(data.serviceFee)} đ
                   </Descriptions.Item>
                 </Descriptions>
@@ -288,13 +288,13 @@ export function ManageCheckOutCreate() {
             <Col span={24} md={12} className="mb-2">
               <Card
                 bordered={false}
-                title={<h6 className="m-0 font-semibold">Sender - Receiver</h6>}
+                title={<h6 className="m-0 font-semibold">Receiver</h6>}
                 className="mb-2"
                 bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
               >
                 <List
                   itemLayout="horizontal"
-                  dataSource={[data.sender, data.receiver]}
+                  dataSource={[data.receiver]}
                   split={false}
                   className="conversations-list"
                   renderItem={(item) => (
@@ -342,8 +342,11 @@ export function ManageCheckOutCreate() {
                   <Descriptions.Item label="Name" span={3}>
                     {data.zone.name}
                   </Descriptions.Item>
-                  <Descriptions.Item label="Slot" span={3}>
-                    {data.slot.name}
+                  <Descriptions.Item label="Zone" span={3}>
+                    {data?.zone.name}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Rack" span={3}>
+                    {data?.rack.name}
                   </Descriptions.Item>
                 </Descriptions>
               </Card>
