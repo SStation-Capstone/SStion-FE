@@ -267,19 +267,19 @@ export function ManageCheckOutCreate() {
                   <Descriptions.Item label="Status" span={3}>
                     {data.status}
                   </Descriptions.Item>
-                  <Descriptions.Item label="Price cod" span={3}>
+                  {/* <Descriptions.Item label="Price cod" span={3}>
                     {numberWithCommas(data.priceCod)} đ
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Is cod" span={3}>
+                  </Descriptions.Item> */}
+                  {/* <Descriptions.Item label="Is cod" span={3}>
                     {data.isCod ? 'true' : 'false'}
-                  </Descriptions.Item>
+                  </Descriptions.Item> */}
                   <Descriptions.Item label="Total Hours" span={3}>
                     {data.totalHours}
                   </Descriptions.Item>
                   <Descriptions.Item label="Checkin Days" span={3}>
                     {data.checkinDays}
                   </Descriptions.Item>
-                  <Descriptions.Item label="Service fee" span={3}>
+                  <Descriptions.Item label="Service fees" span={3}>
                     {numberWithCommas(data.serviceFee)} đ
                   </Descriptions.Item>
                 </Descriptions>
