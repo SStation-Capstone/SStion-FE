@@ -81,7 +81,7 @@ export function ManageCheckOutCreate() {
     setLoading(true);
     try {
       await createPayment({ totalPrice: data.totalPrice, id });
-      await createMutate({ id, status: 'confirm' });
+      // await createMutate({ id, status: 'confirm' });
       await refetch();
       setLoading(false);
     } catch (error) {
@@ -247,6 +247,18 @@ export function ManageCheckOutCreate() {
                 title={<h6 className="m-0 font-semibold">Information</h6>}
                 className="header-solid card-profile-information h-full"
                 bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
+                actions={
+                  data.status === 'Paid' && [
+                    <Button
+                      key="submit"
+                      type="primary"
+                      loading={loading}
+                      onClick={() => submitHandleReturn('confirm')}
+                    >
+                      Confirm
+                    </Button>,
+                  ]
+                }
               >
                 <Descriptions bordered>
                   <Descriptions.Item label="Width" span={3}>
@@ -339,9 +351,9 @@ export function ManageCheckOutCreate() {
                 <p className="text-dark">{data.zone.description}</p>
                 <hr className="my-25" />
                 <Descriptions title="Information">
-                  <Descriptions.Item label="Name" span={3}>
+                  {/* <Descriptions.Item label="Name" span={3}>
                     {data.zone.name}
-                  </Descriptions.Item>
+                  </Descriptions.Item> */}
                   <Descriptions.Item label="Zone" span={3}>
                     {data?.zone.name}
                   </Descriptions.Item>

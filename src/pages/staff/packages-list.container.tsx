@@ -6,13 +6,30 @@ import {
   MinusCircleOutlined,
   SearchOutlined,
 } from '@ant-design/icons';
-import { Card, Pagination, Typography, Avatar, Image, List, Input, Space, Button, Tag } from 'antd';
+import {
+  Card,
+  Pagination,
+  Typography,
+  Avatar,
+  Image,
+  List,
+  Input,
+  Space,
+  Button,
+  Tag,
+  Form,
+  Row,
+  Col,
+  Select,
+  DatePicker,
+} from 'antd';
 import Table from 'antd/es/table';
 import moment from 'moment';
 import { useState, useRef } from 'react';
 import Highlighter from 'react-highlight-words';
 
 import { useListStaffPackage } from '@/api/services/stationService';
+import unnamedImage from '@/assets/images/unnamed.jpg';
 import { CircleLoading } from '@/components/loading';
 import { getItem } from '@/utils/storage';
 
@@ -26,6 +43,8 @@ import type { FilterDropdownProps } from 'antd/es/table/interface';
 const { Title } = Typography;
 
 export default function PackagesManagerList() {
+  const [form] = Form.useForm();
+  const { RangePicker } = DatePicker;
   const id = getItem(StorageEnum.User).stationId as number;
   const [listRelateParams, setListRelateParams] = useState<InputType>();
   const { data, isLoading } = useListStaffPackage({ id: id || 0, listRelateParams });
@@ -57,6 +76,19 @@ export default function PackagesManagerList() {
     setSearchText('');
   };
 
+  const onFinishHandler = (values: any) => {
+    if (form.getFieldValue('date') !== undefined) {
+      const formDate = {
+        ...values,
+        From: values.date[0].format('YYYY-MM-DD'),
+        To: values.date[1].format('YYYY-MM-DD'),
+      };
+      delete formDate?.date;
+      setListRelateParams(formDate);
+    } else {
+      setListRelateParams(values);
+    }
+  };
   const getColumnSearchProps = (dataIndex: any): TableColumnType<any> => ({
     // eslint-disable-next-line react/no-unstable-nested-components
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
@@ -224,9 +256,11 @@ export default function PackagesManagerList() {
         <List.Item>
           <List.Item.Meta
             className="flex gap-3"
-            avatar={<Avatar shape="square" size={48} src={record.sender.avatarUrl} />}
-            title={record.sender.fullName}
-            description={record.sender.phoneNumber}
+            avatar={
+              <Avatar shape="square" size={48} src={record.sender?.avatarUrl || unnamedImage} />
+            }
+            title={record.sender?.fullName || 'null'}
+            description={record.sender?.phoneNumber || 'null'}
           />
         </List.Item>
       ),
@@ -238,9 +272,11 @@ export default function PackagesManagerList() {
         <List.Item>
           <List.Item.Meta
             className="flex gap-3"
-            avatar={<Avatar shape="square" size={48} src={record.receiver.avatarUrl} />}
-            title={record.receiver.fullName}
-            description={record.receiver.phoneNumber}
+            avatar={
+              <Avatar shape="square" size={48} src={record.receiver?.avatarUrl || unnamedImage} />
+            }
+            title={record.receiver?.fullName || 'null'}
+            description={record.receiver?.phoneNumber || 'null'}
           />
         </List.Item>
       ),
@@ -254,6 +290,52 @@ export default function PackagesManagerList() {
 
   return (
     <Card title="List Packages">
+      <Form form={form} onFinish={onFinishHandler}>
+        <Row gutter={24} justify="space-between">
+          <Col span={20}>
+            <Row wrap={false} gutter={24}>
+              <Col span={8}>
+                <Form.Item label="From - To" name="date">
+                  <RangePicker allowClear />
+                </Form.Item>
+              </Col>
+              <Col span={5}>
+                <Form.Item label="Status" name="status">
+                  <Select allowClear placeholder="Select status">
+                    <Select.Option value="Initialized">Receive</Select.Option>
+                    <Select.Option value="Paid">Paid</Select.Option>
+                    <Select.Option value="Completed">Receive</Select.Option>
+                    <Select.Option value="Returned">Returned</Select.Option>
+                    <Select.Option value="Canceled">Canceled</Select.Option>
+                    <Select.Option value="Expired">Expired</Select.Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={6}>
+                <Form.Item label="Check in day(s) above" name="CheckinFromDays">
+                  <Input />
+                </Form.Item>
+              </Col>
+            </Row>
+          </Col>
+          <Col span={4}>
+            <Row>
+              <Col span={12}>
+                <Form.Item name="search">
+                  <Button type="primary" htmlType="submit">
+                    Search
+                  </Button>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Button type="primary" onClick={resetHandler}>
+                  Reset
+                </Button>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      </Form>
       <Table
         rowKey="id"
         size="small"
@@ -274,7 +356,7 @@ export default function PackagesManagerList() {
         showSizeChanger
         onChange={onPageChange}
         // eslint-disable-next-line no-unsafe-optional-chaining
-        total={data?.totalPages * 10}
+        total={data?.totalItems}
         // showTotal={(total) => `共 ${total} 条`}
         current={data?.page}
         style={{ marginTop: '1rem' }}

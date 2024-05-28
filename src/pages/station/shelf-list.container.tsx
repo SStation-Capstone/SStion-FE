@@ -117,13 +117,13 @@ export default function ManageShelfManagerList({ stationId, id }: StationEditFor
                         </IconButton>
                       </Popconfirm>
                     </div>
-                    <div className="shadow-blue-gray-500/40 relative -mt-3 flex h-10 w-36 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-r from-blue-200 to-blue-200 bg-clip-border pl-2 text-white shadow-lg">
+                    {/* <div className="shadow-blue-gray-500/40 relative -mt-3 flex h-10 w-36 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-r from-blue-200 to-blue-200 bg-clip-border pl-2 text-white shadow-lg">
                       <Progress
                         percent={100 - item.capacity}
                         size="small"
                         // showInfo={false}
                       />
-                    </div>
+                    </div> */}
                   </div>
                   <div className="flex flex-wrap gap-2 p-6 ">
                     <div
@@ -232,7 +232,7 @@ export default function ManageShelfManagerList({ stationId, id }: StationEditFor
                                 className="ant-progress-custom progress-custom-rack"
                                 percent={rack.volumeUsed}
                                 size="small"
-                                format={(percent) => `${rack.name} - ${percent}%`}
+                                format={(percent) => `${rack.name}`}
                                 // showInfo={false}
                                 // style={{
                                 //   background: `${slot.isActive ? '#fff' : '#ffccc7'}`,

@@ -50,14 +50,14 @@ export default function NoticeButton() {
               message: message.content,
               description: message.title,
             });
-            setTimeout(
-              () =>
-                mutateAsync({
-                  id: JSON.parse(message.data).Id,
-                  status: 'confirm',
-                }),
-              3000,
-            );
+            // setTimeout(
+            //   () =>
+            //     mutateAsync({
+            //       id: JSON.parse(message.data).Id,
+            //       status: 'confirm',
+            //     }),
+            //   3000,
+            // );
             // mutateAsync({
             //   id: JSON.parse(message.data).Id,
             //   status: 'confirm',

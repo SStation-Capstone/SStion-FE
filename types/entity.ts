@@ -16,6 +16,7 @@ export interface UserInfo {
   permissions?: Permission[];
   stationId?: number;
   stationManager?: string;
+  phone?: string;
 }
 
 export interface Organization {
@@ -58,8 +59,9 @@ export interface JwtDecode {
   'http://schemas.microsoft.com/ws/2008/06/identity/claims/role': string;
   id: string;
   user_name: string;
-  avartar_url: string;
+  avatar_url: string;
   email: string;
+  phone_number: string;
 }
 
 export interface ImageUrl {

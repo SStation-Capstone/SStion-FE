@@ -7,10 +7,8 @@ import {
   useUpdatePricingDefault,
 } from '@/api/services/stationService';
 
-import { Pricing } from '#/entity';
-
 export type StaffCreateFormProps = {
-  clickOne?: Pricing;
+  clickOne?: PricingPayload;
   onClose: () => void;
 };
 export function PricingDefaultCreate({ clickOne, onClose }: StaffCreateFormProps) {
@@ -20,13 +18,14 @@ export function PricingDefaultCreate({ clickOne, onClose }: StaffCreateFormProps
   const [loading, setLoading] = useState<boolean>(false);
   const submitHandle = async () => {
     const values = await form.validateFields();
+    console.log('values prcing', values);
     setLoading(true);
     try {
       if (clickOne) {
         const updateData: PricingPayload = {
           ...clickOne,
           id: clickOne.id,
-          price: 0,
+          price: clickOne.price,
         };
         updateData.startTime = values.startTime;
         updateData.endTime = values.endTime;
@@ -42,6 +41,7 @@ export function PricingDefaultCreate({ clickOne, onClose }: StaffCreateFormProps
       }
       onClose();
     } catch (error) {
+      console.log('erorr prcing', error);
       message.error(error.message || error);
       console.log(error);
       setLoading(false);
@@ -92,7 +92,7 @@ export function PricingDefaultCreate({ clickOne, onClose }: StaffCreateFormProps
         <Row justify="space-between">
           <Col span={7}>
             <Form.Item
-              label="From (h)"
+              label="From (day)"
               name="startTime"
               required
               rules={[
@@ -105,7 +105,7 @@ export function PricingDefaultCreate({ clickOne, onClose }: StaffCreateFormProps
           </Col>
           <Col span={7}>
             <Form.Item
-              label="To (h)"
+              label="To (day)"
               name="endTime"
               required
               rules={[

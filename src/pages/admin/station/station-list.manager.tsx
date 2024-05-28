@@ -25,7 +25,7 @@ export function ManagerListStation({ clickOne, onClose }: ManagerListStationForm
   };
 
   return (
-    <Modal title="change manager" open onOk={submitHandle} onCancel={() => onClose()}>
+    <Modal title="Change manager" open onOk={submitHandle} onCancel={() => onClose()}>
       <Form
         initialValues={clickOne}
         form={form}
@@ -37,7 +37,7 @@ export function ManagerListStation({ clickOne, onClose }: ManagerListStationForm
           label="Manager"
           required
           name="manager"
-          rules={[{ required: true, message: 'Please input manager' }]}
+          rules={[{ required: true, message: 'Please select manager' }]}
         >
           <Select
             showSearch

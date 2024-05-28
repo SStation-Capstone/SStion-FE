@@ -186,6 +186,16 @@ export const useListPaymentStation = (payload?: any) => {
     }),
   );
 };
+
+export const useListPaymentStationTest = (payload?: any) => {
+  return useQuery(['listPaymentStation', payload], () =>
+    apiClient.get<StationGetRes>({
+      url: `${StationApi.Payments}`,
+      params: payload,
+    }),
+  );
+};
+
 export const useGetStationByStaff = () => {
   return useQuery(['listStationStaff'], () =>
     apiClient.get<StationGetRes>({ url: StationApi.GetListStationByStaff }),
@@ -584,12 +594,7 @@ export const useUpdatePricingDefault = () => {
     async (payload: PricingPayload) =>
       apiClient.put<StationCreateResponse>({
         url: `default-pricings/${payload.id}`,
-        data: {
-          startTime: payload.startTime,
-          endTime: payload.endTime,
-          pricePerUnit: payload.pricePerUnit,
-          unitDuration: payload.unitDuration,
-        },
+        data: payload,
       }),
     {
       onSuccess: () => {
@@ -684,7 +689,7 @@ export const useCreateCheckOutPayment = () => {
       }),
     {
       onSuccess: () => {
-        message.success('payment Check out sucessfully !!!');
+        message.success('Payment check out sucessfully !!!');
       },
     },
   );

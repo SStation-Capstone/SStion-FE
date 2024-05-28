@@ -129,8 +129,8 @@ export function ManageStationEdit({ clickOne, managerId, onClose }: StationEditF
   );
 
   const showMyLocation = () => {
-    console.log(location);
-
+    console.log('showmy', location);
+    console.log('checkshowmy', check);
     if (location.loaded) {
       if ((check?.latitude, check?.longitude)) {
         mapRef.current.flyTo([check?.latitude, check?.longitude], ZOOM_LEVEL, {
@@ -465,7 +465,7 @@ export function ManageStationEdit({ clickOne, managerId, onClose }: StationEditF
             <TileLayer attribution={osm.maptiler.attribution} url={osm.maptiler.url} />
             {location.loaded && check?.longitude !== 0 && (
               <Marker icon={makerIcon} position={[check?.latitude || 50, check?.longitude || 50]}>
-                <Popup>ward</Popup>
+                <Popup>location</Popup>
               </Marker>
             )}
           </MapContainer>

@@ -107,6 +107,7 @@ export default function ManageStationManagerList() {
     // },
     {
       title: 'Address',
+      align: 'center',
       dataIndex: 'address',
       render: (text) => (
         <div
@@ -123,7 +124,7 @@ export default function ManageStationManagerList() {
     },
 
     {
-      title: 'View',
+      title: '',
       key: 'operation',
       align: 'center',
       width: 250,
@@ -132,15 +133,15 @@ export default function ManageStationManagerList() {
           <div className="flex gap-2">
             <Link to={`/zone/${record.id}`}>
               <div className="flex cursor-pointer items-center rounded-md bg-blue-200 fill-blue-400 p-2 duration-100 hover:bg-blue-300 active:border active:border-blue-400">
-                <span className="text-sm font-bold text-blue-500">manager</span>
+                <span className="text-sm font-bold text-blue-500">manage</span>
               </div>
             </Link>
-            <Link to={`/staff/${record.id}`}>
+            <Link to={`/staff/${record.id}`} state={{ stationData: JSON.stringify(record) }}>
               <div className="flex cursor-pointer items-center rounded-md bg-blue-200 fill-blue-400 p-2 duration-100 hover:bg-blue-300 active:border active:border-blue-400">
                 <span className="text-sm font-bold text-blue-500">staff</span>
               </div>
             </Link>
-            <Link to={`/pricing/${record.id}`}>
+            <Link to={`/pricing/${record.id}`} state={{ stationData: JSON.stringify(record) }}>
               <div className="flex cursor-pointer items-center rounded-md bg-blue-200 fill-blue-400 p-2 duration-100 hover:bg-blue-300 active:border active:border-blue-400">
                 <span className="text-sm font-bold text-blue-500">service fees</span>
               </div>
@@ -166,7 +167,7 @@ export default function ManageStationManagerList() {
       ),
     },
     {
-      title: 'Action',
+      title: '',
       key: 'operation',
       align: 'center',
       width: 100,
@@ -182,7 +183,7 @@ export default function ManageStationManagerList() {
                 setShowPayment(record.id);
               }}
             >
-              Payments
+              payments
             </Button>
             <Button
               type="primary"
@@ -193,7 +194,7 @@ export default function ManageStationManagerList() {
                 onOpenPackageDetail(record);
               }}
             >
-              Packages
+              packages
             </Button>
           </div>
         </div>
@@ -215,6 +216,7 @@ export default function ManageStationManagerList() {
     setListRelateParams(values);
   };
 
+  console.log('staion click one', clickOne);
   return (
     <Card>
       <Form form={form} onFinish={onFinishHandler}>

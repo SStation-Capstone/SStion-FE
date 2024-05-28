@@ -102,7 +102,7 @@ const STATION_MANAGER_PERMISSION: Permission = {
   icon: 'ic-user',
   type: PermissionType.MENU,
   route: 'manager',
-  order: 3,
+  order: 2,
   component: '/admin/manager/manager-list.container.tsx',
   // children: [
   //   {
@@ -125,7 +125,7 @@ const STATION_MANAGE_PERMISSION: Permission = {
   icon: 'ic-warehouse',
   type: PermissionType.MENU,
   route: 'station',
-  order: 2,
+  order: 3,
   component: '/admin/station/station-list.container.tsx',
   // children: [
   //   {
@@ -279,7 +279,7 @@ const STAFF_PACKAGEMANAGEMENT_PERMISSION: Permission = {
 const PACKAGE_STATION_MANAGE_PERMISSION: Permission = {
   id: '9100714781927733',
   parentId: '',
-  label: 'Package Manager',
+  label: 'Package',
   name: 'packageManager',
   icon: 'material-symbols:package',
   type: PermissionType.MENU,
@@ -310,6 +310,17 @@ const PAYMENT_STATION_MANAGE_PERMISSION: Permission = {
   component: '/payment/payment-list.manager.tsx',
 };
 
+const PAYMENT_STATION_ADMIN_MANAGE_PERMISSION: Permission = {
+  id: '9100714781927745',
+  parentId: '',
+  label: 'Payment',
+  name: 'payment',
+  icon: 'fluent:payment-48-filled',
+  type: PermissionType.MENU,
+  route: 'payment',
+  order: 6,
+  component: '/admin/payment/payment-list.tsx',
+};
 export const ADMIN_PERMISSION = [
   ADMIN_DASHBOARD_PERMISSION,
   STATION_MANAGER_PERMISSION,
@@ -317,7 +328,7 @@ export const ADMIN_PERMISSION = [
   STATION_MANAGER_PRICING_MANAGE_PERMISSION,
   ADMIN_TRANSACTIONS_PERMISSION,
   ADMIN_USER_PERMISSION,
-  PAYMENT_STATION_MANAGE_PERMISSION,
+  PAYMENT_STATION_ADMIN_MANAGE_PERMISSION,
   PACKAGE_STATION_MANAGE_PERMISSION,
 ];
 export const STATION_MANAGER_LIST_PERMISSION = [

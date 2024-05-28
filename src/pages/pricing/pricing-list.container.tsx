@@ -1,7 +1,18 @@
-import { Button, Card, Col, Form, Input, Pagination, Typography, Popconfirm, Row } from 'antd';
+import {
+  Button,
+  Card,
+  Col,
+  Form,
+  Input,
+  Pagination,
+  Typography,
+  Popconfirm,
+  Row,
+  Avatar,
+} from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 
 import {
   useDeletePricing,
@@ -24,6 +35,8 @@ export type PricingFormProps = {
 export default function StaffManagerList({ check }: PricingFormProps) {
   const [form] = Form.useForm();
   const { id } = useParams();
+  const { state } = useLocation();
+  const stationData = JSON.parse(state?.stationData);
   const [listRelateParams, setListRelateParams] = useState<InputType>();
   const [clickOne, setClickOne] = useState<Pricing>();
   const [clickTwo, setClickTwo] = useState<any>();
@@ -67,11 +80,11 @@ export default function StaffManagerList({ check }: PricingFormProps) {
     //   width: '5%',
     // },
     {
-      title: 'From (h)',
+      title: 'From (day)',
       dataIndex: 'startTime',
     },
     {
-      title: 'To (h)',
+      title: 'To (day)',
       dataIndex: 'endTime',
     },
     {
@@ -120,65 +133,93 @@ export default function StaffManagerList({ check }: PricingFormProps) {
   };
 
   return (
-    <Card
-      title="Service fee"
-      extra={
-        <div className="flex gap-3">
-          <Button type="primary" onClick={() => onOpenFormHandler()}>
-            New
-          </Button>
-          <Button type="primary" onClick={() => onOpenDefault(check || id)}>
-            Use default service fee
-          </Button>
-        </div>
-      }
-    >
-      <Form form={form} onFinish={onFinishHandler}>
-        <Row gutter={24} justify="space-between">
-          <Col span={8}>
-            <Form.Item name="Search">
-              <Input placeholder="Search by name" allowClear />
-            </Form.Item>
-          </Col>
-          <Col span={4}>
-            <Row>
-              <Col span={12}>
-                <Form.Item name="search">
-                  <Button type="primary" htmlType="submit">
-                    Search
+    <>
+      <Card
+        style={{ marginBottom: '1rem' }}
+        bodyStyle={{ display: 'none' }}
+        title={
+          <Row justify="space-between" align="middle" gutter={[24, 0]} className="p-4">
+            <Col span={24} md={8} className="col-info">
+              <Avatar.Group>
+                <Avatar size={74} shape="square" src={stationData?.stationImages[0]?.imageUrl} />
+                <div className="flex items-center pl-4">
+                  <div>
+                    <h4 className="m-0 font-semibold">{stationData?.name}</h4>
+                    <p>{stationData?.description}</p>
+                    <p>{stationData?.address}</p>
+                  </div>
+                </div>
+              </Avatar.Group>
+            </Col>
+            {/* <Col span={24} md={8} className="col-info">
+              <div className="items-center justify-end">
+                <p className="pl-4 text-xl">Balance: {numberWithCommas(stationData?.balance)} đ</p>
+                <p className="pl-4 text-xl">Contact Phone: {stationData?.contactPhone}</p>
+              </div>
+            </Col> */}
+          </Row>
+        }
+      />
+      <Card
+        title="Service fees"
+        extra={
+          <div className="flex gap-3">
+            <Button type="primary" onClick={() => onOpenFormHandler()}>
+              New
+            </Button>
+            <Button type="primary" onClick={() => onOpenDefault(check || id)}>
+              Use default service fees
+            </Button>
+          </div>
+        }
+      >
+        <Form form={form} onFinish={onFinishHandler}>
+          <Row gutter={24} justify="space-between">
+            <Col span={8}>
+              <Form.Item name="Search">
+                <Input placeholder="Search by name" allowClear />
+              </Form.Item>
+            </Col>
+            <Col span={4}>
+              <Row>
+                <Col span={12}>
+                  <Form.Item name="search">
+                    <Button type="primary" htmlType="submit">
+                      Search
+                    </Button>
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Button type="primary" onClick={resetHandler}>
+                    Reset
                   </Button>
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Button type="primary" onClick={resetHandler}>
-                  Reset
-                </Button>
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-      </Form>
-      <Table
-        rowKey="id"
-        size="small"
-        scroll={{ x: 'max-content' }}
-        pagination={false}
-        columns={columns}
-        dataSource={data}
-        loading={isLoading}
-      />
-      <Pagination
-        showSizeChanger
-        onChange={onPageChange}
-        total={data?.totalPages}
-        // showTotal={(total) => `共 ${total} 条`}
-        current={data?.page}
-        style={{ marginTop: '1rem' }}
-      />
-      {showInfo && (
-        <PricingCreate clickOne={clickOne} check={check || id} onClose={closeAndRefetchHandler} />
-      )}
-      {showDefault && <PricingDefaultModal click={clickTwo} onClose={closeDefault} />}
-    </Card>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        </Form>
+        <Table
+          rowKey="id"
+          size="small"
+          scroll={{ x: 'max-content' }}
+          pagination={false}
+          columns={columns}
+          dataSource={data}
+          loading={isLoading}
+        />
+        <Pagination
+          showSizeChanger
+          onChange={onPageChange}
+          total={data?.totalPages}
+          // showTotal={(total) => `共 ${total} 条`}
+          current={data?.page}
+          style={{ marginTop: '1rem' }}
+        />
+        {showInfo && (
+          <PricingCreate clickOne={clickOne} check={check || id} onClose={closeAndRefetchHandler} />
+        )}
+        {showDefault && <PricingDefaultModal click={clickTwo} onClose={closeDefault} />}
+      </Card>
+    </>
   );
 }

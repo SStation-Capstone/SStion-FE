@@ -1,5 +1,22 @@
-import { SearchOutlined } from '@ant-design/icons';
-import { Pagination, Typography, Avatar, Image, List, Input, Space, Button, Modal } from 'antd';
+import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  ExclamationCircleOutlined,
+  MinusCircleOutlined,
+  SearchOutlined,
+} from '@ant-design/icons';
+import {
+  Pagination,
+  Typography,
+  Avatar,
+  Image,
+  List,
+  Input,
+  Space,
+  Button,
+  Modal,
+  Tag,
+} from 'antd';
 import Table from 'antd/es/table';
 import { useState, useRef } from 'react';
 import Highlighter from 'react-highlight-words';
@@ -178,6 +195,34 @@ export function PackageList({ clickOne, onClose }: PackagesFormProps) {
     //     </List.Item>
     //   ),
     // },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      render: (_: any, record: any) => (
+        <>
+          {record.status === 'Paid' && (
+            <Tag icon={<MinusCircleOutlined />} color="default">
+              {record.status}
+            </Tag>
+          )}
+          {record.status === 'Returned' && (
+            <Tag icon={<CloseCircleOutlined />} color="error">
+              {record.status}
+            </Tag>
+          )}
+          {record.status === 'Canceled' && (
+            <Tag icon={<ExclamationCircleOutlined />} color="warning">
+              {record.status}
+            </Tag>
+          )}
+          {record.status === 'Completed' && (
+            <Tag icon={<CheckCircleOutlined />} color="success">
+              {record.status}
+            </Tag>
+          )}
+        </>
+      ),
+    },
     {
       title: 'Receiver',
       dataIndex: 'receiver',

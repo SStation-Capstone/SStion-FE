@@ -34,7 +34,7 @@ const createStation = (data: StationPayload) =>
 const getStation = () => apiClient.get<StationGetRes>({ url: StationApi.GetStation });
 
 export const useListStation = (values?: InputType) => {
-  return useQuery(['listStation', values], () =>
+  return useQuery(['listStationAdmin', values], () =>
     apiClient.get<StationGetRes>({ url: StationApi.GetStation, params: values }),
   );
 };
@@ -49,7 +49,7 @@ export const useUpdateStation = () => {
     {
       onSuccess: () => {
         message.success('Update station sucessfully');
-        queryClient.invalidateQueries(['listStation']);
+        queryClient.invalidateQueries(['listStationAdmin']);
       },
     },
   );
@@ -69,7 +69,7 @@ export const useCreateStation = () => {
       onSuccess: () => {
         // globalSuccess();
         message.success('Create station sucessfully');
-        queryClient.invalidateQueries(['listStation']);
+        queryClient.invalidateQueries(['listStationAdmin']);
       },
     },
   );
@@ -85,7 +85,7 @@ export const useDeleteStation = () => {
       onSuccess: () => {
         // globalSuccess();
         message.success('Delete station sucessfully');
-        queryClient.invalidateQueries(['listStation']);
+        queryClient.invalidateQueries(['listStationAdmin']);
       },
     },
   );

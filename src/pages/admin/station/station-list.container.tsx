@@ -1,9 +1,10 @@
-import { Button, Card, Col, Form, Input, Pagination, Row } from 'antd';
+import { Button, Card, Col, Form, Input, Pagination, Popconfirm, Row } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { useListStation } from '@/api/services/admin/stationService';
+import { useDeleteStation, useListStation } from '@/api/services/admin/stationService';
+import { IconButton, Iconify } from '@/components/icon';
 import { CircleLoading } from '@/components/loading';
 import { PackageList } from '@/pages/station/package-list.container';
 import { PaymentStationList } from '@/pages/station/payment-list.container';
@@ -31,13 +32,14 @@ export default function ManageStationManagerList() {
 
   const [listRelateParams, setListRelateParams] = useState<InputType>();
   const [clickOne, setClickOne] = useState<Station>();
-  const [clickTwo, setClickTwo] = useState();
+  const [clickTwo, setClickTwo] = useState<Station>();
   const [showInfo, setShowInfo] = useState(false);
   const [stationId, setStationId] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
   const [showPricing, setShowPricing] = useState(false);
   const [showStaff, setShowStaff] = useState(false);
   const { data, isLoading } = useListStation(listRelateParams);
+  const { mutate: deleteMutate } = useDeleteStation();
   const [showPayment, setShowPayment] = useState<any>(false);
   const [showPackageDetail, setShowPackageDetail] = useState(false);
   if (isLoading) return <CircleLoading />;
@@ -45,6 +47,7 @@ export default function ManageStationManagerList() {
   const onOpenPricing = (record?: any) => {
     setStationId(record);
     setShowPricing(true);
+    setClickTwo(record);
   };
   const onOpenStaff = (record?: any) => {
     setStationId(record);
@@ -130,7 +133,7 @@ export default function ManageStationManagerList() {
       ),
     },
     {
-      title: 'View',
+      title: '',
       key: 'operation',
       align: 'center',
       width: 250,
@@ -147,6 +150,7 @@ export default function ManageStationManagerList() {
               onClick={(e) => {
                 e.stopPropagation();
                 onOpenStaff(record.id);
+                setClickTwo(record);
               }}
             >
               <span className="text-sm font-bold text-blue-500">staffs</span>
@@ -156,6 +160,7 @@ export default function ManageStationManagerList() {
               onClick={(e) => {
                 e.stopPropagation();
                 onOpenPricing(record.id);
+                setClickTwo(record);
               }}
             >
               <span className="text-sm font-bold text-blue-500">service fees</span>
@@ -181,7 +186,7 @@ export default function ManageStationManagerList() {
       ),
     },
     {
-      title: 'Action',
+      title: '',
       key: 'operation',
       align: 'center',
       width: 100,
@@ -214,6 +219,29 @@ export default function ManageStationManagerList() {
         </div>
       ),
     },
+    {
+      title: 'Action',
+      dataIndex: 'status',
+      render: (_, record) => (
+        <Popconfirm
+          title="Delete the station"
+          okText="Yes"
+          cancelText="No"
+          placement="left"
+          onConfirm={(e) => {
+            e?.stopPropagation();
+            deleteMutate(record.id.toString());
+          }}
+          onPopupClick={(e) => {
+            e?.stopPropagation();
+          }}
+        >
+          <IconButton onClick={(e) => e.stopPropagation()}>
+            <Iconify icon="mingcute:delete-2-fill" size={18} className="text-error" />
+          </IconButton>
+        </Popconfirm>
+      ),
+    },
   ];
 
   const resetHandler = () => {
@@ -244,7 +272,7 @@ export default function ManageStationManagerList() {
               <Col span={8}>
                 <Row>
                   <Col span={7}>
-                    <Form.Item name="search">
+                    <Form.Item name="search" key="searchNameStation">
                       <Button type="primary" htmlType="submit">
                         Search
                       </Button>
@@ -259,7 +287,7 @@ export default function ManageStationManagerList() {
               </Col>
             </Row>
           </Col>
-          <Col span={2}>
+          {/* <Col span={2}>
             <Row>
               <Col span={12}>
                 <Button type="primary" onClick={() => onOpenFormHandler()}>
@@ -267,7 +295,7 @@ export default function ManageStationManagerList() {
                 </Button>
               </Col>
             </Row>
-          </Col>
+          </Col> */}
         </Row>
       </Form>
       <Table
@@ -281,6 +309,7 @@ export default function ManageStationManagerList() {
         onRow={(record, rowIndex) => {
           return {
             onClick: (event) => {
+              event.stopPropagation();
               onOpenFormDetail(record);
             },
           };
@@ -295,8 +324,12 @@ export default function ManageStationManagerList() {
         style={{ marginTop: '1rem' }}
       />
       {/* <ManageStationEdit {...roleModalPros} /> */}
-      {showStaff && <StationStaff clickOne={stationId} onClose={closeStaff} />}
-      {showPricing && <StationPricing clickOne={stationId} onClose={closePricing} />}
+      {showStaff && (
+        <StationStaff clickOne={stationId} stationData={clickTwo} onClose={closeStaff} />
+      )}
+      {showPricing && (
+        <StationPricing clickOne={stationId} stationData={clickTwo} onClose={closePricing} />
+      )}
       {showDetail && <StationDetail clickOne={clickOne} check onClose={closeDetail} />}
       {showInfo && <ManageStationEdit clickOne={clickOne} onClose={closeAndRefetchHandler} />}
       {showPayment && <PaymentStationList clickOne={showPayment} onClose={closePayment} />}

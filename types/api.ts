@@ -19,3 +19,9 @@ export interface InputType {
   PageSize?: number;
   Statuses?: string;
 }
+
+export interface QueryPayment {
+  PageIndex?: number;
+  PageSize?: number;
+  Statuses?: string;
+}
