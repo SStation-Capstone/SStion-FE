@@ -1,9 +1,15 @@
-import { Pagination, Typography, Button, Modal } from 'antd';
+import {
+  MinusCircleOutlined,
+  ExclamationCircleOutlined,
+  CheckCircleOutlined,
+} from '@ant-design/icons';
+import { Pagination, Typography, Button, Modal, Tag } from 'antd';
 import Table from 'antd/es/table';
 import { useState } from 'react';
 
 import { useListStationPayment } from '@/api/services/stationService';
 import { CircleLoading } from '@/components/loading';
+import { numberWithCommas } from '@/utils/string';
 
 import { PaymentDetail } from '../payment/payment.detail';
 
@@ -50,8 +56,34 @@ export function PaymentStationList({ clickOne, onClose }: PackagesFormProps) {
       dataIndex: 'package',
       render: (_: any, record: any) => <div>{record.package.name}</div>,
     },
-    { title: 'totalPrice', dataIndex: 'totalPrice' },
-    { title: 'status', dataIndex: 'status' },
+    {
+      title: 'Total Price',
+      dataIndex: 'totalPrice',
+      render: (text: any, record: any) => <div>{numberWithCommas(text)} đ</div>,
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      render: (_: any, record: any) => (
+        <>
+          {record.status === 'Failed' && (
+            <Tag icon={<MinusCircleOutlined />} color="error">
+              {record.status}
+            </Tag>
+          )}
+          {record.status === 'Canceled' && (
+            <Tag icon={<ExclamationCircleOutlined />} color="warning">
+              {record.status}
+            </Tag>
+          )}
+          {record.status === 'Success' && (
+            <Tag icon={<CheckCircleOutlined />} color="success">
+              {record.status}
+            </Tag>
+          )}
+        </>
+      ),
+    },
   ];
 
   const onPageChange = (page: number, pageSize: number) => {

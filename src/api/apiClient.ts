@@ -66,7 +66,7 @@ axiosInstance.interceptors.response.use(
       return Promise.reject(error);
     }
     try {
-      errMsg = response?.data?.message || message;
+      errMsg = response?.data?.detail || response?.data?.message || message;
       Message.error(errMsg);
     } catch (error) {
       throw new Error(error as unknown as string);

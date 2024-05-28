@@ -136,8 +136,8 @@ export const useChangeManager = () => {
       }),
     {
       onSuccess: () => {
-        message.success('change manager to station sucessfully');
-        queryClient.invalidateQueries(['listStation']);
+        message.success('Change manager sucessfully!!!');
+        queryClient.invalidateQueries(['listStationAdmin']);
       },
     },
   );

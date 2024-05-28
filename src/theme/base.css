@@ -572,7 +572,7 @@ small.redtext {
 }
 
 .ant-progress-custom.ant-progress .ant-progress-text {
-  position: sticky;
+  position: absolute;
   z-index: 1;
   margin: 0;
 }
@@ -602,6 +602,10 @@ small.redtext {
   border-radius: 0.5rem;
 }
 
-.progress-custom-rack .ant-progress-text{
-  transform: translateX(-40px);
+.progress-custom-rack .ant-progress-text {
+  transform: translateX(-300%);
+}
+
+.ant-progress-custom.ant-progress.ant-progress-status-success .ant-progress-text {
+  color: #000;
 }

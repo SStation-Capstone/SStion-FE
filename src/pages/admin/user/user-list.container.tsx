@@ -263,7 +263,7 @@ export default function ManageStationUserList() {
               <Col span={6}>
                 <Form.Item label="Role" name="Role">
                   <Select allowClear>
-                    <Select.Option value="StationManager">Station Manager</Select.Option>
+                    {/* <Select.Option value="StationManager">Station Manager</Select.Option> */}
                     <Select.Option value="Staff">Staff</Select.Option>
                     <Select.Option value="User">User</Select.Option>
                   </Select>
@@ -303,7 +303,9 @@ export default function ManageStationUserList() {
         scroll={{ x: 'max-content' }}
         pagination={false}
         columns={columns}
-        dataSource={data?.contends.filter((e) => e.roles[0].name !== 'Admin')}
+        dataSource={data?.contends.filter(
+          (e) => e.roles[0].name !== 'Admin' && e.roles[0].name !== 'StationManager',
+        )}
         loading={isLoading}
       />
       <Pagination

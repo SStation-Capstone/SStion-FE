@@ -78,6 +78,7 @@ export default function ManageZoneManagerList() {
     <>
       {stationData && (
         <Card
+          style={{ marginBottom: '1rem' }}
           bodyStyle={{ display: 'none' }}
           title={
             <Row justify="space-between" align="middle" gutter={[24, 0]} className="p-4">

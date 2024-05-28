@@ -21,11 +21,11 @@ export default function PricingDefaultModal({ click, onClose }: PricingFormProps
 
   const columns: ColumnsType<any> = [
     {
-      title: 'From (h)',
+      title: 'From (day)',
       dataIndex: 'startTime',
     },
     {
-      title: 'to (h)',
+      title: 'to (day)',
       dataIndex: 'endTime',
     },
     {

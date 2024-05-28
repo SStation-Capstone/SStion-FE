@@ -73,10 +73,13 @@ export const useSignIn = () => {
       const user: UserInfo = {
         email: decodetoken.email,
         id: decodetoken.id,
-        avatar: decodetoken.avartar_url,
+        avatar: decodetoken.avatar_url,
         username: decodetoken.user_name,
         role: decodetoken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'],
+        phone: decodetoken.phone_number,
       };
+      console.log('user', user);
+      console.log('usedecodetoken', decodetoken);
       if (
         decodetoken[
           'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'

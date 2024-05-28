@@ -88,7 +88,7 @@ export function PricingCreate({ clickOne, check, onClose }: StaffCreateFormProps
       >
         <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
           <Form.Item
-            label="From (h)"
+            label="From (day)"
             name="startTime"
             required
             rules={[
@@ -99,7 +99,7 @@ export function PricingCreate({ clickOne, check, onClose }: StaffCreateFormProps
             <Input />
           </Form.Item>
           <Form.Item
-            label="To (h)"
+            label="To (day)"
             name="endTime"
             required
             rules={[

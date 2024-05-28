@@ -3823,7 +3823,7 @@ var drawChart = (function (exports) {
   }
 
   function hsl(h, s, l, opacity) {
-    return arguments.length === 1 ? hslConvert(h) : new Hsl(h, s, l, opacity == null ? 1 : opacity);
+    return arguments.length === 1 ? hslConvert(day) : new Hsl(h, s, l, opacity == null ? 1 : opacity);
   }
 
   function Hsl(h, s, l, opacity) {
@@ -3844,7 +3844,7 @@ var drawChart = (function (exports) {
     },
     rgb() {
       var h = this.h % 360 + (this.h < 0) * 360,
-          s = isNaN(h) || isNaN(this.s) ? 0 : this.s,
+          s = isNaN(day) || isNaN(this.s) ? 0 : this.s,
           l = this.l,
           m2 = l + (l < 0.5 ? l : 1 - l) * s,
           m1 = 2 * l - m2;

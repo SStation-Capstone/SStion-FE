@@ -2,9 +2,13 @@ import { Button, Col, Card, Row, Avatar, Modal, Table, Typography } from 'antd';
 import { useState } from 'react';
 
 import { Iconify } from '@/components/icon';
+import { getItem } from '@/utils/storage';
 import { numberWithCommas } from '@/utils/string';
 
 import { ManagerListStation } from '../admin/station/station-list.manager';
+
+import { UserInfo } from '#/entity';
+import { StorageEnum } from '#/enum';
 
 const { Title } = Typography;
 export type PackagesFormProps = {
@@ -25,20 +29,23 @@ export function StationDetail({ clickOne, check, onClose }: PackagesFormProps) {
     setShowChangeManager(false);
     onClose();
   };
+  const closeChangeMangerModal = () => {
+    setShowChangeManager(false);
+  };
   const columns = [
+    // {
+    //   title: 'No',
+    //   dataIndex: 'no',
+    //   // eslint-disable-next-line no-plusplus
+    //   render: (_text: any, _data: any, index: number) => <Title level={5}>{++index}</Title>,
+    //   width: '5%',
+    // },
     {
-      title: 'No',
-      dataIndex: 'no',
-      // eslint-disable-next-line no-plusplus
-      render: (_text: any, _data: any, index: number) => <Title level={5}>{++index}</Title>,
-      width: '5%',
-    },
-    {
-      title: 'From (h)',
+      title: 'From (day)',
       dataIndex: 'startTime',
     },
     {
-      title: 'To (h)',
+      title: 'To (day)',
       dataIndex: 'endTime',
     },
     {
@@ -101,12 +108,16 @@ export function StationDetail({ clickOne, check, onClose }: PackagesFormProps) {
                 }}
               >
                 <Avatar.Group>
-                  <Avatar size={74} shape="square" src={clickOne.manager?.avatarUrl} />
+                  <Avatar
+                    size={74}
+                    shape="square"
+                    src={getItem<UserInfo>(StorageEnum.User)?.avatar as string}
+                  />
                   <div className="flex items-center pl-4">
                     <div>
                       <h4 className="m-0 font-semibold">{clickOne.manager?.fullName}</h4>
-                      <p>Email: {clickOne.manager?.email}</p>
-                      <p>Phone Number: {clickOne.manager?.phoneNumber}</p>
+                      <p>Email: {getItem<UserInfo>(StorageEnum.User)?.email as string}</p>
+                      <p>Phone Number: {getItem<UserInfo>(StorageEnum.User)?.phone as string}</p>
                     </div>
                   </div>
                 </Avatar.Group>
@@ -126,7 +137,7 @@ export function StationDetail({ clickOne, check, onClose }: PackagesFormProps) {
               </Card>
             </Col>
           </Row>
-          <strong>Service fee</strong>
+          <strong>Service fees</strong>
           <Table
             rowKey="id"
             size="small"
@@ -139,7 +150,7 @@ export function StationDetail({ clickOne, check, onClose }: PackagesFormProps) {
         </>
       )}
       {showChangeManager && (
-        <ManagerListStation clickOne={clickOneStation} onClose={closeAndRefetchHandler} />
+        <ManagerListStation clickOne={clickOneStation} onClose={closeChangeMangerModal} />
       )}
     </Modal>
   );

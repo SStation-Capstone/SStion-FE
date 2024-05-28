@@ -253,7 +253,7 @@ export default function PackageStationManagerList() {
   };
 
   return (
-    <Card title="List package station">
+    <Card title="All packages">
       <Form form={form} onFinish={onFinishHandler}>
         <Row gutter={24} justify="space-between">
           <Col span={20}>

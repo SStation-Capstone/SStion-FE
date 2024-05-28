@@ -43,11 +43,11 @@ export default function StaffManagerList() {
     //   width: '5%',
     // },
     {
-      title: 'From (h)',
+      title: 'From (day)',
       dataIndex: 'startTime',
     },
     {
-      title: 'to (h)',
+      title: 'to (day)',
       dataIndex: 'endTime',
     },
     {

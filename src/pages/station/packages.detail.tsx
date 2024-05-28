@@ -18,6 +18,7 @@ import {
   Typography,
   Tag,
 } from 'antd';
+import moment from 'moment';
 import { useState } from 'react';
 
 import { numberWithCommas } from '@/utils/string';
@@ -34,6 +35,7 @@ export type PackagesFormProps = {
 export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesFormProps) {
   // const { clickone, isLoading } = useGetPackageDetail(clickOne.id);
   // console.log('clickone pacakge detail', clickone);
+  console.log('clickOne', clickOne);
   const [showExpire, setShowExpire] = useState(false);
   // if (isLoading) return <CircleLoading />;
   const closeExpire = async () => {
@@ -42,21 +44,28 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
   };
   const columns = [
     {
-      title: 'No',
+      title: '',
       dataIndex: 'no',
       // eslint-disable-next-line no-plusplus
       render: (_text: any, _data: any, index: number) => <Title level={5}>{++index}</Title>,
       width: '5%',
     },
-    {
-      title: 'Name',
-      dataIndex: 'name',
-    },
+    // {
+    //   title: 'Name',
+    //   dataIndex: 'name',
+    // },
     {
       title: 'Status',
       dataIndex: 'status',
     },
     { title: 'Description', dataIndex: 'description' },
+    {
+      title: 'Create At',
+      dataIndex: 'createAt',
+      render: (_, text) => (
+        <Typography>{moment(text.createdAt).format('DD/MM/YYYY').toString()}</Typography>
+      ),
+    },
   ];
   return (
     <Modal
@@ -193,7 +202,7 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
                   {/* <Descriptions.Item label="Checkin Days" span={3}>
                     {clickOne.checkinDays}
                   </Descriptions.Item> */}
-                  <Descriptions.Item label="Service fee" span={3}>
+                  <Descriptions.Item label="Service fees" span={3}>
                     {numberWithCommas(clickOne.serviceFee)} đ
                   </Descriptions.Item>
                 </Descriptions>

@@ -1,4 +1,8 @@
-import { CheckCircleOutlined } from '@ant-design/icons';
+import {
+  CheckCircleOutlined,
+  ExclamationCircleOutlined,
+  MinusCircleOutlined,
+} from '@ant-design/icons';
 import {
   Card,
   Pagination,
@@ -15,34 +19,45 @@ import Table from 'antd/es/table';
 import moment from 'moment';
 import { useState } from 'react';
 
-import { useListPaymentStation } from '@/api/services/stationService';
+import { useListStation } from '@/api/services/admin/stationService';
+import { useListPaymentStationTest } from '@/api/services/stationService';
 import { CircleLoading } from '@/components/loading';
-import { getItem } from '@/utils/storage';
 import { numberWithCommas } from '@/utils/string';
 
-import { TransactionTpeRender } from '../admin/transactions/constant';
+// import { TransactionTpeRender } from '../admin/transactions/constant';
 
-import { PaymentDetail } from './payment.detail';
+import { TransactionTpeRender } from './constant';
+import { PaymenAdmintDetail } from './payment.detail';
 
 import { InputType } from '#/api';
-import { StorageEnum } from '#/enum';
+
+// import { TransactionTpeRender } from '../transactions/constant';
 
 const { Title } = Typography;
 
-export default function PaymentStationManagerList() {
+export default function PaymentStationManagerAdminList() {
   const [form] = Form.useForm();
+
+  // const id = getItem(StorageEnum.User).stationManager as string;
+  // const [stationId, setStationId] = useState<string>('');
+  // const stationRef = useRef();
+  const { data: listStation } = useListStation();
   const { RangePicker } = DatePicker;
-  const id = getItem(StorageEnum.User).stationManager as string;
-  const idStaff = getItem(StorageEnum.User).stationId as number;
+  // const idStaff = getItem(StorageEnum.User).stationId as number;
   const [listRelateParams, setListRelateParams] = useState<InputType>();
-  const { data, isLoading } = useListPaymentStation({
-    stationIds: id || `?StationIds=${idStaff}`,
-    values: listRelateParams,
-  });
+  // const { data, isLoading } = useListPaymentStation({
+  //   stationIds: `?StationIds=${stationId}`,
+  //   values: listRelateParams,
+  // });
+  const { data, isLoading } = useListPaymentStationTest(listRelateParams);
   const [clickOne, setClickOne] = useState<any>();
   const [showInfo, setShowInfo] = useState(false);
   // const { mutateAsync: deleteMutate } = useDeleteStation();
   if (isLoading) return <CircleLoading />;
+
+  // const handleSelectChange = (value: string) => {
+  //   setStationId(value);
+  // };
   const onOpenFormHandler = (record?: any) => {
     if (record) {
       setClickOne(record);
@@ -133,9 +148,23 @@ export default function PaymentStationManagerList() {
       title: 'Status',
       dataIndex: 'status',
       render: (_: any, record: any) => (
-        <Tag icon={<CheckCircleOutlined />} color="success">
-          {record.status}
-        </Tag>
+        <>
+          {record.status === 'Failed' && (
+            <Tag icon={<MinusCircleOutlined />} color="error">
+              {record.status}
+            </Tag>
+          )}
+          {record.status === 'Canceled' && (
+            <Tag icon={<ExclamationCircleOutlined />} color="warning">
+              {record.status}
+            </Tag>
+          )}
+          {record.status === 'Success' && (
+            <Tag icon={<CheckCircleOutlined />} color="success">
+              {record.status}
+            </Tag>
+          )}
+        </>
       ),
     },
   ];
@@ -184,6 +213,29 @@ export default function PaymentStationManagerList() {
                   </Select>
                 </Form.Item>
               </Col>
+              <Col>
+                <Form.Item label="Station" name="StationId">
+                  <Select
+                    showSearch
+                    placeholder="Select Station"
+                    // optionFilterProp="label"
+                    // onChange={onChange}
+                    // onSearch={onSearch}
+                    filterOption={(input, option) =>
+                      (option?.name ?? '').toLowerCase().includes(input.toLowerCase())
+                    }
+                    fieldNames={{ value: 'id', label: 'name' }}
+                    options={listStation?.contends}
+                    style={{ minWidth: '13rem' }}
+                    // value={stationId}
+                    // onSelect={handleSelectChange}
+                    allowClear
+                    // onClear={() => {
+                    //   setStationId('');
+                    // }}
+                  />
+                </Form.Item>
+              </Col>
             </Row>
           </Col>
           <Col span={4}>
@@ -228,8 +280,9 @@ export default function PaymentStationManagerList() {
         // showTotal={(total) => `共 ${total} 条`}
         current={data?.page}
         style={{ marginTop: '1rem' }}
+        defaultPageSize={20}
       />
-      {showInfo && <PaymentDetail onClose={closeAndRefetchHandler} clickOne={clickOne} />}
+      {showInfo && <PaymenAdmintDetail onClose={closeAndRefetchHandler} clickOne={clickOne} />}
     </Card>
   );
 }

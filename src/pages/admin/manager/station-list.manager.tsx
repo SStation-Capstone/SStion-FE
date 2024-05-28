@@ -9,14 +9,13 @@ export type PackagesFormProps = {
   onClose: () => void;
 };
 export function StationByManager({ clickOne, onClose }: PackagesFormProps) {
-  console.log('🚀 ~ StationByManager ~ clickOne:', clickOne);
   const [showCreateStation, setShowCreateStation] = useState(false);
   const onOpenFormStation = () => {
     setShowCreateStation(true);
   };
   const closeFormStation = async () => {
     setShowCreateStation(false);
-    onClose();
+    // onClose();
   };
   const columns = [
     {
@@ -65,7 +64,7 @@ export function StationByManager({ clickOne, onClose }: PackagesFormProps) {
     },
 
     {
-      title: 'View',
+      title: '',
       key: 'operation',
       align: 'center',
       width: 350,
@@ -74,7 +73,7 @@ export function StationByManager({ clickOne, onClose }: PackagesFormProps) {
           <div className="flex gap-2">
             <Link to={`/zone/${record.id}`}>
               <div className="flex cursor-pointer items-center rounded-md bg-blue-200 fill-blue-400 p-2 duration-100 hover:bg-blue-300 active:border active:border-blue-400">
-                <span className="text-sm font-bold text-blue-500">manager</span>
+                <span className="text-sm font-bold text-blue-500">manage</span>
               </div>
             </Link>
             <Link to={`/staff/${record.id}`}>
@@ -99,7 +98,7 @@ export function StationByManager({ clickOne, onClose }: PackagesFormProps) {
       width={1300}
       onCancel={() => onClose()}
       footer={[
-        <Button key="back" onClick={onClose}>
+        <Button key="backMain" onClick={onClose}>
           Cancel
         </Button>,
         <Button type="primary" key="back" onClick={onOpenFormStation}>
@@ -125,7 +124,7 @@ export function StationByManager({ clickOne, onClose }: PackagesFormProps) {
             </Col>
             <Col span={24} md={8} className="col-info">
               <div className="items-center justify-end">
-                <p className="pl-4 text-xl">userName: {clickOne.userName}</p>
+                <p className="pl-4 text-xl">User Name: {clickOne.userName}</p>
                 <p className="pl-4 text-xl">Phone Number: {clickOne.userName}</p>
               </div>
             </Col>
