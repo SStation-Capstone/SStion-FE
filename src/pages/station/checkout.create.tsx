@@ -247,18 +247,18 @@ export function ManageCheckOutCreate() {
                 title={<h6 className="m-0 font-semibold">Information</h6>}
                 className="header-solid card-profile-information h-full"
                 bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
-                actions={
-                  data.status === 'Paid' && [
-                    <Button
-                      key="submit"
-                      type="primary"
-                      loading={loading}
-                      onClick={() => submitHandleReturn('confirm')}
-                    >
-                      Confirm
-                    </Button>,
-                  ]
-                }
+                // actions={
+                //   data.status === 'Paid' && [
+                //     <Button
+                //       key="submit"
+                //       type="primary"
+                //       loading={loading}
+                //       onClick={() => submitHandleReturn('confirm')}
+                //     >
+                //       Confirm
+                //     </Button>,
+                //   ]
+                // }
               >
                 <Descriptions bordered>
                   <Descriptions.Item label="Width" span={3}>
@@ -280,7 +280,10 @@ export function ManageCheckOutCreate() {
                     {data.status}
                   </Descriptions.Item>
                   {/* <Descriptions.Item label="Price cod" span={3}>
+                  {/* <Descriptions.Item label="Price cod" span={3}>
                     {numberWithCommas(data.priceCod)} đ
+                  </Descriptions.Item> */}
+                  {/* <Descriptions.Item label="Is cod" span={3}>
                   </Descriptions.Item> */}
                   {/* <Descriptions.Item label="Is cod" span={3}>
                     {data.isCod ? 'true' : 'false'}
