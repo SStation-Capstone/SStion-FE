@@ -205,11 +205,10 @@ export default function PaymentStationManagerAdminList() {
                 </Form.Item>
               </Col>
               <Col span={6}>
-                <Form.Item label="Status" name="Status">
+                <Form.Item label="Type" name="PaymentType">
                   <Select allowClear>
-                    <Select.Option value="Success">Success</Select.Option>
-                    <Select.Option value="Canceled">Canceled</Select.Option>
-                    <Select.Option value="Failed">Failed</Select.Option>
+                    <Select.Option value="Cash">Cash</Select.Option>
+                    <Select.Option value="Wallet">Wallet</Select.Option>
                   </Select>
                 </Form.Item>
               </Col>
