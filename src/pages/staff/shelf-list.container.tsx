@@ -1,4 +1,4 @@
-import { Popconfirm, Progress, Tabs, Tooltip } from 'antd';
+import { Progress, Tabs, Tooltip } from 'antd';
 import { useState } from 'react';
 
 import {
@@ -8,9 +8,9 @@ import {
   useCreateRack,
   useListShelfStaff,
 } from '@/api/services/stationService';
-import { IconButton, Iconify } from '@/components/icon';
 import { CircleLoading } from '@/components/loading';
 
+import { ManageCheckInCreate } from './checkin.create';
 import { PackagesInfo } from './packages.info';
 import { ManageRackCreate } from './rack.create';
 // eslint-disable-next-line import/named
@@ -19,8 +19,9 @@ import { ManageSlotCreate } from './slot.create';
 
 export type StationEditFormProps = {
   id: String;
+  stationId: number;
 };
-export default function ManageShelfManagerList({ id }: StationEditFormProps) {
+export default function ManageShelfManagerList({ id, stationId }: StationEditFormProps) {
   const { mutateAsync: deleteMutate } = useDeleteShelf();
   const { mutateAsync: createMutate } = useCreateRack();
   const { mutateAsync: deleteRack } = useDeleteRack();
@@ -86,7 +87,7 @@ export default function ManageShelfManagerList({ id }: StationEditFormProps) {
                         key={item.id}
                         title={
                           <div>
-                            <div className="mb-2 grid">
+                            <div className="mb-2 grid ">
                               <span className="font-semibold text-black">name - {item.name}</span>
                               {/* <span className="font-semibold text-black">
                                 volume - {item.volume}
@@ -98,11 +99,11 @@ export default function ManageShelfManagerList({ id }: StationEditFormProps) {
                           </div>
                         }
                       >
-                        <span className="text-blue-gray-900 block font-sans text-base font-semibold leading-snug tracking-normal antialiased">
+                        <span className="text-blue-gray-900 block px-4 font-sans text-base font-semibold leading-snug tracking-normal antialiased">
                           Shelf index: {item.index}
                         </span>
                       </Tooltip>
-                      <Popconfirm
+                      {/* <Popconfirm
                         title="Delete the shelf"
                         okText="Yes"
                         cancelText="No"
@@ -114,18 +115,18 @@ export default function ManageShelfManagerList({ id }: StationEditFormProps) {
                         <IconButton>
                           <Iconify icon="mingcute:delete-2-fill" size={18} className="text-error" />
                         </IconButton>
-                      </Popconfirm>
+                      </Popconfirm> */}
                     </div>
-                    <div className="shadow-blue-gray-500/40 relative -mt-3 flex h-10 w-36 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-r from-blue-200 to-blue-200 bg-clip-border pl-2 text-white shadow-lg">
+                    {/* <div className="shadow-blue-gray-500/40 relative -mt-3 flex h-10 w-36 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-r from-blue-200 to-blue-200 bg-clip-border pl-2 text-white shadow-lg">
                       <Progress
                         percent={100 - item.capacity}
                         size="small"
                         // showInfo={false}
                       />
-                    </div>
+                    </div> */}
                   </div>
                   <div className="flex flex-wrap gap-2 p-6 ">
-                    <div
+                    {/* <div
                       className="relative flex flex-col rounded-xl bg-gray-200 bg-clip-border text-gray-700 shadow-md"
                       onClick={() => createMutate(item.id)}
                     >
@@ -134,14 +135,14 @@ export default function ManageShelfManagerList({ id }: StationEditFormProps) {
                           + Create rack
                         </h5>
                       </div>
-                    </div>
+                    </div> */}
                     {item.rackSorts.length > 0 &&
                       item.rackSorts.map((rack: any, rackIndex) => (
                         <div className="flex h-full w-full gap-3" key={rack.id}>
-                          <div className="flex cursor-pointer" onClick={() => onOpenFormRack(rack)}>
+                          {/* <div className="flex cursor-pointer" onClick={() => onOpenFormRack(rack)}>
                             <Iconify icon="solar:pen-bold-duotone" size={18} />
-                          </div>
-                          {rackIndex === 0 && (
+                          </div> */}
+                          {/* {rackIndex === 0 && (
                             <Popconfirm
                               title="Delete the rack"
                               okText="Yes"
@@ -159,7 +160,7 @@ export default function ManageShelfManagerList({ id }: StationEditFormProps) {
                                 />
                               </div>
                             </Popconfirm>
-                          )}
+                          )} */}
                           <Tooltip
                             placement="top"
                             color="#fefefe"
@@ -184,13 +185,13 @@ export default function ManageShelfManagerList({ id }: StationEditFormProps) {
                                   </span>
                                 </div>
                                 <div className="flex justify-center">
-                                  {/* <span
+                                  <span
                                     className="mr-2 bg-blue-300 p-1.5 font-semibold text-black transition-all duration-200 hover:bg-blue-200"
                                     style={{ borderRadius: '5px', cursor: 'pointer' }}
                                     onClick={() => onOpenFormCheckInHandler(rack)}
                                   >
                                     Check In
-                                  </span> */}
+                                  </span>
                                   {/* <span
                                     className="mr-2 bg-green-300 p-1.5 font-semibold text-black transition-all duration-200 hover:bg-green-200"
                                     style={{ borderRadius: '5px', cursor: 'pointer' }}
@@ -223,7 +224,7 @@ export default function ManageShelfManagerList({ id }: StationEditFormProps) {
                               style={{
                                 cursor: 'pointer',
                                 width: '100%',
-                                paddingLeft: `${rackIndex === 0 ? '0px' : '30px'}`,
+                                paddingLeft: '0px',
                                 paddingRight: '10px',
                               }}
                             >
@@ -231,7 +232,7 @@ export default function ManageShelfManagerList({ id }: StationEditFormProps) {
                                 className="ant-progress-custom progress-custom-rack"
                                 percent={rack.volumeUsed}
                                 size="small"
-                                format={(percent) => `${rack.name} - ${percent}%`}
+                                format={(percent) => `${rack.name} `}
                                 // style={{
                                 //   background: `${slot.isActive ? '#fff' : '#ffccc7'}`,
                                 //   borderRadius: '10px',
@@ -501,7 +502,7 @@ export default function ManageShelfManagerList({ id }: StationEditFormProps) {
         {showInfo && (
           <PackagesInfo zoneId={id} clickOne={clickOne} onClose={closeAndRefetchHandler} />
         )}
-        {/* {showFormCheckIn && (
+        {showFormCheckIn && (
           <ManageCheckInCreate
             stationId={stationId}
             zoneId={id}
@@ -509,7 +510,7 @@ export default function ManageShelfManagerList({ id }: StationEditFormProps) {
             onClose={closeFormCheckIn}
             onCloseCheckIn={closeAndRefetchHandler}
           />
-        )} */}
+        )}
         {showFormRack && <ManageRackCreate clickOne={clickTwo} onClose={closeFormRack} />}
         {showFormSlot && <ManageSlotCreate clickOne={clickThree} onClose={closeFormSlot} />}
       </>

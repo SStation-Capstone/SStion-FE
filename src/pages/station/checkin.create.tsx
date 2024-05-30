@@ -116,14 +116,18 @@ export function ManageCheckInCreate({
         },
         body: JSON.stringify(createData),
       });
+      const resBody = await response.json();
       if (response.status === 200) {
-        message.success('Create check in sucessfully');
-        await queryClient.invalidateQueries(['listShelf']);
+        message
+          .success('Create check in sucessfully')
+          .then(message.success(`Location of package ${resBody?.location}`, 3));
+        await queryClient.invalidateQueries(['listShelfStaff']);
         setLoading(false);
         onClose();
-        return onCloseCheckIn();
+        // return onCloseCheckIn();
+      } else {
+        message.error('Error when check in package');
       }
-      message.error('Please check in the slots');
       // if (response.status === 404) {
       //   if (slotId) {
       //     try {
@@ -139,7 +143,7 @@ export function ManageCheckInCreate({
       // }
       setLoading(false);
       onClose();
-      onCloseCheckIn();
+      // onCloseCheckIn();
     } catch (error) {
       setLoading(false);
     }

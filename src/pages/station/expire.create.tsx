@@ -138,10 +138,10 @@ export function ManageExpireCreate({ zoneId, packageId, slotId, onClose }: Expir
     >
       <Form form={form} layout="vertical">
         <Form.Item
-          label="New Slot by zone"
+          label="New Zone"
           name="zoneId"
           required
-          rules={[{ required: true, message: 'Please input New Slot by zone' }]}
+          rules={[{ required: true, message: 'Please input new zone!' }]}
         >
           <Select
             showSearch
@@ -155,10 +155,10 @@ export function ManageExpireCreate({ zoneId, packageId, slotId, onClose }: Expir
         </Form.Item>
         {dataShelf && (
           <Form.Item
-            label="New Slot by shelf"
+            label="New Shelf"
             name="shelfId"
             required
-            rules={[{ required: true, message: 'Please input New Slot by shelf' }]}
+            rules={[{ required: true, message: 'Please input new shelf' }]}
           >
             <Select
               showSearch
@@ -176,7 +176,7 @@ export function ManageExpireCreate({ zoneId, packageId, slotId, onClose }: Expir
             label="New rack"
             name="newRackId"
             required
-            rules={[{ required: true, message: 'Please input New Slot by rack' }]}
+            rules={[{ required: true, message: 'Please input new rack' }]}
           >
             <Select
               showSearch

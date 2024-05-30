@@ -43,16 +43,16 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
   };
   const columns = [
     {
-      title: 'No',
+      title: '',
       dataIndex: 'no',
       // eslint-disable-next-line no-plusplus
       render: (_text: any, _data: any, index: number) => <Title level={5}>{++index}</Title>,
       width: '5%',
     },
-    {
-      title: 'Name',
-      dataIndex: 'name',
-    },
+    // {
+    //   title: 'Name',
+    //   dataIndex: 'name',
+    // },
     {
       title: 'Status',
       dataIndex: 'status',
@@ -187,20 +187,49 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
                     {clickOne.weight} g
                   </Descriptions.Item>
                   <Descriptions.Item label="Status" span={3}>
-                    {clickOne.status}
+                    {clickOne.status === 'Paid' && (
+                      <Tag icon={<MinusCircleOutlined />} color="default">
+                        {clickOne.status}
+                      </Tag>
+                    )}
+                    {clickOne.status === 'Returned' && (
+                      <Tag icon={<CloseCircleOutlined />} color="error">
+                        {clickOne.status}
+                      </Tag>
+                    )}
+                    {clickOne.status === 'Canceled' && (
+                      <Tag icon={<ExclamationCircleOutlined />} color="warning">
+                        {clickOne.status}
+                      </Tag>
+                    )}
+                    {clickOne.status === 'Initialized' && (
+                      <Tag icon={<ExclamationCircleOutlined />} color="cyan">
+                        {clickOne.status}
+                      </Tag>
+                    )}
+                    {clickOne.status === 'Completed' && (
+                      <Tag icon={<CheckCircleOutlined />} color="success">
+                        {clickOne.status}
+                      </Tag>
+                    )}
+                    {clickOne.status === 'Expired' && (
+                      <Tag icon={<DisconnectOutlined />} color="volcano">
+                        {clickOne.status}
+                      </Tag>
+                    )}
                   </Descriptions.Item>
-                  <Descriptions.Item label="Price cod" span={3}>
+                  {/* <Descriptions.Item label="Price cod" span={3}>
                     {numberWithCommas(clickOne.priceCod)} đ
                   </Descriptions.Item>
                   <Descriptions.Item label="Is cod" span={3}>
                     {clickOne.isCod ? 'true' : 'false'}
+                  </Descriptions.Item> */}
+                  <Descriptions.Item label="Total Days" span={3}>
+                    {clickOne.totalDays}
                   </Descriptions.Item>
-                  <Descriptions.Item label="Total Hours" span={3}>
-                    {clickOne.totalHours}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Checkin Days" span={3}>
+                  {/* <Descriptions.Item label="Checkin Days" span={3}>
                     {clickOne.checkinDays}
-                  </Descriptions.Item>
+                  </Descriptions.Item> */}
                   <Descriptions.Item label="Service fees" span={3}>
                     {numberWithCommas(clickOne.serviceFee)} đ
                   </Descriptions.Item>
@@ -210,13 +239,13 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
             <Col span={24} md={12} className="mb-2">
               <Card
                 bordered={false}
-                title={<h6 className="m-0 font-semibold">Sender - Receiver</h6>}
+                title={<h6 className="m-0 font-semibold">Receiver</h6>}
                 className="mb-2"
                 bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
               >
                 <List
                   itemLayout="horizontal"
-                  dataSource={[clickOne.sender, clickOne.receiver]}
+                  dataSource={[clickOne.receiver]}
                   split={false}
                   className="conversations-list"
                   renderItem={(item) => (
@@ -249,7 +278,7 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
                     {clickOne.station.contactPhone}
                   </Descriptions.Item>
                   <Descriptions.Item label="Total Price" span={3}>
-                    {clickOne.totalPrice} đ
+                    {numberWithCommas(clickOne?.totalPrice)} đ
                   </Descriptions.Item>
                 </Descriptions>
               </Card>
@@ -258,14 +287,17 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
                 title={<h6 className="m-0 font-semibold">Zone</h6>}
                 bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
               >
-                <p className="text-dark">{clickOne.zone.description}</p>
+                <p className="text-dark">Description: {clickOne.zone.description}</p>
                 <hr className="my-25" />
                 <Descriptions title="Information">
-                  <Descriptions.Item label="Name" span={3}>
+                  <Descriptions.Item label="Zone" span={3}>
                     {clickOne.zone.name}
                   </Descriptions.Item>
-                  <Descriptions.Item label="Slot" span={3}>
-                    {clickOne.slot.name}
+                  <Descriptions.Item label="Shelf" span={3}>
+                    {clickOne?.shelf?.name}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Rack" span={3}>
+                    {clickOne?.rack?.name}
                   </Descriptions.Item>
                 </Descriptions>
               </Card>

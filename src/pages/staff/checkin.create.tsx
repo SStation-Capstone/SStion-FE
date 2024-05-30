@@ -9,7 +9,6 @@ import {
   message,
   Select,
   Alert,
-  Checkbox,
 } from 'antd';
 import { useState } from 'react';
 
@@ -81,8 +80,8 @@ export function ManageCheckInCreate({
       const createData: CheckInPayload = {
         name: values.name,
         description: values.description,
-        priceCod: values.isCod ? values.priceCod || 0 : 0,
-        isCod: values.isCod,
+        // priceCod: values.isCod ? values.priceCod || 0 : 0,
+        // isCod: values.isCod,
         weight: values.weight,
         height: values.height,
         width: values.width,
@@ -90,9 +89,9 @@ export function ManageCheckInCreate({
         stationId: stationId as unknown as number,
         zoneId: zoneId as unknown as number,
         shelfId: null,
-        rackId: null,
-        slotId: slotId ? (slotId as unknown as number) : null,
-        senderId: values.senderId,
+        rackId: slotId ? (slotId as unknown as number) : null,
+        // slotId: slotId ? (slotId as unknown as number) : null,
+        // senderId: values.senderId,
         receiverId: values.receiverId,
         packageImages: [],
       };
@@ -117,30 +116,36 @@ export function ManageCheckInCreate({
         },
         body: JSON.stringify(createData),
       });
+      const resBody = await response.json();
       if (response.status === 200) {
-        message.success('Create check in sucessfully');
-        await queryClient.invalidateQueries(['listShelf']);
+        message
+          .success('Create check in sucessfully')
+          .then(message.success(`Location of package ${resBody?.location}`, 3));
+        await queryClient.invalidateQueries(['listShelfStaff']);
         setLoading(false);
         onClose();
-        return onCloseCheckIn();
-      }
-      if (response.status === 404) {
-        if (slotId) {
-          try {
-            return setVisible(true);
-          } catch (error) {
-            setLoading(false);
-          }
-        } else {
-          message.error('Please check in the slots');
-        }
+        // return onCloseCheckIn();
       } else {
-        message.error('Please check in the slots');
+        message.error('Error when check in package');
       }
+      // if (response.status === 404) {
+      //   if (slotId) {
+      //     try {
+      //       return setVisible(true);
+      //     } catch (error) {
+      //       setLoading(false);
+      //     }
+      //   } else {
+      //     message.error('Please check in the slots');
+      //   }
+      // } else {
+      //   message.error('Please check in the slots');
+      // }
       setLoading(false);
       onClose();
-      onCloseCheckIn();
+      // onCloseCheckIn();
     } catch (error) {
+      console.log('error checkin staff', error);
       setLoading(false);
     }
   };
@@ -227,20 +232,22 @@ export function ManageCheckInCreate({
           >
             <Input />
           </Form.Item>
-          <div className="flex">
-            <Form.Item label="isCod" name="isCod" valuePropName="checked" style={{ width: '20%' }}>
-              <Checkbox onChange={(e) => setCheckIsCod(e.target.checked)} />
-            </Form.Item>
-            <Form.Item
-              label="Price Cod"
-              name="priceCod"
-              rules={[
-                { validator: checkIsCod ? (validateNumber as any) : (validateIsPrice as any) },
-              ]}
-            >
-              <Input disabled={!checkIsCod} />
-            </Form.Item>
-          </div>
+          <Form.Item
+            label="Phone Receiver"
+            name="receiverId"
+            required
+            rules={[{ required: true, message: 'Please input receiverId' }]}
+          >
+            <Select
+              showSearch
+              placeholder="Select a receiverId"
+              optionFilterProp="children"
+              onChange={onChange}
+              onSearch={(value) => onSearch(value, setReceiverInfo)}
+              filterOption={filterOption}
+              options={receiverInfo}
+            />
+          </Form.Item>
         </div>
         <Form.Item
           label="Description"
@@ -294,40 +301,6 @@ export function ManageCheckInCreate({
             ]}
           >
             <Input />
-          </Form.Item>
-        </div>
-        <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
-          <Form.Item
-            label="Phone Sender"
-            name="senderId"
-            required
-            rules={[{ required: true, message: 'Please input senderId' }]}
-          >
-            <Select
-              showSearch
-              placeholder="Select a senderId"
-              optionFilterProp="children"
-              onChange={onChange}
-              onSearch={(value) => onSearch(value, setSenderInfo)}
-              filterOption={filterOption}
-              options={senderInfo}
-            />
-          </Form.Item>
-          <Form.Item
-            label="Phone Receiver"
-            name="receiverId"
-            required
-            rules={[{ required: true, message: 'Please input receiverId' }]}
-          >
-            <Select
-              showSearch
-              placeholder="Select a receiverId"
-              optionFilterProp="children"
-              onChange={onChange}
-              onSearch={(value) => onSearch(value, setReceiverInfo)}
-              filterOption={filterOption}
-              options={receiverInfo}
-            />
           </Form.Item>
         </div>
         <Form.Item label="Package Images" name="avatarUrl" getValueFromEvent={normFile}>
