@@ -249,22 +249,22 @@ export default function PackagesManagerList() {
         </>
       ),
     },
-    {
-      title: 'Sender',
-      dataIndex: 'sender',
-      render: (_: any, record: any) => (
-        <List.Item>
-          <List.Item.Meta
-            className="flex gap-3"
-            avatar={
-              <Avatar shape="square" size={48} src={record.sender?.avatarUrl || unnamedImage} />
-            }
-            title={record.sender?.fullName || 'null'}
-            description={record.sender?.phoneNumber || 'null'}
-          />
-        </List.Item>
-      ),
-    },
+    // {
+    //   title: 'Sender',
+    //   dataIndex: 'sender',
+    //   render: (_: any, record: any) => (
+    //     <List.Item>
+    //       <List.Item.Meta
+    //         className="flex gap-3"
+    //         avatar={
+    //           <Avatar shape="square" size={48} src={record.sender?.avatarUrl || unnamedImage} />
+    //         }
+    //         title={record.sender?.fullName || 'null'}
+    //         description={record.sender?.phoneNumber || 'null'}
+    //       />
+    //     </List.Item>
+    //   ),
+    // },
     {
       title: 'Receiver',
       dataIndex: 'receiver',
@@ -288,6 +288,10 @@ export default function PackagesManagerList() {
     setListRelateParams(values);
   };
 
+  const resetHandler = () => {
+    form.resetFields();
+    form.submit();
+  };
   return (
     <Card title="List Packages">
       <Form form={form} onFinish={onFinishHandler}>

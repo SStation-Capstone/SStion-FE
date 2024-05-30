@@ -1,46 +1,43 @@
-import {
-  Button,
-  Card,
-  Col,
-  Form,
-  Input,
-  Pagination,
-  Typography,
-  Popconfirm,
-  Row,
-  Tag,
-  Avatar,
-} from 'antd';
+import { Button, Card, Col, Form, Input, Pagination, Typography, Popconfirm, Row } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 
-import { useDeleteStaff, useListStaff } from '@/api/services/stationService';
+import {
+  useDeletePricing,
+  useGoPricingDefault,
+  useListPricing,
+} from '@/api/services/stationService';
 import { IconButton, Iconify } from '@/components/icon';
 import { CircleLoading } from '@/components/loading';
 
-import { StaffCreate } from './staff.create';
+import { PricingCreate } from './pricing.create-admin';
+import PricingDefaultModal from './pricingDefault.modal-admin';
 
 import { InputType } from '#/api';
-import { Staff } from '#/entity';
+import { Pricing } from '#/entity';
 
 const { Title } = Typography;
-export type StaffFormProps = {
+export type PricingFormProps = {
   check?: any;
 };
-export default function StaffManagerList({ check }: StaffFormProps) {
+export default function PricingAdminList({ check }: PricingFormProps) {
   const [form] = Form.useForm();
   const { id } = useParams();
   const { state } = useLocation();
-  const stationData = JSON.parse(state?.stationData);
+  console.log('state', state);
+  // const stationData = JSON.parse(state?.stationData);
   const [listRelateParams, setListRelateParams] = useState<InputType>();
-  const [clickOne, setClickOne] = useState<Staff>();
+  const [clickOne, setClickOne] = useState<Pricing>();
+  const [clickTwo, setClickTwo] = useState<any>();
   const [showInfo, setShowInfo] = useState(false);
-  const { data, isLoading } = useListStaff(check || id);
-  const { mutateAsync: deleteMutate } = useDeleteStaff(check || id);
+  const [showDefault, setShowDefault] = useState(false);
+  const { data, isLoading } = useListPricing(check || id);
+  const { mutateAsync: deleteMutate } = useDeletePricing(check || id);
+  const { mutateAsync: createMutate } = useGoPricingDefault(check || id);
   if (isLoading) return <CircleLoading />;
 
-  const onOpenFormHandler = (record?: Staff) => {
+  const onOpenFormHandler = (record?: Pricing) => {
     if (record) {
       setClickOne(record);
     } else {
@@ -52,55 +49,38 @@ export default function StaffManagerList({ check }: StaffFormProps) {
   const closeAndRefetchHandler = async () => {
     setShowInfo(false);
   };
+  const onOpenDefault = (record?: any) => {
+    if (record) {
+      setClickTwo(record);
+    } else {
+      setClickTwo(undefined);
+    }
+    setShowDefault(true);
+  };
+
+  const closeDefault = async () => {
+    setShowDefault(false);
+  };
   const columns: ColumnsType<any> = [
-    {
-      title: 'No',
-      dataIndex: 'no',
-      // eslint-disable-next-line no-plusplus
-      render: (_text, _data, index) => <Title level={5}>{++index}</Title>,
-      width: '5%',
-    },
     // {
-    //   title: 'AvatarUrl',
-    //   dataIndex: 'avatarUrl',
-    //   render: (text) => <Image style={{ width: 100, height: 'auto' }} src={text} />,
+    //   title: 'No',
+    //   dataIndex: 'no',
+    //   // eslint-disable-next-line no-plusplus
+    //   render: (_text, _data, index) => <Title level={5}>{++index}</Title>,
+    //   width: '5%',
     // },
     {
-      title: 'Full Name',
-      dataIndex: 'fullName',
+      title: 'From (day)',
+      dataIndex: 'startTime',
     },
     {
-      title: 'User Name',
-      dataIndex: 'userName',
+      title: 'To (day)',
+      dataIndex: 'endTime',
     },
     {
-      title: 'Role',
-      dataIndex: 'roles',
-      render: (text) => <Tag color="cyan">{text[0].name}</Tag>,
-      showSorterTooltip: { target: 'full-header' },
-      filters: [
-        {
-          text: 'User',
-          value: 'User',
-        },
-        // {
-        //   text: 'Admin',
-        //   value: 'Admin',
-        // },
-        // {
-        //   text: 'Staff',
-        //   value: 'Staff',
-        // },
-        // {
-        //   text: 'StationManager',
-        //   value: 'StationManager',
-        // },
-      ],
-      onFilter: (value, record) => record.roles[0].name.indexOf(value as string) === 0,
-      sorter: (a, b) => a.roles[0].name.localeCompare(b.roles[0].name),
-      sortDirections: ['descend'],
+      title: 'Price (đ)',
+      dataIndex: 'price',
     },
-
     {
       title: 'Action',
       key: 'operation',
@@ -112,7 +92,7 @@ export default function StaffManagerList({ check }: StaffFormProps) {
             <Iconify icon="solar:pen-bold-duotone" size={18} />
           </IconButton>
           <Popconfirm
-            title="Delete the staff"
+            title="Delete the pricing"
             okText="Yes"
             cancelText="No"
             placement="left"
@@ -144,7 +124,7 @@ export default function StaffManagerList({ check }: StaffFormProps) {
 
   return (
     <>
-      <Card
+      {/* <Card
         style={{ marginBottom: '1rem' }}
         bodyStyle={{ display: 'none' }}
         title={
@@ -160,23 +140,27 @@ export default function StaffManagerList({ check }: StaffFormProps) {
                   </div>
                 </div>
               </Avatar.Group>
-            </Col>{' '}
+            </Col>
           </Row>
         }
-      />
-
+      /> */}
       <Card
-        title="List Staff"
+        title="Service fees"
         extra={
-          <Button type="primary" onClick={() => onOpenFormHandler()}>
-            New
-          </Button>
+          <div className="flex gap-3">
+            <Button type="primary" onClick={() => onOpenFormHandler()}>
+              New
+            </Button>
+            <Button type="primary" onClick={() => onOpenDefault(check || id)}>
+              Use default service fees
+            </Button>
+          </div>
         }
       >
         <Form form={form} onFinish={onFinishHandler}>
           <Row gutter={24} justify="space-between">
             <Col span={8}>
-              <Form.Item name="Search" key="searchByNameStaff">
+              <Form.Item name="Search">
                 <Input placeholder="Search by name" allowClear />
               </Form.Item>
             </Col>
@@ -184,7 +168,7 @@ export default function StaffManagerList({ check }: StaffFormProps) {
               <Row>
                 <Col span={12}>
                   <Form.Item name="search">
-                    <Button type="primary" htmlType="submit" key="searchByNameStaff">
+                    <Button type="primary" htmlType="submit">
                       Search
                     </Button>
                   </Form.Item>
@@ -204,7 +188,7 @@ export default function StaffManagerList({ check }: StaffFormProps) {
           scroll={{ x: 'max-content' }}
           pagination={false}
           columns={columns}
-          dataSource={data?.contends.filter((e) => e.roles[0].name !== 'StationManager')}
+          dataSource={data}
           loading={isLoading}
         />
         <Pagination
@@ -215,8 +199,10 @@ export default function StaffManagerList({ check }: StaffFormProps) {
           current={data?.page}
           style={{ marginTop: '1rem' }}
         />
-        {/* <ManageStationEdit {...roleModalPros} /> */}
-        {showInfo && <StaffCreate clickOne={clickOne} onClose={closeAndRefetchHandler} />}
+        {showInfo && (
+          <PricingCreate clickOne={clickOne} check={check || id} onClose={closeAndRefetchHandler} />
+        )}
+        {showDefault && <PricingDefaultModal click={clickTwo} onClose={closeDefault} />}
       </Card>
     </>
   );

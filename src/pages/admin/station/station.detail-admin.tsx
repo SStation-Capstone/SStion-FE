@@ -2,13 +2,11 @@ import { Button, Col, Card, Row, Avatar, Modal, Table, Typography } from 'antd';
 import { useState } from 'react';
 
 import { Iconify } from '@/components/icon';
-import { getItem } from '@/utils/storage';
 import { numberWithCommas } from '@/utils/string';
 
-import { ManagerListStation } from '../admin/station/station-list.manager';
+// import { ManagerListStation } from '../admin/station/station-list.manager';
 
-import { UserInfo } from '#/entity';
-import { StorageEnum } from '#/enum';
+import { ManagerListStation } from './station-list.manager';
 
 const { Title } = Typography;
 export type PackagesFormProps = {
@@ -16,7 +14,7 @@ export type PackagesFormProps = {
   check?: any;
   onClose: () => void;
 };
-export function StationDetail({ clickOne, check, onClose }: PackagesFormProps) {
+export function StationAdminDetail({ clickOne, check, onClose }: PackagesFormProps) {
   console.log('clickone admin', clickOne);
   // const { clickone, isLoading } = useGetPackageDetail(clickOne.id);
   // console.log('clickone pacakge detail', clickone);
@@ -109,16 +107,12 @@ export function StationDetail({ clickOne, check, onClose }: PackagesFormProps) {
                 }}
               >
                 <Avatar.Group>
-                  <Avatar
-                    size={74}
-                    shape="square"
-                    src={getItem<UserInfo>(StorageEnum.User)?.avatar as string}
-                  />
+                  <Avatar size={74} shape="square" src={clickOne?.manager?.avatarUrl} />
                   <div className="flex items-center pl-4">
                     <div>
                       <h4 className="m-0 font-semibold">{clickOne.manager?.fullName}</h4>
-                      <p>Email: {getItem<UserInfo>(StorageEnum.User)?.email as string}</p>
-                      <p>Phone Number: {getItem<UserInfo>(StorageEnum.User)?.phone as string}</p>
+                      <p>Email: {clickOne?.manager?.email}</p>
+                      <p>Phone Number: {clickOne?.manager?.phoneNumber}</p>
                     </div>
                   </div>
                 </Avatar.Group>
@@ -151,7 +145,7 @@ export function StationDetail({ clickOne, check, onClose }: PackagesFormProps) {
         </>
       )}
       {showChangeManager && (
-        <ManagerListStation clickOne={clickOneStation} onClose={closeChangeMangerModal} />
+        <ManagerListStation clickOne={clickOneStation} onClose={closeAndRefetchHandler} />
       )}
     </Modal>
   );
