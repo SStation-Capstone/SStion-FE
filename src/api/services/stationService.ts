@@ -883,6 +883,7 @@ export const useCreateExpire = () => {
       onSuccess: () => {
         message.success('Expiried package sucessfully!');
         queryClient.invalidateQueries(['listPackageStation']);
+        queryClient.invalidateQueries(['package']);
       },
     },
   );
