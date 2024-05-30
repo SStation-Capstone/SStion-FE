@@ -1,6 +1,6 @@
 import { Avatar, Button, Card, Col, Modal, Row } from 'antd';
 
-import StaffManagerList from '@/pages/staff/staff-list.user';
+import StaffManagerAdminList from './staff-list.user-admin';
 
 export type PackagesFormProps = {
   clickOne?: any;
@@ -45,7 +45,7 @@ export function StationStaff({ clickOne, onClose, stationData }: PackagesFormPro
           </Row>
         }
       />
-      <StaffManagerList check={clickOne} />
+      <StaffManagerAdminList check={clickOne} />
     </Modal>
   );
 }
