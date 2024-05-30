@@ -1,4 +1,4 @@
-import { Button, Form, Modal, message, Select, Alert } from 'antd';
+import { Button, Form, Modal, message, Select } from 'antd';
 import { useState } from 'react';
 
 import { useListShelf, useListZone } from '@/api/services/stationService';
@@ -37,10 +37,10 @@ export function ManageExpireCreate({ zoneId, packageId, slotId, onClose }: Expir
     try {
       setLoading(true);
       const values = await form.validateFields();
+      console.log('values staff', values);
       const createData: any = {
-        currentSlotId: slotId,
-        newSlotId: values.newSlotId,
-        isForce: false,
+        currentRackId: slotId,
+        newRackId: values.newRackId,
       };
       // createMutate(createData);
       const accessToken = getItem(StorageEnum.Token) as unknown as UserToken;
@@ -57,7 +57,7 @@ export function ManageExpireCreate({ zoneId, packageId, slotId, onClose }: Expir
       );
       if (response.status === 200) {
         message.success('Change location sucessfully!');
-        await queryClient.invalidateQueries(['listShelf']);
+        await queryClient.invalidateQueries(['listShelfStaff']);
         await queryClient.invalidateQueries(['listZoneStaff']);
         setLoading(false);
         return onClose();
@@ -94,7 +94,7 @@ export function ManageExpireCreate({ zoneId, packageId, slotId, onClose }: Expir
         },
         body: JSON.stringify(createData),
       });
-      await queryClient.invalidateQueries(['listShelf']);
+      await queryClient.invalidateQueries(['listShelfStaff']);
       message.success('Change location sucessfully!');
       setVisible(false);
       setLoading(false);
@@ -137,10 +137,10 @@ export function ManageExpireCreate({ zoneId, packageId, slotId, onClose }: Expir
     >
       <Form form={form} layout="vertical">
         <Form.Item
-          label="New Slot by zone"
+          label="New Zone"
           name="zoneId"
           required
-          rules={[{ required: true, message: 'Please input New Slot by zone' }]}
+          rules={[{ required: true, message: 'Please input new zone' }]}
         >
           <Select
             showSearch
@@ -154,10 +154,10 @@ export function ManageExpireCreate({ zoneId, packageId, slotId, onClose }: Expir
         </Form.Item>
         {dataShelf && (
           <Form.Item
-            label="New Slot by shelf"
+            label="New Shelf"
             name="shelfId"
             required
-            rules={[{ required: true, message: 'Please input New Slot by shelf' }]}
+            rules={[{ required: true, message: 'Please input new shelf' }]}
           >
             <Select
               showSearch
@@ -172,10 +172,10 @@ export function ManageExpireCreate({ zoneId, packageId, slotId, onClose }: Expir
         )}
         {shelf && (
           <Form.Item
-            label="New Slot by rack"
-            name="rackId"
+            label="New Rack"
+            name="newRackId"
             required
-            rules={[{ required: true, message: 'Please input New Slot by rack' }]}
+            rules={[{ required: true, message: 'Please input new rack' }]}
           >
             <Select
               showSearch
@@ -188,27 +188,8 @@ export function ManageExpireCreate({ zoneId, packageId, slotId, onClose }: Expir
             />
           </Form.Item>
         )}
-        {rack && (
-          <Form.Item
-            label="New Slot"
-            name="newSlotId"
-            required
-            rules={[{ required: true, message: 'Please input New Slot' }]}
-          >
-            <Select
-              showSearch
-              placeholder="Select a slot"
-              optionFilterProp="children"
-              filterOption={filterOption}
-              options={transformedData(
-                dataShelf?.contends.find((e) => e.id === shelf).rackSorts.find((e) => e.id === rack)
-                  .slotSorts,
-              )}
-            />
-          </Form.Item>
-        )}
       </Form>
-      {visible && (
+      {/* {visible && (
         <Alert
           message="The slot is almost full"
           showIcon
@@ -226,7 +207,7 @@ export function ManageExpireCreate({ zoneId, packageId, slotId, onClose }: Expir
           }
           closable
         />
-      )}
+      )} */}
     </Modal>
   );
 }

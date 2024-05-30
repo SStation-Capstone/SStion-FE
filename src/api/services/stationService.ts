@@ -110,6 +110,42 @@ export interface StationCreateResponse {
 type StationGetRes = PaginationRes & { contends: StationPayload[] };
 type PackageGetRes = PaginationRes & { contends: PackagePayload[] };
 
+type StationInfoRes = PaginationRes & StationInfoType;
+
+interface StationImage {
+  imageUrl: string;
+  id: number;
+}
+
+interface Pricing {
+  id: number;
+  startTime: number;
+  endTime: number;
+  price: number;
+  formatPrice: string;
+  stationId: number;
+}
+
+interface StationInfoType {
+  name: string;
+  description: string;
+  contactPhone: string;
+  address: string;
+  latitude: number | null;
+  longitude: number | null;
+  balance: number;
+  formatBalance: string;
+  stationImages: StationImage[];
+  pricings: Pricing[];
+  id: number;
+  createdBy: string;
+  createdAt: string;
+  modifiedBy: string;
+  modifiedAt: string;
+  deletedBy: string | null;
+  deletedAt: string | null;
+}
+
 export interface DashboardRes {
   dashBoardType: string;
   value: number;
@@ -198,7 +234,7 @@ export const useListPaymentStationTest = (payload?: any) => {
 
 export const useGetStationByStaff = () => {
   return useQuery(['listStationStaff'], () =>
-    apiClient.get<StationGetRes>({ url: StationApi.GetListStationByStaff }),
+    apiClient.get<StationInfoRes>({ url: StationApi.GetListStationByStaff }),
   );
 };
 export const useListZoneStaff = (values?: any) => {
@@ -659,6 +695,16 @@ export const useGetPackageBySlot = (data?: any) => {
     }),
   );
 };
+
+export const useGetPackageBySlotStaff = (data?: any) => {
+  return useQuery(['packageStaff', data], () =>
+    apiClient.get({
+      url: `${StationApi.Packages}?RackId=${data.id}`,
+      params: data.payload,
+    }),
+  );
+};
+
 export const useCreateCheckOutConfirm = () => {
   return useMutation(
     async (payload: any) =>
@@ -854,7 +900,9 @@ export const useCreateExpireStaff = () => {
     {
       onSuccess: () => {
         message.success('Expiried package sucessfully!');
+        queryClient.invalidateQueries(['listZoneStaff']);
         queryClient.invalidateQueries(['listShelfStaff']);
+        queryClient.invalidateQueries(['packageStaff']);
       },
     },
   );

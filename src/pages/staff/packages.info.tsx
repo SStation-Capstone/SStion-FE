@@ -25,7 +25,7 @@ import {
   useCreateExpireStaff,
   useCreatePushNotification,
   useDeletePackage,
-  useGetPackageBySlot,
+  useGetPackageBySlotStaff,
 } from '@/api/services/stationService';
 import { IconButton, Iconify } from '@/components/icon';
 import { CircleLoading } from '@/components/loading';
@@ -52,7 +52,10 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
   // eslint-disable-next-line unused-imports/no-unused-vars-ts
   const [loading, setLoading] = useState<boolean>(false);
   const [showFormCheckIn, setShowFormCheckIn] = useState(false);
-  const { data, isLoading } = useGetPackageBySlot({ id: clickOne.id, payload: listRelateParams });
+  const { data, isLoading, refetch } = useGetPackageBySlotStaff({
+    id: clickOne.id,
+    payload: listRelateParams,
+  });
   const [showInfo, setShowInfo] = useState(false);
   const [clickTwo, setClickTwo] = useState();
   const [clickExpire, setClickExpire] = useState();
@@ -62,7 +65,6 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
     const values = { PageIndex: page, PageSize: pageSize };
     setListRelateParams(values);
   };
-  console.log('data staff', data);
   const onOpenFormHandler = (record?: any) => {
     setClickTwo(record);
     setShowInfo(true);
@@ -158,20 +160,20 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
         <div>{moment(record.modifiedAt).format('DD/MM/YYYY HH:mm:ss')}</div>
       ),
     },
-    {
-      title: 'Sender',
-      dataIndex: 'sender',
-      render: (_: any, record: any) => (
-        <List.Item>
-          <List.Item.Meta
-            className="flex gap-3"
-            avatar={<Avatar shape="square" size={48} src={record.sender.avatarUrl} />}
-            title={record.sender.fullName}
-            description={record.sender.phoneNumber}
-          />
-        </List.Item>
-      ),
-    },
+    // {
+    //   title: 'Sender',
+    //   dataIndex: 'sender',
+    //   render: (_: any, record: any) => (
+    //     <List.Item>
+    //       <List.Item.Meta
+    //         className="flex gap-3"
+    //         avatar={<Avatar shape="square" size={48} src={record.sender.avatarUrl} />}
+    //         title={record.sender.fullName}
+    //         description={record.sender.phoneNumber}
+    //       />
+    //     </List.Item>
+    //   ),
+    // },
     {
       title: 'Receiver',
       dataIndex: 'receiver',
@@ -210,12 +212,13 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
               type="primary"
               size="large"
               style={{ padding: '0 10px', height: '35px', backgroundColor: '#13c2c2' }}
-              onClick={(e) => {
+              onClick={async (e) => {
                 e.stopPropagation();
                 if (record.status === 'Expired') {
                   message.error('Package have been expired!');
                 } else {
-                  createExpire(record.id.toString());
+                  await createExpire(record.id.toString());
+                  refetch();
                   onClose();
                 }
               }}
@@ -277,7 +280,7 @@ export function PackagesInfo({ zoneId, clickOne, onClose }: PackagesFormProps) {
   };
   return (
     <Modal
-      title="Packages by slot"
+      title="Packages by rack"
       open
       width={1300}
       onOk={submitHandle}

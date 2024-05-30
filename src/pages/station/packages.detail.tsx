@@ -188,7 +188,36 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
                     {clickOne.weight} g
                   </Descriptions.Item>
                   <Descriptions.Item label="Status" span={3}>
-                    {clickOne.status}
+                    {clickOne.status === 'Paid' && (
+                      <Tag icon={<MinusCircleOutlined />} color="default">
+                        {clickOne.status}
+                      </Tag>
+                    )}
+                    {clickOne.status === 'Returned' && (
+                      <Tag icon={<CloseCircleOutlined />} color="error">
+                        {clickOne.status}
+                      </Tag>
+                    )}
+                    {clickOne.status === 'Canceled' && (
+                      <Tag icon={<ExclamationCircleOutlined />} color="warning">
+                        {clickOne.status}
+                      </Tag>
+                    )}
+                    {clickOne.status === 'Initialized' && (
+                      <Tag icon={<ExclamationCircleOutlined />} color="cyan">
+                        {clickOne.status}
+                      </Tag>
+                    )}
+                    {clickOne.status === 'Completed' && (
+                      <Tag icon={<CheckCircleOutlined />} color="success">
+                        {clickOne.status}
+                      </Tag>
+                    )}
+                    {clickOne.status === 'Expired' && (
+                      <Tag icon={<DisconnectOutlined />} color="volcano">
+                        {clickOne.status}
+                      </Tag>
+                    )}
                   </Descriptions.Item>
                   {/* <Descriptions.Item label="Price cod" span={3}>
                     {numberWithCommas(clickOne.priceCod)} đ
@@ -259,16 +288,19 @@ export function PackageDetail({ clickOne, check, slotId, onClose }: PackagesForm
                 title={<h6 className="m-0 font-semibold">Zone</h6>}
                 bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
               >
-                <p className="text-dark">{clickOne.zone.description}</p>
+                <p className="text-dark">Description: {clickOne.zone.description}</p>
                 <hr className="my-25" />
-                {/* <Descriptions title="Information">
-                  <Descriptions.Item label="Name" span={3}>
+                <Descriptions title="Information">
+                  <Descriptions.Item label="Zone" span={3}>
                     {clickOne.zone.name}
                   </Descriptions.Item>
-                  <Descriptions.Item label="Slot" span={3}>
-                    {clickOne.slot.name}
+                  <Descriptions.Item label="Shelf" span={3}>
+                    {clickOne?.shelf?.name}
                   </Descriptions.Item>
-                </Descriptions> */}
+                  <Descriptions.Item label="Rack" span={3}>
+                    {clickOne?.rack?.name}
+                  </Descriptions.Item>
+                </Descriptions>
               </Card>
             </Col>
           </Row>
