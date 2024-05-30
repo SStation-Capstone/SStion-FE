@@ -572,7 +572,7 @@ small.redtext {
 }
 
 .ant-progress-custom.ant-progress .ant-progress-text {
-  position: absolute;
+  position: sticky;
   z-index: 1;
   margin: 0;
 }

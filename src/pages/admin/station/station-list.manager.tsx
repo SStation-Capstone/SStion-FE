@@ -2,6 +2,7 @@ import { Form, Modal, Select } from 'antd';
 
 import { useChangeManager } from '@/api/services/admin/managerService';
 import { useListManager } from '@/api/services/managerService';
+import { CircleLoading } from '@/components/loading';
 
 import { Station } from '#/entity';
 
@@ -12,7 +13,7 @@ export type ManagerListStationFormProps = {
 export function ManagerListStation({ clickOne, onClose }: ManagerListStationFormProps) {
   const [form] = Form.useForm();
 
-  const { mutateAsync: createMutate } = useChangeManager();
+  const { mutateAsync: createMutate, isLoading } = useChangeManager();
   const { data: listManager } = useListManager();
   const submitHandle = async () => {
     const values = await form.validateFields();
@@ -20,10 +21,10 @@ export function ManagerListStation({ clickOne, onClose }: ManagerListStationForm
       id: clickOne.id.toString(),
       manager: values.manager,
     };
-    createMutate(createData);
+    await createMutate(createData);
     onClose();
   };
-
+  if (isLoading) return <CircleLoading />;
   return (
     <Modal title="Change manager" open onOk={submitHandle} onCancel={() => onClose()}>
       <Form

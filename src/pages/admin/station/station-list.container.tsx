@@ -8,10 +8,10 @@ import { IconButton, Iconify } from '@/components/icon';
 import { CircleLoading } from '@/components/loading';
 import { PackageList } from '@/pages/station/package-list.container';
 import { PaymentStationList } from '@/pages/station/payment-list.container';
-import { StationDetail } from '@/pages/station/station.detail';
 
-import { StationPricing } from './station-list.pricing';
-import { StationStaff } from './station-list.staff';
+import { StationAdminPricing } from './station-list.pricing-admin';
+import { StationAdminStaff } from './station-list.staff-admin';
+import { StationAdminDetail } from './station.detail-admin';
 import { ManageStationEdit } from './station.edit';
 
 import { InputType } from '#/api';
@@ -91,6 +91,7 @@ export default function ManageStationManagerList() {
   };
   const closeAndRefetchHandler = async () => {
     setShowInfo(false);
+    setShowDetail(false);
   };
   const closeDetail = async () => {
     setShowDetail(false);
@@ -325,12 +326,12 @@ export default function ManageStationManagerList() {
       />
       {/* <ManageStationEdit {...roleModalPros} /> */}
       {showStaff && (
-        <StationStaff clickOne={stationId} stationData={clickTwo} onClose={closeStaff} />
+        <StationAdminStaff clickOne={stationId} stationData={clickTwo} onClose={closeStaff} />
       )}
       {showPricing && (
-        <StationPricing clickOne={stationId} stationData={clickTwo} onClose={closePricing} />
+        <StationAdminPricing clickOne={stationId} stationData={clickTwo} onClose={closePricing} />
       )}
-      {showDetail && <StationDetail clickOne={clickOne} check onClose={closeDetail} />}
+      {showDetail && <StationAdminDetail clickOne={clickOne} check onClose={closeDetail} />}
       {showInfo && <ManageStationEdit clickOne={clickOne} onClose={closeAndRefetchHandler} />}
       {showPayment && <PaymentStationList clickOne={showPayment} onClose={closePayment} />}
       {showPackageDetail && <PackageList clickOne={clickTwo} onClose={closePackageDetail} />}
