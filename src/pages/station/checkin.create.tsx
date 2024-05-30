@@ -1,15 +1,4 @@
-import {
-  Button,
-  Form,
-  Input,
-  Upload,
-  UploadFile,
-  UploadProps,
-  Modal,
-  message,
-  Select,
-  Alert,
-} from 'antd';
+import { Button, Form, Input, Upload, UploadFile, UploadProps, Modal, message, Alert } from 'antd';
 import { useState } from 'react';
 
 import {
@@ -17,6 +6,7 @@ import {
   // useCreateCheckIn,
   useCreateCheckInForce,
 } from '@/api/services/stationService';
+import { DebounceSelect } from '@/components/debounce-search';
 import { queryClient } from '@/http/tanstack/react-query';
 import { beforeUpload, fakeUpload, normFile, uploadFileToFirebase } from '@/utils/file';
 import { getItem } from '@/utils/storage';
@@ -48,6 +38,7 @@ export function ManageCheckInCreate({
   const [senderInfo, setSenderInfo] = useState<any>([]);
   const [receiverInfo, setReceiverInfo] = useState<any>([]);
   const [checkIsCod, setCheckIsCod] = useState<boolean>(false);
+  const [receiverList, setReceiverList] = useState();
   const getUserInfoByPhoneNumber = async (phoneNumber: string, setState: Function) => {
     try {
       const accessToken = getItem(StorageEnum.Token) as unknown as UserToken;
@@ -73,6 +64,30 @@ export function ManageCheckInCreate({
   };
 
   // eslint-disable-next-line consistent-return
+  const getUserInfoByPhoneNumberTest = async (phoneNumber: string) => {
+    try {
+      const accessToken = getItem(StorageEnum.Token) as unknown as UserToken;
+      const response = await fetch(
+        `${import.meta.env.VITE_APP_BASE_API}/staffs/users?Search=${phoneNumber}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken.accessToken}`,
+          },
+        },
+      );
+      const data = await response.json();
+      const transformedData = data.contends.map(
+        (item: { id: any; phoneNumber: any; fullName: any }) => ({
+          value: item.id,
+          label: `${item.phoneNumber} - ${item.fullName}`,
+        }),
+      );
+      return transformedData;
+    } catch (error) {
+      console.error('Error fetching user info:', error);
+    }
+  };
+  // eslint-disable-next-line consistent-return
   const submitHandle = async () => {
     try {
       setLoading(true);
@@ -92,7 +107,7 @@ export function ManageCheckInCreate({
         rackId: slotId ? (slotId as unknown as number) : null,
         // slotId: slotId ? (slotId as unknown as number) : null,
         // senderId: values.senderId,
-        receiverId: values.receiverId,
+        receiverId: values.receiverId.value,
         packageImages: [],
       };
       if (values.avatarUrl && values.avatarUrl.length > 0) {
@@ -121,7 +136,7 @@ export function ManageCheckInCreate({
         message
           .success('Create check in sucessfully')
           .then(message.success(`Location of package ${resBody?.location}`, 3));
-        await queryClient.invalidateQueries(['listShelfStaff']);
+        await queryClient.invalidateQueries(['listShelf']);
         setLoading(false);
         onClose();
         // return onCloseCheckIn();
@@ -237,14 +252,19 @@ export function ManageCheckInCreate({
             required
             rules={[{ required: true, message: 'Please input receiverId' }]}
           >
-            <Select
+            <DebounceSelect
               showSearch
-              placeholder="Select a receiverId"
+              value={receiverList}
               optionFilterProp="children"
-              onChange={onChange}
-              onSearch={(value) => onSearch(value, setReceiverInfo)}
               filterOption={filterOption}
-              options={receiverInfo}
+              placeholder="Select a receiver"
+              fetchOptions={getUserInfoByPhoneNumberTest}
+              onChange={(newValue) => {
+                setReceiverList(newValue);
+              }}
+              style={{
+                width: '100%',
+              }}
             />
           </Form.Item>
         </div>

@@ -115,7 +115,7 @@ export function PaymentDetail({ clickOne, onClose }: PaymentDetailProps) {
           <Descriptions.Item label="Weight" span={1}>
             {clickOne?.package.weight} cm
           </Descriptions.Item>
-          <Descriptions.Item label="width" span={1}>
+          <Descriptions.Item label="Width" span={1}>
             {clickOne?.package.width} kg
           </Descriptions.Item>
           <Descriptions.Item label="Status" span={3}>
