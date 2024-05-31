@@ -557,7 +557,7 @@ export const useCreatePricing = (values?: any) => {
     {
       onSuccess: () => {
         // globalSuccess();
-        message.success('Create pricing sucessfully');
+        message.success('Create service fee sucessfully');
         queryClient.invalidateQueries(['listPricing']);
       },
     },
@@ -578,7 +578,7 @@ export const useUpdatePricing = (values?: any) => {
     {
       onSuccess: () => {
         // globalSuccess();
-        message.success('update pricing sucessfully');
+        message.success('Update service fee sucessfully!');
         queryClient.invalidateQueries(['listPricing']);
       },
     },
@@ -594,7 +594,7 @@ export const useDeletePricing = (values?: any) => {
     {
       onSuccess: () => {
         // globalSuccess();
-        message.success('Delete pricing sucessfully');
+        message.success('Delete service fee sucessfully!');
         queryClient.invalidateQueries(['listPricing']);
       },
     },
@@ -666,7 +666,7 @@ export const useGoPricingDefault = (values?: any) => {
     {
       onSuccess: () => {
         // globalSuccess();
-        message.success('Update pricing default sucessfully');
+        message.success('Update service fee default sucessfully!');
         queryClient.invalidateQueries(['listPricing']);
       },
     },
@@ -688,20 +688,26 @@ export const useGetPackageDetail = (data?: any) => {
   );
 };
 export const useGetPackageBySlot = (data?: any) => {
-  return useQuery(['package', data], () =>
-    apiClient.get({
-      url: `${StationApi.Packages}?RackId=${data.id}`,
-      params: data.payload,
-    }),
+  return useQuery(
+    ['package', data],
+    () =>
+      apiClient.get({
+        url: `${StationApi.Packages}?RackId=${data.id}`,
+        params: data.payload,
+      }),
+    { cacheTime: 0 },
   );
 };
 
 export const useGetPackageBySlotStaff = (data?: any) => {
-  return useQuery(['packageStaff', data], () =>
-    apiClient.get({
-      url: `${StationApi.Packages}?RackId=${data.id}`,
-      params: data.payload,
-    }),
+  return useQuery(
+    ['packageStaff', data],
+    () =>
+      apiClient.get({
+        url: `${StationApi.Packages}?RackId=${data.id}`,
+        params: data.payload,
+      }),
+    { cacheTime: 0 },
   );
 };
 

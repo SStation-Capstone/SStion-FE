@@ -65,7 +65,7 @@ export default function StaffManagerList() {
             <Iconify icon="solar:pen-bold-duotone" size={18} />
           </IconButton>
           <Popconfirm
-            title="Delete the pricing"
+            title="Delete the service fee?"
             okText="Yes"
             cancelText="No"
             placement="left"

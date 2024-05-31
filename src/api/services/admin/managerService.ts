@@ -16,6 +16,39 @@ export interface MangerPayload {
   password: string;
 }
 
+interface StationImage {
+  id: number;
+  imageUrl: string;
+}
+
+interface Pricing {
+  id: number;
+  startTime: number;
+  endTime: number;
+  price: number;
+  formatPrice: string;
+  stationId: number;
+}
+
+interface StationByManger {
+  id: number;
+  createdBy: string;
+  createdAt: string;
+  modifiedBy: string;
+  modifiedAt: string;
+  deletedBy: string;
+  deletedAt: string;
+  name: string;
+  description: string;
+  contactPhone: string;
+  address: string;
+  latitude: string;
+  longitude: string;
+  balance: number;
+  formatBalance: string;
+  stationImages: StationImage[];
+  pricings: Pricing[];
+}
 export interface AddToStationPayload {
   id: string;
   station: string;
@@ -29,6 +62,8 @@ export interface MangerUpdateResponse {
 // & { user: UserInfo };
 
 type ManagerGetRes = PaginationRes & { contends: MangerPayload[] };
+type StationByMangerRes = PaginationRes & { contends: StationByManger[] };
+
 export enum ManagerApi {
   GetManager = '/managers',
   CreateManager = '/managers',
@@ -36,6 +71,7 @@ export enum ManagerApi {
   DeleteManager = '/managers',
   AddManagerStations = '/admin/stations',
   CreateStation = '/managers',
+  GetStationByManager = '/admin/managers',
 }
 
 // const createManager = (data: MangerPayload) =>
@@ -55,6 +91,11 @@ export const useListManager = (values?: InputType) => {
 //   data: payload,
 // });
 
+export const useListStationByManager = (id: string) => {
+  return useQuery(['listStationByManager', id], () =>
+    apiClient.get<StationByMangerRes>({ url: `${ManagerApi.GetStationByManager}/${id}/stations` }),
+  );
+};
 export const useUpdateManager = () => {
   return useMutation(
     async (payload: MangerPayload) => {

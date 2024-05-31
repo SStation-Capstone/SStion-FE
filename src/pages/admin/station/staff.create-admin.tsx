@@ -1,6 +1,5 @@
 import { Button, Form, Input, Modal, Upload, UploadFile, UploadProps, message } from 'antd';
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
 
 import {
   PostStaffPayload,
@@ -15,12 +14,14 @@ import { Staff } from '#/entity';
 export type StaffCreateFormProps = {
   clickOne?: Staff;
   onClose: () => void;
+  stationId: any;
 };
-export function StaffCreate({ clickOne, onClose }: StaffCreateFormProps) {
+export function StaffCreate({ clickOne, onClose, stationId }: StaffCreateFormProps) {
+  console.log('ckick one staff', clickOne);
   const [form] = Form.useForm();
-  const { id } = useParams();
-  const { mutateAsync: createMutate } = useCreateStaff(id);
-  const { mutateAsync: updateMutate } = useUpdateStaff(id);
+  // const { id } = useParams();
+  const { mutateAsync: createMutate } = useCreateStaff(stationId);
+  const { mutateAsync: updateMutate } = useUpdateStaff(stationId);
   const [loading, setLoading] = useState<boolean>(false);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
@@ -41,7 +42,7 @@ export function StaffCreate({ clickOne, onClose }: StaffCreateFormProps) {
         }
         updateData.fullName = values.fullName;
         updateData.email = values.email;
-        updateMutate(updateData);
+        await updateMutate(updateData);
         setLoading(false);
       } else {
         const createData: PostStaffPayload = {
@@ -49,7 +50,7 @@ export function StaffCreate({ clickOne, onClose }: StaffCreateFormProps) {
           password: values.password,
           fullName: values.fullName,
         };
-        createMutate(createData);
+        await createMutate(createData);
         setLoading(false);
       }
       onClose();

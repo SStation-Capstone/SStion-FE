@@ -2,6 +2,8 @@ import { Button, Avatar, Modal, Table, Card, Row, Col } from 'antd';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import { useListStationByManager } from '@/api/services/admin/managerService';
+
 import { ManageStationEdit } from '../station/station.edit';
 
 export type PackagesFormProps = {
@@ -10,6 +12,8 @@ export type PackagesFormProps = {
 };
 export function StationByManager({ clickOne, onClose }: PackagesFormProps) {
   const [showCreateStation, setShowCreateStation] = useState(false);
+  const { data, isLoading } = useListStationByManager(clickOne?.id);
+
   const onOpenFormStation = () => {
     setShowCreateStation(true);
   };
@@ -91,6 +95,8 @@ export function StationByManager({ clickOne, onClose }: PackagesFormProps) {
       ),
     },
   ];
+
+  // if (isLoading) return <CircleLoading />;
   return (
     <Modal
       title="Station By Manager"
@@ -132,12 +138,13 @@ export function StationByManager({ clickOne, onClose }: PackagesFormProps) {
         }
       />
       <Table
+        loading={isLoading}
         rowKey="id"
         size="small"
         scroll={{ x: 'max-content' }}
         pagination={false}
         columns={columns as any}
-        dataSource={clickOne?.stations}
+        dataSource={data?.contends}
       />
       {showCreateStation && (
         <ManageStationEdit managerId={clickOne?.id} onClose={closeFormStation} />

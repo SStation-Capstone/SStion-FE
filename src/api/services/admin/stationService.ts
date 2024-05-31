@@ -50,6 +50,7 @@ export const useUpdateStation = () => {
       onSuccess: () => {
         message.success('Update station sucessfully');
         queryClient.invalidateQueries(['listStationAdmin']);
+        queryClient.invalidateQueries(['listStationByManager']);
       },
     },
   );
@@ -70,6 +71,7 @@ export const useCreateStation = () => {
         // globalSuccess();
         message.success('Create station sucessfully');
         queryClient.invalidateQueries(['listStationAdmin']);
+        queryClient.invalidateQueries(['listStationByManager']);
       },
     },
   );
