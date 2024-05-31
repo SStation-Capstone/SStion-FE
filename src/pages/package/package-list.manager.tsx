@@ -217,12 +217,12 @@ export default function PackageStationManagerList() {
               type="primary"
               size="large"
               style={{ padding: '0 10px', height: '35px', backgroundColor: '#13c2c2' }}
-              onClick={(e) => {
+              onClick={async (e) => {
                 e.stopPropagation();
                 if (record.status === 'Expired') {
                   message.error('Package have been expired!');
                 } else {
-                  createExpire(record.id.toString());
+                  await createExpire(record.id.toString());
                 }
               }}
             >
