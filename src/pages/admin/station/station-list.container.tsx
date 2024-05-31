@@ -143,7 +143,7 @@ export default function ManageStationManagerList() {
           <div className="flex gap-2">
             <Link to={`/zone/${record.id}`}>
               <div className="flex cursor-pointer items-center rounded-md bg-blue-200 fill-blue-400 p-2 duration-100 hover:bg-blue-300 active:border active:border-blue-400">
-                <span className="text-sm font-bold text-blue-500">manage</span>
+                <span className="text-sm font-bold text-blue-500">zones</span>
               </div>
             </Link>
             <div

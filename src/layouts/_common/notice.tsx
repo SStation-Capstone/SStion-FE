@@ -8,6 +8,7 @@ import { useCreateCheckOutConfirm } from '@/api/services/stationService';
 import CyanBlur from '@/assets/images/background/cyan-blur.png';
 import RedBlur from '@/assets/images/background/red-blur.png';
 import { IconButton, Iconify } from '@/components/icon';
+import { queryClient } from '@/http/tanstack/react-query';
 import ProTag from '@/theme/antd/components/tag';
 import { useThemeToken } from '@/theme/hooks';
 import { getItem } from '@/utils/storage';
@@ -50,6 +51,7 @@ export default function NoticeButton() {
               message: message.content,
               description: message.title,
             });
+            queryClient.invalidateQueries(['checkOut']);
             // setTimeout(
             //   () =>
             //     mutateAsync({
