@@ -206,6 +206,7 @@ export default function ManageStationManagerList() {
   // });
   // console.log('data', data);
 
+  console.log('clickone', clickOne);
   return (
     <Card>
       <Form form={form} onFinish={onFinishHandler}>

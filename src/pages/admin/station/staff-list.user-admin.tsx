@@ -202,7 +202,9 @@ export default function StaffManagerAdminList({ check }: StaffFormProps) {
           style={{ marginTop: '1rem' }}
         />
         {/* <ManageStationEdit {...roleModalPros} /> */}
-        {showInfo && <StaffCreate clickOne={clickOne} onClose={closeAndRefetchHandler} />}
+        {showInfo && (
+          <StaffCreate clickOne={clickOne} onClose={closeAndRefetchHandler} stationId={check} />
+        )}
       </Card>
     </>
   );
