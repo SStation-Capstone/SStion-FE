@@ -47,7 +47,7 @@ export default function StaffManagerList() {
       dataIndex: 'startTime',
     },
     {
-      title: 'to (day)',
+      title: 'To (day)',
       dataIndex: 'endTime',
     },
     {

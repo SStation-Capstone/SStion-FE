@@ -25,7 +25,7 @@ export default function PricingDefaultModal({ click, onClose }: PricingFormProps
       dataIndex: 'startTime',
     },
     {
-      title: 'to (day)',
+      title: 'To (day)',
       dataIndex: 'endTime',
     },
     {
