@@ -154,6 +154,7 @@ export function ManageStationEdit({ clickOne, managerId, onClose }: StationEditF
   // const [vietnamLocations, setVietnamLocations] = useState(locations);
   const submitHandle = async () => {
     const values = await form.validateFields();
+    console.log('values create station', values);
     setLoading(true);
     try {
       if (clickOne) {
@@ -179,8 +180,9 @@ export function ManageStationEdit({ clickOne, managerId, onClose }: StationEditF
           ...values,
           ...(managerId && { managerId }),
           stationImages: [{ imageUrl }],
-          address: `${values?.address.detail}, ${values?.address.ward}, ${values?.address.district}, ${values.address.city}`,
+          address: `${searchText}, ${values?.address.ward}, ${values?.address.district}, ${values.address.city}`,
         };
+        console.log('creteData', createData);
         createMutate(createData);
       }
       onClose();
@@ -256,6 +258,8 @@ export function ManageStationEdit({ clickOne, managerId, onClose }: StationEditF
 
     return () => clearTimeout(timer);
   }, [searchText]);
+
+  console.log('searchTExt', searchText);
   return (
     <Modal
       title={clickOne?.id ? 'Edit Station' : 'Create station'}
@@ -438,7 +442,10 @@ export function ManageStationEdit({ clickOne, managerId, onClose }: StationEditF
             <Input
               placeholder="Street name, Building, House no"
               value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
+              onChange={(e) => {
+                console.log('event', e.target.value);
+                setSearchText(e.target.value);
+              }}
             />
             <div className="Autocomplete">
               {listAddress.map((item) => (
